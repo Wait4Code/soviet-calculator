@@ -1,0 +1,156 @@
+/**
+ * Représente une ressource du jeu
+ */
+export interface Resource {
+  id: string;
+  name: string;
+  icon?: string;
+  /** Unité de mesure (tonnes, m3, etc.) */
+  unit?: string;
+}
+
+/**
+ * Représente un ingrédient dans une recette
+ */
+export interface Ingredient {
+  resourceId: string;
+  amount: number;
+}
+
+/**
+ * Représente une recette de production (nouvelle structure depuis productions.json)
+ */
+export interface ProductionRecipe {
+  /** Nom de l'usine */
+  name: string;
+  /** Production par seconde */
+  production: number;
+  /** Nombre de travailleurs */
+  workers: number;
+  /** Nombre de professeurs */
+  profesors: number;
+  /** Consommation par seconde (clé = ressource, valeur = quantité) */
+  consumption: Record<string, number>;
+  /** Consommation fixe par bâtiment et par jour (indépendante de la production), ex. eletric en MWh/j, water en m³/j */
+  consumption_fixed?: Record<string, number>;
+  /** Paramètres optionnels pour l'augmentation de consommation */
+  consumption_increase_parameters?: {
+    p1: number;
+    p2: number;
+    p3: number;
+  };
+  /** Paramètres optionnels pour la diminution de production (année) */
+  production_decrease_parameters?: {
+    p1: number;
+    p2: number;
+    p3: number;
+  };
+  /** Indique si cette recette est une mine (nécessite qualité de source) */
+  isMine?: boolean;
+  /** Indique si cette recette nécessite des véhicules */
+  requiresVehicles?: boolean;
+  /** Nombre maximum de véhicules pour cette recette (pour les carrières) */
+  maxVehicles?: number;
+  /** Skill véhicule requis (excavator, bulldozer, etc.). Défaut excavator. */
+  vehicleSkill?: string;
+}
+
+/**
+ * Représente une ressource avec toutes ses recettes de production possibles
+ */
+export interface ResourceProduction {
+  /** ID de la ressource */
+  resourceId: string;
+  /** Nom de la ressource */
+  resourceName: string;
+  /** Toutes les recettes possibles pour produire cette ressource */
+  recipes: ProductionRecipe[];
+}
+
+/**
+ * Représente une recette de production (ancienne structure, conservée pour compatibilité)
+ */
+export interface Recipe {
+  id: string;
+  name: string;
+  buildingName: string;
+  /** Durée de production en secondes */
+  productionTime: number;
+  /** Ressources nécessaires */
+  inputs: Ingredient[];
+  /** Ressources produites */
+  outputs: Ingredient[];
+  /** Nombre de travailleurs requis */
+  workers?: number;
+}
+
+/**
+ * Représente un bâtiment résidentiel
+ */
+export interface ResidentialBuilding {
+  id: string;
+  name: string;
+  /** Capacité en nombre d'habitants */
+  capacity: number;
+  /** Type de population (workers, citizens, etc.) */
+  populationType: string;
+  /** Consommation électrique en kW */
+  electricityConsumption?: number;
+  /** Consommation de chauffage */
+  heatingConsumption?: number;
+}
+
+/**
+ * Résultat d'un calcul de production
+ */
+export interface ProductionResult {
+  /** ID de la ressource produite */
+  resourceId: string;
+  /** Nom de la ressource produite */
+  resourceName: string;
+  /** Nom de l'usine utilisée */
+  buildingName: string;
+  /** Nombre de bâtiments nécessaires */
+  buildingCount: number;
+  /** Ressources requises par seconde */
+  inputsPerSecond: Map<string, number>;
+  /** Ressources produites par seconde */
+  outputsPerSecond: Map<string, number>;
+  /** Nombre total de travailleurs nécessaires */
+  totalWorkers: number;
+  /** Nombre total de professeurs nécessaires */
+  totalProfesors: number;
+  /** Nombre de travailleurs par bâtiment */
+  workersPerBuilding?: number;
+  /** Capacité maximale de travailleurs par bâtiment */
+  maxWorkersPerBuilding?: number;
+  /** Nombre de professeurs par bâtiment */
+  profesorsPerBuilding?: number;
+  /** Capacité maximale de professeurs par bâtiment */
+  maxProfesorsPerBuilding?: number;
+  /** Ratio de charge réel (0-1), basé sur l'output ou le nombre d'usines */
+  chargeRatio?: number;
+  /** Indique si cette ressource est désactivée (importée) */
+  disabled?: boolean;
+  /** Carrière avec véhicules sans véhicules ni personnel : production nulle, config invalide */
+  invalidConfig?: boolean;
+  /** Carrière avec véhicules et personnel activé (afficher charge même si excavatrices suffisent) */
+  hasVehiclePersonnelEnabled?: boolean;
+  /** Production max t/jour par bâtiment (carrières véhicules) — pour recalculer buildingCount à l'agrégation */
+  maxProductionPerDay?: number;
+  /** Production véhicules t/jour (pelleteuses, charge 0% = production réelle quand personnel non utilisé) */
+  vehicleProductionPerDay?: number;
+}
+
+/**
+ * Résultat d'un calcul de population
+ */
+export interface PopulationResult {
+  totalPopulation: number;
+  populationByType: Map<string, number>;
+  buildings: Array<{
+    buildingId: string;
+    buildingName: string;
+    count: number;
+  }>;
+}

@@ -1,0 +1,112 @@
+import { useState, useEffect } from 'react';
+import { useTranslation } from 'react-i18next';
+import { ProductionCalculator } from './components/ProductionCalculator';
+import { Settings } from './components/Settings';
+import { supportedLngs, type SupportedLocale } from './i18n';
+
+const languageFlags: Record<SupportedLocale, string> = {
+  fr: '🇫🇷',
+  en: '🇬🇧',
+};
+
+type Tab = 'industry' | 'city' | 'settings';
+
+function App() {
+  const { t, i18n } = useTranslation();
+  const [activeTab, setActiveTab] = useState<Tab>('industry');
+
+  useEffect(() => {
+    document.documentElement.lang = i18n.language;
+  }, [i18n.language]);
+
+  return (
+    <div className="min-h-screen bg-gray-900 text-white">
+      {/* Header */}
+      <header className="bg-soviet-red shadow-lg">
+        <div className="container mx-auto px-4 py-6">
+          <div className="flex flex-wrap items-center justify-between gap-4">
+            <div>
+              <h1 className="text-3xl font-bold">{t('app.title')}</h1>
+              <p className="text-sm text-gray-200 mt-1">{t('app.subtitle')}</p>
+            </div>
+            <div className="flex items-center gap-1">
+              {supportedLngs.map((lng) => (
+                <button
+                  key={lng}
+                  type="button"
+                  onClick={() => i18n.changeLanguage(lng)}
+                  title={t(`language.${lng}`)}
+                  className={`p-1.5 text-xl rounded transition-colors ${
+                    i18n.language === lng || i18n.language.startsWith(lng)
+                      ? 'bg-soviet-gold text-gray-900'
+                      : 'opacity-80 hover:opacity-100 hover:bg-gray-700'
+                  }`}
+                >
+                  {languageFlags[lng]}
+                </button>
+              ))}
+            </div>
+          </div>
+        </div>
+      </header>
+
+      {/* Navigation */}
+      <div className="bg-gray-800 border-b border-gray-700">
+        <div className="container mx-auto px-4">
+          <div className="flex gap-1">
+            <button
+              onClick={() => setActiveTab('industry')}
+              className={`px-6 py-3 font-medium transition-colors ${
+                activeTab === 'industry'
+                  ? 'bg-gray-900 text-soviet-gold border-b-2 border-soviet-gold'
+                  : 'text-gray-400 hover:text-white'
+              }`}
+            >
+              {t('nav.industry')}
+            </button>
+            <button
+              onClick={() => setActiveTab('settings')}
+              className={`px-6 py-3 font-medium transition-colors ${
+                activeTab === 'settings'
+                  ? 'bg-gray-900 text-soviet-gold border-b-2 border-soviet-gold'
+                  : 'text-gray-400 hover:text-white'
+              }`}
+            >
+              {t('nav.settings')}
+            </button>
+          </div>
+        </div>
+      </div>
+
+      {/* Main Content - tous les onglets restent montés pour mémoriser leur état */}
+      <main className="container mx-auto px-4 py-8">
+        <div className={activeTab === 'industry' ? '' : 'hidden'}>
+          <ProductionCalculator />
+        </div>
+        <div className={activeTab === 'settings' ? '' : 'hidden'}>
+          <Settings />
+        </div>
+      </main>
+
+      {/* Footer */}
+      <footer className="bg-gray-800 border-t border-gray-700 mt-12">
+        <div className="container mx-auto px-4 py-6 text-center text-gray-400 text-sm">
+          <p>
+            {t('footer.inspired')}{' '}
+            <a
+              href="https://kirkmcdonald.github.io/calc.html"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-soviet-gold hover:underline"
+            >
+              {t('footer.factorioLink')}
+            </a>
+          </p>
+          <p className="mt-2">{t('footer.game')}</p>
+        </div>
+      </footer>
+    </div>
+  );
+}
+
+export default App;

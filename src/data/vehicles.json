@@ -1,0 +1,100 @@
+{
+  "vehicles": [
+    {
+      "id": "e-10011d",
+      "name": "Э-10011Д excavator",
+      "origin": "Union soviétique",
+      "productionYears": "1959 - 1982",
+      "maxSpeed": "18km/h",
+      "emptyWeight": "11 tonnes",
+      "enginePower": "80KW",
+      "length": "10m",
+      "skills": { "excavator": 33 },
+      "image": "vehicles/e-10011d.png"
+    },
+    {
+      "id": "t815-uds",
+      "name": "T815-UDS excavator",
+      "origin": "Tchécoslovaquie",
+      "productionYears": "1984 - présent",
+      "maxSpeed": "80km/h",
+      "emptyWeight": "14 tonnes",
+      "enginePower": "230KW",
+      "length": "9m",
+      "skills": { "excavator": 27 },
+      "image": "vehicles/t815-uds.png"
+    },
+    {
+      "id": "e-302b",
+      "name": "E-302B excavator",
+      "origin": "Union soviétique",
+      "productionYears": "1957 - 1973",
+      "maxSpeed": "18km/h",
+      "emptyWeight": "8 tonnes",
+      "enginePower": "45KW",
+      "length": "7m",
+      "skills": { "excavator": 22 },
+      "image": "vehicles/e-302b.png"
+    },
+    {
+      "id": "rmn-19-215",
+      "name": "Rmn 19-215 excavator",
+      "origin": "Roumanie",
+      "productionYears": "1976 - 1985",
+      "maxSpeed": "58km/h",
+      "emptyWeight": "8 tonnes",
+      "enginePower": "101KW",
+      "length": "7m",
+      "skills": { "excavator": 17 },
+      "image": "vehicles/rmn-19-215.png"
+    },
+    {
+      "id": "t-174",
+      "name": "T 174 excavator",
+      "origin": "Allemagne de l'Est",
+      "productionYears": "1965 - 1992",
+      "maxSpeed": "18km/h",
+      "emptyWeight": "8 tonnes",
+      "enginePower": "25KW",
+      "length": "7m",
+      "skills": { "excavator": 26 },
+      "image": "vehicles/t-174.png"
+    },
+    {
+      "id": "lh-a360",
+      "name": "LH-A360 excavator",
+      "origin": "Allemagne de l'Ouest",
+      "productionYears": "1960 - 1972",
+      "maxSpeed": "24km/h",
+      "emptyWeight": "7 tonnes",
+      "enginePower": "34KW",
+      "length": "6m",
+      "skills": { "excavator": 28 },
+      "image": "vehicles/lh-a360.png"
+    },
+    {
+      "id": "e7-2",
+      "name": "Excavator E7.2",
+      "origin": "USA",
+      "productionYears": "1992 - présent",
+      "maxSpeed": "20km/h",
+      "emptyWeight": "15 tonnes",
+      "enginePower": "250KW",
+      "length": "7m",
+      "skills": { "excavator": 37 },
+      "image": "vehicles/e7.2.png"
+    },
+    {
+      "id": "small-feeder",
+      "name": "Small feeder",
+      "origin": "USA",
+      "productionYears": "1987 - présent",
+      "maxSpeed": "20km/h",
+      "emptyWeight": "1 tonne",
+      "enginePower": "30KW",
+      "length": "3m",
+      "skills": { "excavator": 9, "bulldozer": 9 },
+      "image": "vehicles/small-feeder.png"
+    }
+  ]
+}
