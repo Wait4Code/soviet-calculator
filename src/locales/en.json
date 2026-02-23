@@ -30,6 +30,7 @@
     "year": "Year",
     "resource": "Resource",
     "quantityPerDay": "Quantity / day",
+    "surplusPerDay": "Surplus (quantity / day)",
     "building": "Building",
     "config": "Configuration",
     "qualitySource": "Source quality",
