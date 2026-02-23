@@ -534,6 +534,34 @@ export class ProductionCalculator {
   }
 
   /**
+   * Ajoute les résultats de production connexe (co-produits) pour une recette donnée.
+   */
+  private pushCoProductResults(
+    results: ProductionResult[],
+    result: ProductionResult,
+    recipe: ProductionRecipe,
+    mainResourceId: string
+  ): void {
+    const production_co = recipe.production_co;
+    if (!production_co || Object.keys(production_co).length === 0) return;
+    const mainOutputPerSecond = result.outputsPerSecond.get(mainResourceId) ?? 0;
+    for (const [coResourceId, coRate] of Object.entries(production_co)) {
+      const coOutputPerSecond = mainOutputPerSecond * (coRate / recipe.production);
+      results.push({
+        resourceId: coResourceId,
+        resourceName: getResourceName(coResourceId),
+        buildingName: recipe.name,
+        buildingCount: result.buildingCount,
+        inputsPerSecond: new Map(),
+        outputsPerSecond: new Map([[coResourceId, coOutputPerSecond]]),
+        totalWorkers: 0,
+        totalProfesors: 0,
+        isCoProduct: true,
+      });
+    }
+  }
+
+  /**
    * Vérifie si une ressource est une ressource de base (extraction, pas de consommation)
    */
   isBaseResource(resourceId: string): boolean {
@@ -623,6 +651,7 @@ export class ProductionCalculator {
             getYear(config)
           );
           results.push(result);
+          this.pushCoProductResults(results, result, recipe, config.resourceId);
 
           if (!config.disabledResources.has(config.resourceId)) {
             result.inputsPerSecond.forEach((amountPerSecond, inputResourceId) => {
@@ -714,6 +743,7 @@ export class ProductionCalculator {
         );
       }
       results.push(result);
+      this.pushCoProductResults(results, result, recipe, config.resourceId);
 
       // Si la ressource actuelle est désactivée, ne pas calculer ses besoins en ressources d'entrée
       // (car on n'a plus besoin de bâtiments pour la produire)
@@ -851,6 +881,7 @@ export class ProductionCalculator {
       (result as ProductionResult).vehicleProductionPerDay = vehicleProductionPerDay;
     }
     results.push(result);
+    this.pushCoProductResults(results, result, recipe, config.resourceId);
 
     // Si la ressource actuelle est désactivée, ne pas calculer ses besoins en ressources d'entrée
     // (car on n'a plus besoin de bâtiments pour la produire)
@@ -941,6 +972,7 @@ export class ProductionCalculator {
             baseResult.vehicleProductionPerDay = baseVehicleProductionPerDay;
           }
           results.push(baseResult);
+          this.pushCoProductResults(results, baseResult, baseRecipe, inputResourceId);
           // Inclure les entrées de la ressource de base (eau, électricité, etc.) dans la chaîne
           baseResult.inputsPerSecond.forEach((inputAmount, inputResourceId) => {
             if (this.isBaseResource(inputResourceId)) return;
@@ -1062,8 +1094,8 @@ export class ProductionCalculator {
     const aggregated = new Map<string, ProductionResult>();
 
     results.forEach((result) => {
-      // Clé unique : resourceId + buildingName
-      const key = `${result.resourceId}:${result.buildingName}`;
+      // Clé unique : resourceId + buildingName + isCoProduct (ne pas fusionner co-produit avec production principale)
+      const key = `${result.resourceId}:${result.buildingName}:${result.isCoProduct ?? false}`;
 
       if (aggregated.has(key)) {
         const existing = aggregated.get(key)!;
@@ -1119,7 +1151,7 @@ export class ProductionCalculator {
     result: ProductionResult,
     totalDemandPerSecond: Map<string, number>
   ): void {
-    if (result.invalidConfig || result.maxProductionPerDay === undefined) return;
+    if (result.invalidConfig || result.isCoProduct || result.maxProductionPerDay === undefined) return;
 
     const totalDemandPerDay = (totalDemandPerSecond.get(result.resourceId) ?? 0) * 24 * 60 * 60;
     const correctBuildingCount = Math.max(
@@ -1154,7 +1186,7 @@ export class ProductionCalculator {
    * Utilisé après agrégation pour corriger le taux affiché (ex: 2 bâtiments à 52% au lieu de 26%).
    */
   private recalculateChargeRatioFromAggregated(result: ProductionResult): void {
-    if (result.invalidConfig || result.buildingCount === 0) return;
+    if (result.invalidConfig || result.isCoProduct || result.buildingCount === 0) return;
 
     const recipe = this.getRecipe(result.resourceId, result.buildingName);
     if (!recipe || recipe.production === 0) return;
