@@ -260,11 +260,6 @@ export function ProductionCalculator() {
     return productionCalculator.aggregateResults(allChains);
   }, [productionGoals, effectiveSourceQuality, sourceQualityByResource, chainYear, defaultVehicleId, effectiveBuildingByResource, vehicleConfigByResource, chargeRatioByResource]);
 
-  const surplusByResource = useMemo(
-    () => productionCalculator.computeSurplusByResource(fullChainResults),
-    [fullChainResults]
-  );
-
   // Réinitialiser les ressources désactivées uniquement quand la ressource cible change (pas l'année ni le bâtiment)
   useEffect(() => {
     setInitialDisabledResources(new Set());
@@ -438,9 +433,10 @@ export function ProductionCalculator() {
   };
 
   // Calculer en direct les résultats avec les ressources désactivées
-  const results = useMemo(() => {
+  const resultsWithMeta = useMemo(() => {
     const validGoals = productionGoals.filter((g) => g.resourceId && g.buildingName && g.value > 0);
-    if (validGoals.length === 0) return [];
+    const primaryIds = new Set(validGoals.map((g) => g.resourceId));
+    if (validGoals.length === 0) return { results: [] as ProductionResult[], surplusByResource: new Map<string, number>(), hasAnySurplus: false };
 
     const allChains: ProductionResult[] = [];
     for (const goal of validGoals) {
@@ -670,8 +666,22 @@ export function ProductionCalculator() {
     }
     
     // Tri selon sort.md : groupes par dépendance, produit final → matières premières
-    return sortProductionChain(sortedResults);
+    const results = sortProductionChain(sortedResults);
+    // Surplus et visibilité colonne : calculés depuis les mêmes données (aggregated) que l'affichage
+    const surplusByResource = productionCalculator.computeSurplusByResource(aggregated);
+    const hasAnySurplus = results.some((r) => {
+      const surplusPerSec = primaryIds.has(r.resourceId) ? 0 : (surplusByResource.get(r.resourceId) ?? 0);
+      const surplusPerDay = surplusPerSec * (24 * 60 * 60);
+      const amountPerDay = (r.outputsPerSecond.get(r.resourceId) ?? 0) * (24 * 60 * 60);
+      const surplusToShow = r.isCoProduct ? amountPerDay : surplusPerDay;
+      return surplusToShow > 0.01;
+    });
+    return { results, surplusByResource, hasAnySurplus };
   }, [productionGoals, disabledResources, fullChainResults, effectiveSourceQuality, sourceQualityByResource, chainYear, defaultVehicleId, effectiveBuildingByResource, vehicleConfigByResource, chargeRatioByResource]);
+
+  const results = resultsWithMeta.results;
+  const surplusByResource = resultsWithMeta.surplusByResource;
+  const hasAnySurplus = resultsWithMeta.hasAnySurplus;
 
   const primaryResourceIds = useMemo(() => new Set(productionGoals.map((g) => g.resourceId)), [productionGoals]);
 
@@ -884,6 +894,9 @@ export function ProductionCalculator() {
                   <tr className="border-b border-gray-700">
                     <th className="text-left py-3 px-4 font-semibold text-gray-300">{t('industry.resource')}</th>
                     <th className="text-right py-3 px-4 font-semibold text-gray-300 w-44">{t('industry.quantityPerDay')}</th>
+                    {hasAnySurplus && (
+                      <th className="text-right py-3 px-4 font-semibold text-gray-300 w-44">{t('industry.surplusPerDay')}</th>
+                    )}
                     <th className="text-left py-3 px-4 font-semibold text-gray-300">{t('industry.building')}</th>
                     {(hasAnyMine || hasAnyVehicleMine) && (
                       <th className="text-right py-3 px-4 font-semibold text-gray-300">{t('industry.config')}</th>
@@ -919,12 +932,7 @@ export function ProductionCalculator() {
                     const isWater = productionCalculator.isWater(resourceId);
                     const isElectricity = productionCalculator.isElectricity(resourceId);
                     const unitYear = isElectricity ? 'MWh/an' : isWater ? 'm³/an' : 't/an';
-                    
-                    // Formater les quantités (format français)
-                    const formattedPerDay = isElectricity
-                      ? `${productionCalculator.formatInteger(amountPerDay * 60)} MWh`
-                      : `${productionCalculator.formatValue(amountPerDay)} ${isWater ? 'm³' : 't'}`;
-                    
+
                     const formattedPerYear = isElectricity
                       ? `${productionCalculator.formatInteger(amountPerDay * 60 * 365)} ${unitYear}`
                       : `${productionCalculator.formatInteger(amountPerYear)} ${unitYear}`;
@@ -982,34 +990,48 @@ export function ProductionCalculator() {
                         </td>
                         <td className={`py-3 px-4 text-right font-mono align-middle ${isNonProducible ? 'text-gray-400' : ''}`}>
                           {(() => {
-                            if (result.isCoProduct) {
-                              return (
-                                <span className="text-soviet-gold">
-                                  + {formattedPerDay}
-                                </span>
-                              );
-                            }
                             const isPrimaryResource = primaryResourceIds.has(result.resourceId);
                             const surplusPerSec = isPrimaryResource ? 0 : (surplusByResource.get(result.resourceId) ?? 0);
-                            const surplusPerDay = surplusPerSec * 24 * 60 * 60;
-                            const hasSurplus = surplusPerDay > 0.01;
-                            const surplusFormatted = hasSurplus
-                              ? (isElectricity
-                                  ? ` (+ ${productionCalculator.formatInteger(surplusPerDay * 60)} MWh/j)`
-                                  : isWater
-                                    ? ` (+ ${productionCalculator.formatInteger(surplusPerDay)} m³/j)`
-                                    : ` (+ ${productionCalculator.formatInteger(surplusPerDay)} t/j)`)
-                              : '';
-                            const tooltipContent = hasSurplus
-                              ? `${formattedPerYear} dont surplus: ${productionCalculator.formatInteger(surplusPerDay * (isElectricity ? 60 * 365 : 365))} ${unitYear}`
-                              : formattedPerYear;
+                            const surplusPerDay = surplusPerSec * (24 * 60 * 60);
+                            const requiredPerDay = Math.max(0, amountPerDay - surplusPerDay);
+                            if (result.isCoProduct) {
+                              return (
+                                <span>0 {isWater ? 'm³' : isElectricity ? 'MWh' : 't'}</span>
+                              );
+                            }
+                            const formattedRequired = isElectricity
+                              ? `${productionCalculator.formatInteger(requiredPerDay * 60)} MWh`
+                              : `${productionCalculator.formatValue(requiredPerDay)} ${isWater ? 'm³' : 't'}`;
+                            const tooltipContent = formattedPerYear;
                             return (
                               <Tooltip content={tooltipContent}>
-                                <span>{formattedPerDay}{hasSurplus && <span className="text-soviet-gold text-xs">{surplusFormatted}</span>}</span>
+                                <span>{formattedRequired}</span>
                               </Tooltip>
                             );
                           })()}
                         </td>
+                        {hasAnySurplus && (
+                          <td className="py-3 px-4 text-right font-mono align-middle">
+                            {(() => {
+                              const isPrimaryResource = primaryResourceIds.has(result.resourceId);
+                              const surplusPerSec = isPrimaryResource ? 0 : (surplusByResource.get(result.resourceId) ?? 0);
+                              const surplusPerDay = surplusPerSec * (24 * 60 * 60);
+                              const surplusToShow = result.isCoProduct ? amountPerDay : surplusPerDay;
+                              if (surplusToShow <= 0.01) return <span className="text-gray-500">—</span>;
+                              const surplusFormatted = isElectricity
+                                ? `${productionCalculator.formatInteger(surplusToShow * 60)} MWh`
+                                : `${productionCalculator.formatValue(surplusToShow)} ${isWater ? 'm³' : 't'}`;
+                              const surplusPerYearFormatted = isElectricity
+                                ? `${productionCalculator.formatInteger(surplusToShow * 60 * 365)} ${unitYear}`
+                                : `${productionCalculator.formatInteger(surplusToShow * 365)} ${unitYear}`;
+                              return (
+                                <Tooltip content={surplusPerYearFormatted}>
+                                  <span className="text-soviet-gold">+ {surplusFormatted}</span>
+                                </Tooltip>
+                              );
+                            })()}
+                          </td>
+                        )}
                         <td
                           className={`py-3 px-4 text-gray-400 align-middle ${isSameBuildingBlock ? 'border-l border-gray-600' : ''} ${result.isCoProduct ? 'border-t-0 pt-0' : ''} ${!result.isCoProduct && nextIsCoProduct ? 'border-b-0 pb-0' : ''}`}
                         >
