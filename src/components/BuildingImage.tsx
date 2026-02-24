@@ -6,11 +6,11 @@ import { formatNumber } from '@/lib/format';
 
 const isElectricity = (resourceId: string) => resourceId === 'eletric';
 
-/** Unité d'affichage pour la consommation */
-function getConsumptionUnit(resourceId: string, forElectricityMWh = false): string {
-  if (resourceId === 'eletric') return forElectricityMWh ? 'MWh' : 'MWh/j';
-  if (resourceId === 'water' || resourceId === 'usagewater') return 'm³/j';
-  return 't/j';
+/** Clé i18n pour l'unité d'affichage de la consommation (utiliser avec t()). */
+function getConsumptionUnitKey(resourceId: string, forElectricityMWh = false): string {
+  if (resourceId === 'eletric') return forElectricityMWh ? 'units.MWh' : 'units.MWh_day';
+  if (resourceId === 'water' || resourceId === 'usagewater') return 'units.m3_day';
+  return 'units.t_day';
 }
 
 /** Consommation variable (par charge) et fixe, séparées pour eau et électricité */
@@ -39,7 +39,7 @@ function getWaterAndElectricConsumption(recipe: ProductionRecipe): {
 
 /** Consommation variable max par bâtiment à 100 % (recipe.consumption uniquement) — pour la liste "Consommation max" */
 /** Électricité : valeur en MW, affichage en MWh = MW × 60 */
-function getVariableConsumptionPerBuilding(recipe: ProductionRecipe): { resourceId: string; amountPerDay: number; displayAmount: number; unit: string }[] {
+function getVariableConsumptionPerBuilding(recipe: ProductionRecipe): { resourceId: string; amountPerDay: number; displayAmount: number; unitKey: string }[] {
   return Object.entries(recipe.consumption)
     .filter(([, qty]) => qty > 0)
     .map(([resId, qty]) => {
@@ -49,7 +49,7 @@ function getVariableConsumptionPerBuilding(recipe: ProductionRecipe): { resource
           ? qty * recipe.workers
           : qty;
       const displayAmount = isElectricity(resId) ? amountPerDay * 60 : amountPerDay;
-      return { resourceId: resId, amountPerDay, displayAmount, unit: getConsumptionUnit(resId, isElectricity(resId)) };
+      return { resourceId: resId, amountPerDay, displayAmount, unitKey: getConsumptionUnitKey(resId, isElectricity(resId)) };
     });
 }
 
@@ -128,7 +128,7 @@ export function RecipeTooltipContent({ recipe }: { recipe: ProductionRecipe }) {
     : '-';
   const maxProd = recipe.requiresVehicles
     ? t('tooltips.variableVehicules')
-    : `${formatNumber(recipe.production * recipe.workers)} t/j`;
+    : `${formatNumber(recipe.production * recipe.workers)} ${t('units.t_day')}`;
   const variableConsumptions = getVariableConsumptionPerBuilding(recipe);
   const { waterFixed, electricFixed } = getWaterAndElectricConsumption(recipe);
   const powerMW = getElectricPowerMW(recipe);
@@ -140,10 +140,10 @@ export function RecipeTooltipContent({ recipe }: { recipe: ProductionRecipe }) {
         <p><span className="text-gray-500">{t('tooltips.travailleursMax')}:</span> {workersStr}</p>
         <p><span className="text-gray-500">{t('tooltips.productionMax')}:</span> {maxProd}</p>
         {waterFixed > 0 && (
-          <p><span className="text-gray-500">{t('tooltips.eauFixe')}:</span> {formatNumber(waterFixed)} m³/j</p>
+          <p><span className="text-gray-500">{t('tooltips.eauFixe')}:</span> {formatNumber(waterFixed)} {t('units.m3_day')}</p>
         )}
         {electricFixed > 0 && (
-          <p><span className="text-gray-500">{t('tooltips.electriciteFixe')}:</span> {formatNumber(electricFixed * 60)} MWh</p>
+          <p><span className="text-gray-500">{t('tooltips.electriciteFixe')}:</span> {formatNumber(electricFixed * 60)} {t('units.MWh')}</p>
         )}
         {powerMW != null && powerMW > 0 && (
           <p>
@@ -157,7 +157,7 @@ export function RecipeTooltipContent({ recipe }: { recipe: ProductionRecipe }) {
             <ul className="list-disc list-inside pl-1 space-y-0.5">
               {variableConsumptions.map((c) => (
                 <li key={c.resourceId}>
-                  {t(`resources.${c.resourceId}`)}: {formatNumber(c.displayAmount)} {c.unit}
+                  {t(`resources.${c.resourceId}`)}: {formatNumber(c.displayAmount)} {t(c.unitKey)}
                 </li>
               ))}
             </ul>

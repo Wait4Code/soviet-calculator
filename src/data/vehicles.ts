@@ -25,6 +25,17 @@ export function loadVehicles(): Map<string, Vehicle> {
 
 export const vehicles = loadVehicles();
 
+/** Map origine (chaîne du JSON) → clé i18n (origins.xxx). Utiliser avec t('origins.' + ORIGIN_TO_KEY[origin]). */
+export const ORIGIN_TO_KEY: Record<string, string> = {
+  'Union soviétique': 'union_sovietique',
+  'Tchécoslovaquie': 'tchecoslovaquie',
+  'Roumanie': 'roumanie',
+  "Allemagne de l'Est": 'allemagne_est',
+  "Allemagne de l'Ouest": 'allemagne_ouest',
+  'USA': 'usa',
+  'RDA': 'rda',
+};
+
 export function getVehicle(vehicleId: string): Vehicle | undefined {
   return vehicles.get(vehicleId);
 }

@@ -143,5 +143,28 @@
     "variableVehicules": "variable (véhicules + personnel)",
     "personnels": "Personnels",
     "noPersonnel": "Pas de personnel"
+  },
+  "units": {
+    "MWh_year": "MWh/an",
+    "m3_year": "m³/an",
+    "t_year": "t/an",
+    "MWh_day": "MWh/j",
+    "m3_day": "m³/j",
+    "t_day": "t/j",
+    "MWh": "MWh",
+    "m3": "m³",
+    "t": "t"
+  },
+  "origins": {
+    "union_sovietique": "Union soviétique",
+    "tchecoslovaquie": "Tchécoslovaquie",
+    "roumanie": "Roumanie",
+    "allemagne_est": "Allemagne de l'Est",
+    "allemagne_ouest": "Allemagne de l'Ouest",
+    "usa": "USA",
+    "rda": "RDA"
+  },
+  "misc": {
+    "present": "présent"
   }
 }

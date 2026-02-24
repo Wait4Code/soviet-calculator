@@ -10,7 +10,7 @@ import { getPlanStateFromUrl, setPlanStateInUrl, type PlanStateSerialized } from
 import { getSavedPlans, savePlan, updatePlan, deletePlan, getPlanState, type SavedPlan } from '@/lib/savedPlans';
 import { formatNumber } from '@/lib/format';
 import { getResourceIcon } from '@/data/resourceIcons';
-import { vehicles, getVehicle, formatVehicleSkills } from '@/data/vehicles';
+import { vehicles, getVehicle, formatVehicleSkills, ORIGIN_TO_KEY } from '@/data/vehicles';
 import { BuildingPicker } from '@/components/BuildingPicker';
 import { ResourcePicker } from '@/components/ResourcePicker';
 
@@ -931,8 +931,9 @@ export function ProductionCalculator() {
                     const amountPerYear = productionCalculator.floor(amountPerDay * 365);
                     const isWater = productionCalculator.isWater(resourceId);
                     const isElectricity = productionCalculator.isElectricity(resourceId);
-                    const unitYear = isElectricity ? 'MWh/an' : isWater ? 'm³/an' : 't/an';
-
+                    const unitYearKey = isElectricity ? 'units.MWh_year' : isWater ? 'units.m3_year' : 'units.t_year';
+                    const unitYear = t(unitYearKey);
+                    const unitShort = isElectricity ? t('units.MWh') : isWater ? t('units.m3') : t('units.t');
                     const formattedPerYear = isElectricity
                       ? `${productionCalculator.formatInteger(amountPerDay * 60 * 365)} ${unitYear}`
                       : `${productionCalculator.formatInteger(amountPerYear)} ${unitYear}`;
@@ -996,12 +997,12 @@ export function ProductionCalculator() {
                             const requiredPerDay = Math.max(0, amountPerDay - surplusPerDay);
                             if (result.isCoProduct) {
                               return (
-                                <span>0 {isWater ? 'm³' : isElectricity ? 'MWh' : 't'}</span>
+                                <span>0 {unitShort}</span>
                               );
                             }
                             const formattedRequired = isElectricity
-                              ? `${productionCalculator.formatInteger(requiredPerDay * 60)} MWh`
-                              : `${productionCalculator.formatValue(requiredPerDay)} ${isWater ? 'm³' : 't'}`;
+                              ? `${productionCalculator.formatInteger(requiredPerDay * 60)} ${unitShort}`
+                              : `${productionCalculator.formatValue(requiredPerDay)} ${unitShort}`;
                             const tooltipContent = formattedPerYear;
                             return (
                               <Tooltip content={tooltipContent}>
@@ -1019,8 +1020,8 @@ export function ProductionCalculator() {
                               const surplusToShow = result.isCoProduct ? amountPerDay : surplusPerDay;
                               if (surplusToShow <= 0.01) return <span className="text-gray-500">—</span>;
                               const surplusFormatted = isElectricity
-                                ? `${productionCalculator.formatInteger(surplusToShow * 60)} MWh`
-                                : `${productionCalculator.formatValue(surplusToShow)} ${isWater ? 'm³' : 't'}`;
+                                ? `${productionCalculator.formatInteger(surplusToShow * 60)} ${unitShort}`
+                                : `${productionCalculator.formatValue(surplusToShow)} ${unitShort}`;
                               const surplusPerYearFormatted = isElectricity
                                 ? `${productionCalculator.formatInteger(surplusToShow * 60 * 365)} ${unitYear}`
                                 : `${productionCalculator.formatInteger(surplusToShow * 365)} ${unitYear}`;
@@ -1205,7 +1206,7 @@ export function ProductionCalculator() {
                                                     <p className="text-xs text-gray-400">
                                                       <span className="inline-flex items-center gap-1">
                                                         <img src={getBlocForOrigin(v.origin) === 'east' ? SIDE_EAST : SIDE_WEST} alt="" className="w-3 h-3" />
-                                                        {v.origin} · {formatVehicleSkills(v)}
+                                                        {ORIGIN_TO_KEY[v.origin] ? t(`origins.${ORIGIN_TO_KEY[v.origin]}`) : v.origin} · {formatVehicleSkills(v)}
                                                       </span>
                                                     </p>
                                                   </div>
