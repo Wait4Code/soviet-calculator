@@ -22,7 +22,7 @@ function BuildingImageThumb({ recipe, size }: { recipe: ProductionRecipe; size: 
 
   const currentUrl = urls[currentUrlIndex];
   const allFailed = currentUrlIndex >= urls.length;
-  const displayName = recipe.name === 'Import' ? 'Import' : t(`buildings:${recipe.name}`);
+  const displayName = t(`buildings:${recipe.name}`);
 
   if (allFailed) {
     return (
@@ -107,11 +107,11 @@ export function BuildingPicker({ recipes, selectedRecipe, onSelect, size = 36 }:
                 <BuildingImageThumb recipe={r} size={40} />
               </div>
               <div className="min-w-0 flex-1">
-                <p className="font-medium text-white truncate text-sm">{r.name === 'Import' ? 'Import' : t(`buildings:${r.name}`)}</p>
+                <p className="font-medium text-white truncate text-sm">{t(`buildings:${r.name}`)}</p>
                 <p className="text-xs text-gray-400">
                   {r.workers > 0
                     ? `${r.workers} ${t('tooltips.workersBlue')}${r.profesors > 0 ? `, ${r.profesors} ${t('tooltips.workersWhite')}` : ''}`
-                    : 'Pas de personnel'}
+                    : t('tooltips.noPersonnel')}
                 </p>
               </div>
             </button>

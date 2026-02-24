@@ -50,7 +50,12 @@
     "sortNameZA": "Name Z → A",
     "noCalculations": "No calculations. Click \"New calculation\".",
     "unnamed": "Unnamed",
-    "copyOf": "Copy of {{name}}"
+    "copyOf": "Copy of {{name}}",
+    "quarryNoVehicleOrPersonnel": "This quarry has no excavator or personnel enabled. It produces nothing. Add vehicles or enable personnel to produce.",
+    "chargeTo100": "Set charge rate to 100%",
+    "resetCharge": "Reset to initial charge rate",
+    "surplusLabel": "including surplus",
+    "emptySlot": "Empty"
   },
   "settings": {
     "title": "Settings",
@@ -136,6 +141,7 @@
     "puissance": "Power",
     "consommationMax": "Max consumption",
     "variableVehicules": "variable (vehicles + personnel)",
-    "personnels": "Personnel"
+    "personnels": "Personnel",
+    "noPersonnel": "No personnel"
   }
 }

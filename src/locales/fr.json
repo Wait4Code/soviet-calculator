@@ -50,7 +50,12 @@
     "sortNameZA": "Nom Z → A",
     "noCalculations": "Aucun calcul. Cliquez sur \"Nouveau calcul\".",
     "unnamed": "Sans nom",
-    "copyOf": "Copie de {{name}}"
+    "copyOf": "Copie de {{name}}",
+    "quarryNoVehicleOrPersonnel": "Cette carrière n'a ni pelleteuse ni personnel activé. Elle ne produit rien. Ajoutez des véhicules ou activez le personnel pour produire.",
+    "chargeTo100": "Monter le taux de charge à 100 %",
+    "resetCharge": "Revenir au taux de charge initial",
+    "surplusLabel": "dont surplus",
+    "emptySlot": "Vide"
   },
   "settings": {
     "title": "Configuration",
@@ -136,6 +141,7 @@
     "puissance": "Puissance",
     "consommationMax": "Consommation max",
     "variableVehicules": "variable (véhicules + personnel)",
-    "personnels": "Personnels"
+    "personnels": "Personnels",
+    "noPersonnel": "Pas de personnel"
   }
 }

@@ -981,7 +981,7 @@ export function ProductionCalculator() {
                             {hasInvalidConfig && (
                               <span
                                 className="text-red-400"
-                                title="Cette carrière n'a ni pelleteuse ni personnel activé. Elle ne produit rien. Ajoutez des véhicules ou activez le personnel pour produire."
+                                title={t('industry.quarryNoVehicleOrPersonnel')}
                               >
                                 ⚠
                               </span>
@@ -1062,7 +1062,7 @@ export function ProductionCalculator() {
                                           <button
                                             type="button"
                                             onClick={() => setChargeRatioByResource((prev) => ({ ...prev, [result.resourceId]: 1 }))}
-                                            title="Monter le taux de charge à 100 %"
+                                            title={t('industry.chargeTo100')}
                                             className="text-xs px-1.5 py-0.5 rounded bg-gray-700 hover:bg-soviet-gold hover:text-gray-900 text-soviet-gold"
                                           >
                                             ➞100 %
@@ -1075,7 +1075,7 @@ export function ProductionCalculator() {
                                               const { [result.resourceId]: _, ...rest } = chargeRatioByResource;
                                               setChargeRatioByResource(rest);
                                             }}
-                                            title="Revenir au taux de charge initial"
+                                            title={t('industry.resetCharge')}
                                             className="text-xs px-1.5 py-0.5 rounded bg-gray-700 hover:bg-gray-500 text-gray-400"
                                           >
                                             ✕
@@ -1157,7 +1157,7 @@ export function ProductionCalculator() {
                                                 : { resourceId: result.resourceId, slotIndex: slotIdx }
                                             )}
                                             className="flex-shrink-0 w-10 h-10 rounded overflow-hidden bg-gray-700 border-2 border-gray-600 hover:border-soviet-gold flex items-center justify-center transition-colors"
-                                            title={vehicle ? vehicle.name : 'Choisir un véhicule'}
+                                            title={vehicle ? vehicle.name : t('tooltips.chooseVehicle')}
                                           >
                                             <img
                                               src={vehicle ? getVehicleImageSrc(vehicle) : VEHICLE_PLACEHOLDER}
@@ -1181,9 +1181,9 @@ export function ProductionCalculator() {
                                                 className="w-full flex items-center gap-3 px-3 py-2 text-left hover:bg-gray-700 transition-colors text-gray-400"
                                               >
                                                 <div className="flex-shrink-0 w-10 h-10 rounded overflow-hidden bg-gray-700 flex items-center justify-center">
-                                                  <span className="text-xs">Vide</span>
+                                                  <span className="text-xs">{t('industry.emptySlot')}</span>
                                                 </div>
-                                                <span>Vide</span>
+                                                <span>{t('industry.emptySlot')}</span>
                                               </button>
                                               {excavatorVehicles.map((v) => (
                                                 <button

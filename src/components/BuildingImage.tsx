@@ -77,7 +77,7 @@ export function BuildingImage({ recipe, size = 40, className = '', selected, onC
   const { t } = useTranslation();
   const [imgError, setImgError] = useState(false);
   const [showTooltip, setShowTooltip] = useState(false);
-  const displayName = recipe.name === 'Import' ? 'Import' : t(`buildings:${recipe.name}`);
+  const displayName = t(`buildings:${recipe.name}`);
 
   return (
     <div
@@ -122,7 +122,7 @@ export function BuildingImage({ recipe, size = 40, className = '', selected, onC
 /** Contenu structuré du tooltip (style aéré comme panneau véhicules) - exporté pour BuildingPicker */
 export function RecipeTooltipContent({ recipe }: { recipe: ProductionRecipe }) {
   const { t } = useTranslation();
-  const displayName = recipe.name === 'Import' ? 'Import' : t(`buildings:${recipe.name}`);
+  const displayName = t(`buildings:${recipe.name}`);
   const workersStr = recipe.workers > 0
     ? `${formatNumber(recipe.workers)} ${t('tooltips.workersBlue')}${recipe.profesors > 0 ? `, ${formatNumber(recipe.profesors)} ${t('tooltips.workersWhite')}` : ''}`
     : '-';
@@ -181,7 +181,7 @@ export function BuildingImageWithTooltip({
   const urls = getBuildingImageUrls(recipe.name);
   const currentUrl = urls[currentUrlIndex];
   const allFailed = currentUrlIndex >= urls.length;
-  const displayName = recipe.name === 'Import' ? 'Import' : t(`buildings:${recipe.name}`);
+  const displayName = t(`buildings:${recipe.name}`);
 
   const handleError = useCallback(() => {
     setCurrentUrlIndex((i) => i + 1);
