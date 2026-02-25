@@ -110,7 +110,16 @@ export function sortProductionChain(results: ProductionResult[]): ProductionResu
     groupDeps.set(groupId, deps);
   });
 
-  // 3) Tri topologique : DFS post-order, puis inverser
+  // 3) Tri topologique : DFS post-order, puis inverser → le dernier groupe visité apparaît en premier
+  // Même bâtiment : visiter d'abord le co-produit, puis la production principale pour qu'elle s'affiche en premier
+  const groupIds = Array.from(groupToRecipes.keys());
+  groupIds.sort((a, b) => {
+    const ra = recipeToResult.get(groupToRecipes.get(a)![0])!;
+    const rb = recipeToResult.get(groupToRecipes.get(b)![0])!;
+    if (ra.buildingName !== rb.buildingName) return ra.buildingName.localeCompare(rb.buildingName);
+    return (ra.isCoProduct ? 0 : 1) - (rb.isCoProduct ? 0 : 1);
+  });
+
   const visited = new Set<string>();
   const postOrder: string[] = [];
 
@@ -121,7 +130,7 @@ export function sortProductionChain(results: ProductionResult[]): ProductionResu
     postOrder.push(g);
   }
 
-  groupToRecipes.forEach((_, g) => dfs(g));
+  groupIds.forEach((g) => dfs(g));
   const topoOrdered = postOrder.reverse();
 
   // 4) Dans chaque groupe : ordre par première apparition
@@ -134,6 +143,8 @@ export function sortProductionChain(results: ProductionResult[]): ProductionResu
     const groupResults = recipeKeys
       .map((k) => recipeToResult.get(k)!)
       .sort((a, b) => {
+        const co = (a.isCoProduct ? 1 : 0) - (b.isCoProduct ? 1 : 0);
+        if (co !== 0) return co;
         const c = a.resourceId.localeCompare(b.resourceId);
         return c !== 0 ? c : a.buildingName.localeCompare(b.buildingName);
       });

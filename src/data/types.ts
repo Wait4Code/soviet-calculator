@@ -53,6 +53,8 @@ export interface ProductionRecipe {
   maxVehicles?: number;
   /** Skill véhicule requis (excavator, bulldozer, etc.). Défaut excavator. */
   vehicleSkill?: string;
+  /** Production connexe (co-produits) : ressourceId → taux (même unité que production) */
+  production_co?: Record<string, number>;
 }
 
 /**
@@ -134,6 +136,8 @@ export interface ProductionResult {
   disabled?: boolean;
   /** Carrière avec véhicules sans véhicules ni personnel : production nulle, config invalide */
   invalidConfig?: boolean;
+  /** Résultat de production connexe (co-produit) : afficher la quantité avec un + */
+  isCoProduct?: boolean;
   /** Carrière avec véhicules et personnel activé (afficher charge même si excavatrices suffisent) */
   hasVehiclePersonnelEnabled?: boolean;
   /** Production max t/jour par bâtiment (carrières véhicules) — pour recalculer buildingCount à l'agrégation */

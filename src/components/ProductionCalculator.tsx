@@ -936,10 +936,12 @@ export function ProductionCalculator() {
                     const showCharge = !hasNoPersonnel || hasVehiclePersonnelEnabled;
 
                     const hasInvalidConfig = result.invalidConfig === true;
+                    const nextIsCoProduct = results[index + 1]?.isCoProduct === true;
+                    const isSameBuildingBlock = result.isCoProduct || nextIsCoProduct;
                     return (
                       <tr
                         key={`${result.resourceId}-${result.buildingName}-${index}`}
-                        className={`border-b h-[53px] ${hasInvalidConfig ? 'border-2 border-red-500 bg-red-950/30 hover:bg-red-950/40' : 'border-gray-700 hover:bg-gray-700/50'}`}
+                        className={`h-[53px] ${nextIsCoProduct ? 'border-b-0' : 'border-b border-gray-700'} ${hasInvalidConfig ? 'border-2 border-red-500 bg-red-950/30 hover:bg-red-950/40' : 'hover:bg-gray-700/50'}`}
                       >
                         <td className="py-3 px-4 align-middle">
                           <div className="flex items-center gap-2">
@@ -980,6 +982,13 @@ export function ProductionCalculator() {
                         </td>
                         <td className={`py-3 px-4 text-right font-mono align-middle ${isNonProducible ? 'text-gray-400' : ''}`}>
                           {(() => {
+                            if (result.isCoProduct) {
+                              return (
+                                <span className="text-soviet-gold">
+                                  + {formattedPerDay}
+                                </span>
+                              );
+                            }
                             const isPrimaryResource = primaryResourceIds.has(result.resourceId);
                             const surplusPerSec = isPrimaryResource ? 0 : (surplusByResource.get(result.resourceId) ?? 0);
                             const surplusPerDay = surplusPerSec * 24 * 60 * 60;
@@ -1001,8 +1010,10 @@ export function ProductionCalculator() {
                             );
                           })()}
                         </td>
-                        <td className="py-3 px-4 text-gray-400 align-middle">
-                          {isImported ? '' : (() => {
+                        <td
+                          className={`py-3 px-4 text-gray-400 align-middle ${isSameBuildingBlock ? 'border-l border-gray-600' : ''} ${result.isCoProduct ? 'border-t-0 pt-0' : ''} ${!result.isCoProduct && nextIsCoProduct ? 'border-b-0 pb-0' : ''}`}
+                        >
+                          {result.isCoProduct ? null : (isImported ? '' : (() => {
                             const recipesForResource = productionCalculator.findRecipesProducing(result.resourceId);
                             const rawLabel = buildingByResource[result.resourceId] ?? defaultBuildingByResource[result.resourceId] ?? result.buildingName;
                             const names = recipesForResource.map((r) => r.name);
@@ -1056,10 +1067,13 @@ export function ProductionCalculator() {
                                 )}
                               </div>
                             );
-                          })()}
+                          })())}
                         </td>
                         {(hasAnyMine || hasAnyVehicleMine) && (
-                          <td className="py-3 px-4 text-right align-middle">
+                          <td
+                            className={`py-3 px-4 text-right align-middle ${result.isCoProduct ? 'border-t-0 pt-0' : ''} ${!result.isCoProduct && results[index + 1]?.isCoProduct ? 'border-b-0 pb-0' : ''}`}
+                          >
+                            {result.isCoProduct ? null : (
                             <div className="flex items-center justify-end gap-2 flex-wrap">
                               {!isImported && productionCalculator.isMineResult(result.resourceId, result.buildingName) && (
                                 <div className="flex items-center gap-1">
@@ -1184,6 +1198,7 @@ export function ProductionCalculator() {
                                 );
                               })()}
                             </div>
+                            )}
                           </td>
                         )}
                       </tr>

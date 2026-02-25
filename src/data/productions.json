@@ -109,6 +109,9 @@
             "consumption_fixed": {
                 "eletric": 0.610,
                 "water": 10
+            },
+            "production_co": {
+                "fuel": 0.25
             }
         }
     ],
@@ -412,6 +415,9 @@
             "consumption_fixed": {
                 "eletric": 0.610,
                 "water": 10.00
+            },
+            "production_co": {
+                "bitumen": 0.15
             }
         }
     ],
