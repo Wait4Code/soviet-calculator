@@ -29,11 +29,16 @@ jobs:
       - name: Create and push release branch
         run: |
           TAG="${{ github.event.release.tag_name }}"
-          BRANCH_NAME="${TAG#v}"
-          git config user.name "github-actions[bot]"
-          git config user.email "github-actions[bot]@users.noreply.github.com"
-          git checkout -b "$BRANCH_NAME"
-          git push origin "$BRANCH_NAME"
+          V="${TAG#v}"
+          BRANCH_NAME="$(echo "$V" | cut -d. -f1,2)"
+          if git ls-remote --heads origin "$BRANCH_NAME" | grep -q .; then
+            echo "Branch $BRANCH_NAME already exists, skipping."
+          else
+            git config user.name "github-actions[bot]"
+            git config user.email "github-actions[bot]@users.noreply.github.com"
+            git checkout -b "$BRANCH_NAME"
+            git push origin "$BRANCH_NAME"
+          fi
 
   build:
     runs-on: ubuntu-latest
