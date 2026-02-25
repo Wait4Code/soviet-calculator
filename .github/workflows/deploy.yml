@@ -15,11 +15,33 @@ concurrency:
   cancel-in-progress: false
 
 jobs:
+  create-release-branch:
+    runs-on: ubuntu-latest
+    if: github.event_name == 'release'
+    permissions:
+      contents: write
+    steps:
+      - name: Checkout release tag
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.release.tag_name }}
+
+      - name: Create and push release branch
+        run: |
+          TAG="${{ github.event.release.tag_name }}"
+          BRANCH_NAME="release/${TAG#v}"
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git checkout -b "$BRANCH_NAME"
+          git push origin "$BRANCH_NAME"
+
   build:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.release.tag_name || github.ref }}
 
       - name: Setup Node
         uses: actions/setup-node@v4
