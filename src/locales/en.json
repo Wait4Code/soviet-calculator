@@ -50,7 +50,12 @@
     "sortNameZA": "Name Z → A",
     "noCalculations": "No calculations. Click \"New calculation\".",
     "unnamed": "Unnamed",
-    "copyOf": "Copy of {{name}}"
+    "copyOf": "Copy of {{name}}",
+    "quarryNoVehicleOrPersonnel": "This quarry has no excavator or personnel enabled. It produces nothing. Add vehicles or enable personnel to produce.",
+    "chargeTo100": "Set charge rate to 100%",
+    "resetCharge": "Reset to initial charge rate",
+    "surplusLabel": "including surplus",
+    "emptySlot": "Empty"
   },
   "settings": {
     "title": "Settings",
@@ -136,6 +141,30 @@
     "puissance": "Power",
     "consommationMax": "Max consumption",
     "variableVehicules": "variable (vehicles + personnel)",
-    "personnels": "Personnel"
+    "personnels": "Personnel",
+    "noPersonnel": "No personnel"
+  },
+  "units": {
+    "MWh_year": "MWh/year",
+    "m3_year": "m³/year",
+    "t_year": "t/year",
+    "MWh_day": "MWh/day",
+    "m3_day": "m³/day",
+    "t_day": "t/day",
+    "MWh": "MWh",
+    "m3": "m³",
+    "t": "t"
+  },
+  "origins": {
+    "union_sovietique": "Soviet Union",
+    "tchecoslovaquie": "Czechoslovakia",
+    "roumanie": "Romania",
+    "allemagne_est": "East Germany",
+    "allemagne_ouest": "West Germany",
+    "usa": "USA",
+    "rda": "GDR"
+  },
+  "misc": {
+    "present": "present"
   }
 }

@@ -1,7 +1,7 @@
 import { useState, useRef, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useStore } from '@/stores/useStore';
-import { vehicles, getVehicle, formatVehicleSkills } from '@/data/vehicles';
+import { vehicles, getVehicle, formatVehicleSkills, ORIGIN_TO_KEY } from '@/data/vehicles';
 import { productionCalculator } from '@/lib/productionCalculator';
 import { getResourceIcon } from '@/data/resourceIcons';
 import { BuildingPicker } from '@/components/BuildingPicker';
@@ -160,8 +160,8 @@ export function Settings() {
                 <p className="font-semibold text-white">{selectedVehicle?.name}</p>
                 <p className="text-gray-400">
                   <OriginWithBloc
-                    origin={selectedVehicle!.origin}
-                    years={selectedVehicle!.productionYears}
+                    origin={ORIGIN_TO_KEY[selectedVehicle!.origin] ? t(`origins.${ORIGIN_TO_KEY[selectedVehicle!.origin]}`) : selectedVehicle!.origin}
+                    years={selectedVehicle!.productionYears.replace(/présent/g, t('misc.present'))}
                     altEast={t('settings.blocEast')}
                     altWest={t('settings.blocWest')}
                   />
@@ -195,7 +195,7 @@ export function Settings() {
                             className="w-3 h-3 flex-shrink-0"
                             aria-hidden
                           />
-                          <span>{v.origin} · {formatVehicleSkills(v)}</span>
+                          <span>{ORIGIN_TO_KEY[v.origin] ? t(`origins.${ORIGIN_TO_KEY[v.origin]}`) : v.origin} · {formatVehicleSkills(v)}</span>
                         </span>
                       </p>
                     </div>

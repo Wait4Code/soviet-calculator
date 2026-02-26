@@ -10,7 +10,7 @@ import { getPlanStateFromUrl, setPlanStateInUrl, type PlanStateSerialized } from
 import { getSavedPlans, savePlan, updatePlan, deletePlan, getPlanState, type SavedPlan } from '@/lib/savedPlans';
 import { formatNumber } from '@/lib/format';
 import { getResourceIcon } from '@/data/resourceIcons';
-import { vehicles, getVehicle, formatVehicleSkills } from '@/data/vehicles';
+import { vehicles, getVehicle, formatVehicleSkills, ORIGIN_TO_KEY } from '@/data/vehicles';
 import { BuildingPicker } from '@/components/BuildingPicker';
 import { ResourcePicker } from '@/components/ResourcePicker';
 
@@ -931,8 +931,9 @@ export function ProductionCalculator() {
                     const amountPerYear = productionCalculator.floor(amountPerDay * 365);
                     const isWater = productionCalculator.isWater(resourceId);
                     const isElectricity = productionCalculator.isElectricity(resourceId);
-                    const unitYear = isElectricity ? 'MWh/an' : isWater ? 'm³/an' : 't/an';
-
+                    const unitYearKey = isElectricity ? 'units.MWh_year' : isWater ? 'units.m3_year' : 'units.t_year';
+                    const unitYear = t(unitYearKey);
+                    const unitShort = isElectricity ? t('units.MWh') : isWater ? t('units.m3') : t('units.t');
                     const formattedPerYear = isElectricity
                       ? `${productionCalculator.formatInteger(amountPerDay * 60 * 365)} ${unitYear}`
                       : `${productionCalculator.formatInteger(amountPerYear)} ${unitYear}`;
@@ -981,7 +982,7 @@ export function ProductionCalculator() {
                             {hasInvalidConfig && (
                               <span
                                 className="text-red-400"
-                                title="Cette carrière n'a ni pelleteuse ni personnel activé. Elle ne produit rien. Ajoutez des véhicules ou activez le personnel pour produire."
+                                title={t('industry.quarryNoVehicleOrPersonnel')}
                               >
                                 ⚠
                               </span>
@@ -996,12 +997,12 @@ export function ProductionCalculator() {
                             const requiredPerDay = Math.max(0, amountPerDay - surplusPerDay);
                             if (result.isCoProduct) {
                               return (
-                                <span>0 {isWater ? 'm³' : isElectricity ? 'MWh' : 't'}</span>
+                                <span>0 {unitShort}</span>
                               );
                             }
                             const formattedRequired = isElectricity
-                              ? `${productionCalculator.formatInteger(requiredPerDay * 60)} MWh`
-                              : `${productionCalculator.formatValue(requiredPerDay)} ${isWater ? 'm³' : 't'}`;
+                              ? `${productionCalculator.formatInteger(requiredPerDay * 60)} ${unitShort}`
+                              : `${productionCalculator.formatValue(requiredPerDay)} ${unitShort}`;
                             const tooltipContent = formattedPerYear;
                             return (
                               <Tooltip content={tooltipContent}>
@@ -1019,8 +1020,8 @@ export function ProductionCalculator() {
                               const surplusToShow = result.isCoProduct ? amountPerDay : surplusPerDay;
                               if (surplusToShow <= 0.01) return <span className="text-gray-500">—</span>;
                               const surplusFormatted = isElectricity
-                                ? `${productionCalculator.formatInteger(surplusToShow * 60)} MWh`
-                                : `${productionCalculator.formatValue(surplusToShow)} ${isWater ? 'm³' : 't'}`;
+                                ? `${productionCalculator.formatInteger(surplusToShow * 60)} ${unitShort}`
+                                : `${productionCalculator.formatValue(surplusToShow)} ${unitShort}`;
                               const surplusPerYearFormatted = isElectricity
                                 ? `${productionCalculator.formatInteger(surplusToShow * 60 * 365)} ${unitYear}`
                                 : `${productionCalculator.formatInteger(surplusToShow * 365)} ${unitYear}`;
@@ -1062,7 +1063,7 @@ export function ProductionCalculator() {
                                           <button
                                             type="button"
                                             onClick={() => setChargeRatioByResource((prev) => ({ ...prev, [result.resourceId]: 1 }))}
-                                            title="Monter le taux de charge à 100 %"
+                                            title={t('industry.chargeTo100')}
                                             className="text-xs px-1.5 py-0.5 rounded bg-gray-700 hover:bg-soviet-gold hover:text-gray-900 text-soviet-gold"
                                           >
                                             ➞100 %
@@ -1075,7 +1076,7 @@ export function ProductionCalculator() {
                                               const { [result.resourceId]: _, ...rest } = chargeRatioByResource;
                                               setChargeRatioByResource(rest);
                                             }}
-                                            title="Revenir au taux de charge initial"
+                                            title={t('industry.resetCharge')}
                                             className="text-xs px-1.5 py-0.5 rounded bg-gray-700 hover:bg-gray-500 text-gray-400"
                                           >
                                             ✕
@@ -1157,7 +1158,7 @@ export function ProductionCalculator() {
                                                 : { resourceId: result.resourceId, slotIndex: slotIdx }
                                             )}
                                             className="flex-shrink-0 w-10 h-10 rounded overflow-hidden bg-gray-700 border-2 border-gray-600 hover:border-soviet-gold flex items-center justify-center transition-colors"
-                                            title={vehicle ? vehicle.name : 'Choisir un véhicule'}
+                                            title={vehicle ? vehicle.name : t('tooltips.chooseVehicle')}
                                           >
                                             <img
                                               src={vehicle ? getVehicleImageSrc(vehicle) : VEHICLE_PLACEHOLDER}
@@ -1181,9 +1182,9 @@ export function ProductionCalculator() {
                                                 className="w-full flex items-center gap-3 px-3 py-2 text-left hover:bg-gray-700 transition-colors text-gray-400"
                                               >
                                                 <div className="flex-shrink-0 w-10 h-10 rounded overflow-hidden bg-gray-700 flex items-center justify-center">
-                                                  <span className="text-xs">Vide</span>
+                                                  <span className="text-xs">{t('industry.emptySlot')}</span>
                                                 </div>
-                                                <span>Vide</span>
+                                                <span>{t('industry.emptySlot')}</span>
                                               </button>
                                               {excavatorVehicles.map((v) => (
                                                 <button
@@ -1205,7 +1206,7 @@ export function ProductionCalculator() {
                                                     <p className="text-xs text-gray-400">
                                                       <span className="inline-flex items-center gap-1">
                                                         <img src={getBlocForOrigin(v.origin) === 'east' ? SIDE_EAST : SIDE_WEST} alt="" className="w-3 h-3" />
-                                                        {v.origin} · {formatVehicleSkills(v)}
+                                                        {ORIGIN_TO_KEY[v.origin] ? t(`origins.${ORIGIN_TO_KEY[v.origin]}`) : v.origin} · {formatVehicleSkills(v)}
                                                       </span>
                                                     </p>
                                                   </div>
