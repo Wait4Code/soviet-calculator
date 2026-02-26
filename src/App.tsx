@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
+import { Changelog } from './components/Changelog';
 import { ProductionCalculator } from './components/ProductionCalculator';
 import { Settings } from './components/Settings';
 import { supportedLngs, type SupportedLocale } from './i18n';
@@ -23,13 +24,46 @@ function App() {
     <div className="min-h-screen bg-gray-900 text-white">
       {/* Header */}
       <header className="bg-soviet-red shadow-lg">
-        <div className="container mx-auto px-4 py-6">
-          <div className="flex flex-wrap items-center justify-between gap-4">
-            <div>
-              <h1 className="text-3xl font-bold">{t('app.title')}</h1>
-              <p className="text-sm text-gray-200 mt-1">{t('app.subtitle')}</p>
+        <div className="container mx-auto px-4 py-5">
+          <div className="flex flex-wrap items-start justify-between gap-6">
+            <div className="min-w-0">
+              <h1 className="text-5xl font-bold tracking-tight">{t('app.title')}</h1>
+              <p className="text-lg text-gray-200 mt-1.5">{t('app.subtitle')}</p>
             </div>
-            <div className="flex items-center gap-1">
+            <div className="shrink-0">
+              <Changelog inHeader />
+            </div>
+          </div>
+        </div>
+      </header>
+
+      {/* Navigation */}
+      <div className="bg-gray-800 border-b border-gray-700">
+        <div className="container mx-auto px-4">
+          <div className="flex items-center justify-between gap-2">
+            <div className="flex gap-1">
+              <button
+                onClick={() => setActiveTab('industry')}
+                className={`px-6 py-3 font-medium transition-colors ${
+                  activeTab === 'industry'
+                    ? 'bg-gray-900 text-soviet-gold border-b-2 border-soviet-gold'
+                    : 'text-gray-400 hover:text-white'
+                }`}
+              >
+                {t('nav.industry')}
+              </button>
+              <button
+                onClick={() => setActiveTab('settings')}
+                className={`px-6 py-3 font-medium transition-colors ${
+                  activeTab === 'settings'
+                    ? 'bg-gray-900 text-soviet-gold border-b-2 border-soviet-gold'
+                    : 'text-gray-400 hover:text-white'
+                }`}
+              >
+                {t('nav.settings')}
+              </button>
+            </div>
+            <div className="flex items-center gap-1 py-1">
               {supportedLngs.map((lng) => (
                 <button
                   key={lng}
@@ -39,41 +73,13 @@ function App() {
                   className={`p-1.5 text-xl rounded transition-colors ${
                     i18n.language === lng || i18n.language.startsWith(lng)
                       ? 'bg-soviet-gold text-gray-900'
-                      : 'opacity-80 hover:opacity-100 hover:bg-gray-700'
+                      : 'text-gray-400 hover:text-white hover:bg-gray-700'
                   }`}
                 >
                   {languageFlags[lng]}
                 </button>
               ))}
             </div>
-          </div>
-        </div>
-      </header>
-
-      {/* Navigation */}
-      <div className="bg-gray-800 border-b border-gray-700">
-        <div className="container mx-auto px-4">
-          <div className="flex gap-1">
-            <button
-              onClick={() => setActiveTab('industry')}
-              className={`px-6 py-3 font-medium transition-colors ${
-                activeTab === 'industry'
-                  ? 'bg-gray-900 text-soviet-gold border-b-2 border-soviet-gold'
-                  : 'text-gray-400 hover:text-white'
-              }`}
-            >
-              {t('nav.industry')}
-            </button>
-            <button
-              onClick={() => setActiveTab('settings')}
-              className={`px-6 py-3 font-medium transition-colors ${
-                activeTab === 'settings'
-                  ? 'bg-gray-900 text-soviet-gold border-b-2 border-soviet-gold'
-                  : 'text-gray-400 hover:text-white'
-              }`}
-            >
-              {t('nav.settings')}
-            </button>
           </div>
         </div>
       </div>

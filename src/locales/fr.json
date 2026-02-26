@@ -7,6 +7,13 @@
     "industry": "Calculateur d'Industrie",
     "settings": "Configuration"
   },
+  "changelog": {
+    "title": "Changelog",
+    "recentChanges": "Modifications récentes",
+    "github": "Github",
+    "afterLink": " :",
+    "empty": "Aucune release disponible."
+  },
   "footer": {
     "inspired": "Inspiré par le",
     "factorioLink": "Factorio Calculator",

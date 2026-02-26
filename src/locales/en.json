@@ -7,6 +7,13 @@
     "industry": "Industry Calculator",
     "settings": "Settings"
   },
+  "changelog": {
+    "title": "Changelog",
+    "recentChanges": "Recent changes",
+    "github": "Github",
+    "afterLink": ": ",
+    "empty": "No releases available."
+  },
   "footer": {
     "inspired": "Inspired by",
     "factorioLink": "Factorio Calculator",
