@@ -669,19 +669,21 @@ export function ProductionCalculator() {
       }
     });
     
-    // Détail par bâtiment pour la ligne sewage (coproduit commun à plusieurs bâtiments)
+    // Détail par bâtiment pour la ligne sewage (coproduit commun à plusieurs bâtiments) — exclure les ressources désactivées
     const sewageBreakdown: Array<{ sourceResourceId: string; buildingName: string; amountPerSecond: number }> = [];
     finalResults.forEach(result => {
+      if (disabledResources.has(result.resourceId)) return;
       const amt = result.outputsPerSecond.get('sewage') ?? 0;
       if (amt > 0) {
         sewageBreakdown.push({ sourceResourceId: result.resourceId, buildingName: result.buildingName, amountPerSecond: amt });
       }
     });
 
-    // Détail par bâtiment pour eau et électricité (consommation)
+    // Détail par bâtiment pour eau et électricité (consommation) — exclure les ressources désactivées
     const waterConsumptionBreakdown: Array<{ sourceResourceId: string; buildingName: string; amountPerSecond: number }> = [];
     const electricityConsumptionBreakdown: Array<{ sourceResourceId: string; buildingName: string; amountPerSecond: number }> = [];
     finalResults.forEach(result => {
+      if (disabledResources.has(result.resourceId)) return;
       const waterAmt = (result.inputsPerSecond.get('water') ?? 0) + (result.inputsPerSecond.get('usagewater') ?? 0);
       if (waterAmt > 0) {
         waterConsumptionBreakdown.push({ sourceResourceId: result.resourceId, buildingName: result.buildingName, amountPerSecond: waterAmt });
@@ -721,9 +723,9 @@ export function ProductionCalculator() {
       const surplusToShow = r.isCoProduct ? amountPerDay : surplusPerDay;
       return surplusToShow > 0.01;
     }) || totalSewagePerSecond > 0;
-    // Détail par bâtiment pour la ligne Personnels
+    // Détail par bâtiment pour la ligne Personnels — exclure les ressources désactivées
     const personnelBreakdown = results
-      .filter((r) => (r.totalWorkers + r.totalProfesors) > 0)
+      .filter((r) => !disabledResources.has(r.resourceId) && (r.totalWorkers + r.totalProfesors) > 0)
       .map((r) => ({ sourceResourceId: r.resourceId, buildingName: r.buildingName, workers: r.totalWorkers, profesors: r.totalProfesors }));
     // Ligne sewage en fin de chaîne (après le personnel), jamais triée avec les autres
     const sewageResult: ProductionResult | null = totalSewagePerSecond > 0 ? {
