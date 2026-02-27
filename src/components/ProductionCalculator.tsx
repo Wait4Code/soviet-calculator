@@ -700,18 +700,18 @@ export function ProductionCalculator() {
       electricityResource = { ...electricityResource, consumptionBreakdown: electricityConsumptionBreakdown };
     }
 
-    // Construire le tableau final : ressources normales, puis eau, puis électricité
+    // Construire le tableau final : trier uniquement les ressources normales, puis ajouter eau et électricité en fin de chaîne
     const sortedResults: ProductionResult[] = [];
     normalResources.forEach(result => {
       sortedResults.push(result);
     });
-    if (waterResource) {
-      sortedResults.push(waterResource);
-    }
-    if (electricityResource) {
-      sortedResults.push(electricityResource);
-    }
-    const results = sortProductionChain(sortedResults);
+    // Ne pas inclure eau/électricité dans le tri : ils n'ont pas de dépendances et se retrouveraient au milieu (ex. eau entre bauxite et raw bauxite)
+    const sortedNormals = sortProductionChain(sortedResults);
+    const results = [
+      ...sortedNormals,
+      ...(waterResource ? [waterResource] : []),
+      ...(electricityResource ? [electricityResource] : []),
+    ];
     // Surplus et visibilité colonne : calculés depuis les mêmes données (aggregated) que l'affichage
     const surplusByResource = productionCalculator.computeSurplusByResource(aggregated);
     const hasAnySurplus = results.some((r) => {
