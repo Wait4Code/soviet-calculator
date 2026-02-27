@@ -1,4 +1,4 @@
-import { useState, useMemo, useEffect, useRef } from 'react';
+import { useState, useMemo, useEffect, useRef, Fragment } from 'react';
 import { useTranslation } from 'react-i18next';
 import { productionCalculator } from '@/lib/productionCalculator';
 import { sortProductionChain } from '@/lib/chainSort';
@@ -10,6 +10,7 @@ import { getPlanStateFromUrl, setPlanStateInUrl, type PlanStateSerialized } from
 import { getSavedPlans, savePlan, updatePlan, deletePlan, getPlanState, type SavedPlan } from '@/lib/savedPlans';
 import { formatNumber } from '@/lib/format';
 import { getResourceIcon } from '@/data/resourceIcons';
+import { getResourceName } from '@/data/productions';
 import { vehicles, getVehicle, formatVehicleSkills, ORIGIN_TO_KEY } from '@/data/vehicles';
 import { BuildingPicker } from '@/components/BuildingPicker';
 import { ResourcePicker } from '@/components/ResourcePicker';
@@ -178,6 +179,7 @@ export function ProductionCalculator() {
   });
   const [chargeRatioByResource, setChargeRatioByResource] = useState<Record<string, number>>(() => saved?.cr ?? {});
   const [vehicleSlotPickerOpen, setVehicleSlotPickerOpen] = useState<{ resourceId: string; slotIndex: number } | null>(null);
+  const [expandedChainRows, setExpandedChainRows] = useState<Set<string>>(new Set());
   const vehicleSlotPickerRef = useRef<HTMLDivElement | null>(null);
 
   const allProductions = useMemo(
@@ -554,9 +556,11 @@ export function ProductionCalculator() {
         const production = calculatedResult.outputsPerSecond.get(resourceId) ?? 0;
         const hasSurplus = production > (totalConsumption ?? 0);
         if (totalConsumption !== undefined && totalConsumption > 0 && !hasSurplus) {
+          const outputs = new Map(calculatedResult.outputsPerSecond);
+          outputs.set(resourceId, totalConsumption);
           const resultWithConsumption: ProductionResult = {
             ...calculatedResult,
-            outputsPerSecond: new Map([[resourceId, totalConsumption]]),
+            outputsPerSecond: outputs,
           };
           finalResults.push(resultWithConsumption);
         } else {
@@ -596,9 +600,11 @@ export function ProductionCalculator() {
           const production = fullResult.outputsPerSecond.get(resourceId) ?? 0;
           const hasSurplus = production > (totalConsumption ?? 0);
           if (totalConsumption !== undefined && totalConsumption > 0 && !hasSurplus) {
+            const outputs = new Map(fullResult.outputsPerSecond);
+            outputs.set(resourceId, totalConsumption);
             const resultWithConsumption: ProductionResult = {
               ...fullResult,
-              outputsPerSecond: new Map([[resourceId, totalConsumption]]),
+              outputsPerSecond: outputs,
             };
             finalResults.push(resultWithConsumption);
           } else {
@@ -614,12 +620,20 @@ export function ProductionCalculator() {
     let waterResource: ProductionResult | null = null;
     let electricityResource: ProductionResult | null = null;
     
+    // Total sewage (coproduit : 1 m³ eau consommée → 1 m³ sewage), à afficher sur une ligne dédiée
+    let totalSewagePerSecond = 0;
+    finalResults.forEach(result => {
+      totalSewagePerSecond += result.outputsPerSecond.get('sewage') ?? 0;
+    });
+
     // Séparer les ressources déjà dans finalResults
     finalResults.forEach(result => {
       if (productionCalculator.isElectricity(result.resourceId)) {
         electricityResource = result;
       } else if (productionCalculator.isWater(result.resourceId)) {
         waterResource = result;
+      } else if (productionCalculator.isSewage(result.resourceId)) {
+        // Ne pas ajouter une ligne sewage venue des données : on utilise la ligne synthétique ci-dessous
       } else {
         normalResources.push(result);
       }
@@ -655,15 +669,24 @@ export function ProductionCalculator() {
       }
     });
     
-    // Construire le tableau final : ressources normales, puis eau, puis électricité
+    // Détail par bâtiment pour la ligne sewage (coproduit commun à plusieurs bâtiments)
+    const sewageBreakdown: Array<{ sourceResourceId: string; buildingName: string; amountPerSecond: number }> = [];
+    finalResults.forEach(result => {
+      const amt = result.outputsPerSecond.get('sewage') ?? 0;
+      if (amt > 0) {
+        sewageBreakdown.push({ sourceResourceId: result.resourceId, buildingName: result.buildingName, amountPerSecond: amt });
+      }
+    });
+
+    // Construire le tableau final : ressources normales (y compris sewage), puis eau, puis électricité
     const sortedResults: ProductionResult[] = [];
     
-    // Ajouter toutes les ressources normales
+    // Ajouter toutes les ressources normales (sans sewage : affiché en fin de chaîne après le personnel)
     normalResources.forEach(result => {
       sortedResults.push(result);
     });
     
-    // Ajouter l'eau en avant-dernière
+    // Ajouter l'eau
     if (waterResource) {
       sortedResults.push(waterResource);
     }
@@ -683,13 +706,28 @@ export function ProductionCalculator() {
       const amountPerDay = (r.outputsPerSecond.get(r.resourceId) ?? 0) * (24 * 60 * 60);
       const surplusToShow = r.isCoProduct ? amountPerDay : surplusPerDay;
       return surplusToShow > 0.01;
-    });
-    return { results, surplusByResource, hasAnySurplus };
+    }) || totalSewagePerSecond > 0;
+    // Ligne sewage en fin de chaîne (après le personnel), jamais triée avec les autres
+    const sewageResult: ProductionResult | null = totalSewagePerSecond > 0 ? {
+      resourceId: 'sewage',
+      resourceName: getResourceName('sewage'),
+      buildingName: 'Coproduct',
+      buildingCount: 0,
+      inputsPerSecond: new Map(),
+      outputsPerSecond: new Map([['sewage', totalSewagePerSecond]]),
+      totalWorkers: 0,
+      totalProfesors: 0,
+      isCoProduct: true,
+      coproductBreakdown: sewageBreakdown,
+    } : null;
+
+    return { results, surplusByResource, hasAnySurplus, sewageResult };
   }, [productionGoals, disabledResources, fullChainResults, effectiveSourceQuality, sourceQualityByResource, chainYear, defaultVehicleId, effectiveBuildingByResource, vehicleConfigByResource, chargeRatioByResource]);
 
   const results = resultsWithMeta.results;
   const surplusByResource = resultsWithMeta.surplusByResource;
   const hasAnySurplus = resultsWithMeta.hasAnySurplus;
+  const sewageResult = resultsWithMeta.sewageResult;
 
   const primaryResourceIds = useMemo(() => new Set(productionGoals.map((g) => g.resourceId)), [productionGoals]);
 
@@ -939,10 +977,12 @@ export function ProductionCalculator() {
                     const [resourceId, amountPerDay] = mainOutput;
                     const amountPerYear = productionCalculator.floor(amountPerDay * 365);
                     const isWater = productionCalculator.isWater(resourceId);
+                    const isSewage = productionCalculator.isSewage(resourceId);
                     const isElectricity = productionCalculator.isElectricity(resourceId);
-                    const unitYearKey = isElectricity ? 'units.MWh_year' : isWater ? 'units.m3_year' : 'units.t_year';
+                    const isVolume = isWater || isSewage;
+                    const unitYearKey = isElectricity ? 'units.MWh_year' : isVolume ? 'units.m3_year' : 'units.t_year';
                     const unitYear = t(unitYearKey);
-                    const unitShort = isElectricity ? t('units.MWh') : isWater ? t('units.m3') : t('units.t');
+                    const unitShort = isElectricity ? t('units.MWh') : isVolume ? t('units.m3') : t('units.t');
                     const formattedPerYear = isElectricity
                       ? `${productionCalculator.formatInteger(amountPerDay * 60 * 365)} ${unitYear}`
                       : `${productionCalculator.formatInteger(amountPerYear)} ${unitYear}`;
@@ -955,14 +995,41 @@ export function ProductionCalculator() {
 
                     const hasInvalidConfig = result.invalidConfig === true;
                     const nextIsCoProduct = results[index + 1]?.isCoProduct === true;
-                    const isSameBuildingBlock = result.isCoProduct || nextIsCoProduct;
+                    const nextResult = results[index + 1];
+                    const prevResult = results[index - 1];
+                    // Grouper visuellement uniquement quand la ligne précédente ou suivante est du même bâtiment (vrai couple produit principal + coproduit)
+                    const isSameBuildingBlock =
+                      (result.isCoProduct && index > 0 && prevResult?.buildingName === result.buildingName) ||
+                      (nextIsCoProduct && nextResult?.buildingName === result.buildingName);
+                    const isCoProductGroupedWithPrev = result.isCoProduct && index > 0 && prevResult?.buildingName === result.buildingName;
+                    const rowKey = `${result.resourceId}-${result.buildingName}-${index}`;
+                    const hasCoproductDetail = !!(result.coproductBreakdown && result.coproductBreakdown.length > 0);
+                    const isRowExpanded = expandedChainRows.has(rowKey);
+                    const toggleRowExpanded = () => setExpandedChainRows((prev) => {
+                      const next = new Set(prev);
+                      if (next.has(rowKey)) next.delete(rowKey);
+                      else next.add(rowKey);
+                      return next;
+                    });
+                    const chainTableColCount = 3 + (hasAnySurplus ? 1 : 0) + ((hasAnyMine || hasAnyVehicleMine) ? 1 : 0);
                     return (
+                      <Fragment key={rowKey}>
                       <tr
-                        key={`${result.resourceId}-${result.buildingName}-${index}`}
-                        className={`h-[53px] ${nextIsCoProduct ? 'border-b-0' : 'border-b border-gray-700'} ${hasInvalidConfig ? 'border-2 border-red-500 bg-red-950/30 hover:bg-red-950/40' : 'hover:bg-gray-700/50'}`}
+                        className={`h-[53px] ${nextIsCoProduct && nextResult?.buildingName === result.buildingName ? 'border-b-0' : 'border-b border-gray-700'} ${hasInvalidConfig ? 'border-2 border-red-500 bg-red-950/30 hover:bg-red-950/40' : 'hover:bg-gray-700/50'}`}
                       >
                         <td className="py-3 px-4 align-middle">
                           <div className="flex items-center gap-2">
+                            {hasCoproductDetail && (
+                              <button
+                                type="button"
+                                onClick={toggleRowExpanded}
+                                className="flex-shrink-0 w-5 h-5 flex items-center justify-center rounded text-gray-400 hover:text-soviet-gold transition-colors"
+                                title={t('industry.coproductsByBuilding')}
+                                aria-expanded={isRowExpanded}
+                              >
+                                <span className="text-xs">{isRowExpanded ? '▼' : '▶'}</span>
+                              </button>
+                            )}
                             {getResourceIcon(result.resourceId) && (
                               canDisable ? (
                                 <button
@@ -1050,7 +1117,7 @@ export function ProductionCalculator() {
                           </td>
                         )}
                         <td
-                          className={`py-3 px-4 text-gray-400 align-middle ${isSameBuildingBlock ? 'border-l border-gray-600' : ''} ${result.isCoProduct ? 'border-t-0 pt-0' : ''} ${!result.isCoProduct && nextIsCoProduct ? 'border-b-0 pb-0' : ''}`}
+                          className={`py-3 px-4 text-gray-400 align-middle ${isSameBuildingBlock ? 'border-l border-gray-600' : ''} ${isCoProductGroupedWithPrev ? 'border-t-0 pt-0' : ''} ${!result.isCoProduct && nextIsCoProduct && nextResult?.buildingName === result.buildingName ? 'border-b-0 pb-0' : ''}`}
                         >
                           {result.isCoProduct ? null : (isImported ? '' : (() => {
                             const recipesForResource = productionCalculator.findRecipesProducing(result.resourceId);
@@ -1110,7 +1177,7 @@ export function ProductionCalculator() {
                         </td>
                         {(hasAnyMine || hasAnyVehicleMine) && (
                           <td
-                            className={`py-3 px-4 text-right align-middle ${result.isCoProduct ? 'border-t-0 pt-0' : ''} ${!result.isCoProduct && results[index + 1]?.isCoProduct ? 'border-b-0 pb-0' : ''}`}
+                            className={`py-3 px-4 text-right align-middle ${isCoProductGroupedWithPrev ? 'border-t-0 pt-0' : ''} ${!result.isCoProduct && nextIsCoProduct && nextResult?.buildingName === result.buildingName ? 'border-b-0 pb-0' : ''}`}
                           >
                             {result.isCoProduct ? null : (
                             <div className="flex items-center justify-end gap-2 flex-wrap">
@@ -1241,6 +1308,23 @@ export function ProductionCalculator() {
                           </td>
                         )}
                       </tr>
+                      {isRowExpanded && hasCoproductDetail && result.coproductBreakdown && (
+                        <tr className="border-b border-gray-700 bg-gray-800/80">
+                          <td colSpan={chainTableColCount} className="py-2 px-4 pl-12 text-sm text-gray-300">
+                            <div>
+                              <p className="text-gray-500 font-medium mb-1">{t('industry.coproductsByBuilding')}</p>
+                              <ul className="list-disc list-inside space-y-0.5">
+                                {result.coproductBreakdown.map((entry, i) => (
+                                  <li key={`${entry.sourceResourceId}-${entry.buildingName}-${i}`}>
+                                    {t(`resources.${entry.sourceResourceId}`)} ({t(`buildings:${entry.buildingName}`)}): {productionCalculator.formatValue(entry.amountPerSecond * 24 * 60 * 60)} m³/j
+                                  </li>
+                                ))}
+                              </ul>
+                            </div>
+                          </td>
+                        </tr>
+                      )}
+                    </Fragment>
                     );
                   })}
                   
@@ -1268,6 +1352,74 @@ export function ProductionCalculator() {
                     </td>
                     {(hasAnyMine || hasAnyVehicleMine) && <td className="py-3 px-4 text-gray-400 align-middle" />}
                   </tr>
+                  {/* Ligne sewage en fin de chaîne, après le personnel */}
+                  {sewageResult && (() => {
+                    const result = sewageResult;
+                    const rowKey = 'sewage-Coproduct-end';
+                    const hasCoproductDetail = !!(result.coproductBreakdown && result.coproductBreakdown.length > 0);
+                    const isRowExpanded = expandedChainRows.has(rowKey);
+                    const toggleRowExpanded = () => setExpandedChainRows((prev) => {
+                      const next = new Set(prev);
+                      if (next.has(rowKey)) next.delete(rowKey);
+                      else next.add(rowKey);
+                      return next;
+                    });
+                    const amountPerDay = (result.outputsPerSecond.get('sewage') ?? 0) * (24 * 60 * 60);
+                    const chainTableColCount = 3 + (hasAnySurplus ? 1 : 0) + ((hasAnyMine || hasAnyVehicleMine) ? 1 : 0);
+                    return (
+                      <Fragment key={rowKey}>
+                        <tr className="border-b border-gray-700 hover:bg-gray-700/50 h-[53px]">
+                          <td className="py-3 px-4 align-middle">
+                            <div className="flex items-center gap-2">
+                              {hasCoproductDetail && (
+                                <button
+                                  type="button"
+                                  onClick={toggleRowExpanded}
+                                  className="flex-shrink-0 w-5 h-5 flex items-center justify-center rounded text-gray-400 hover:text-soviet-gold transition-colors"
+                                  title={t('industry.coproductsByBuilding')}
+                                  aria-expanded={isRowExpanded}
+                                >
+                                  <span className="text-xs">{isRowExpanded ? '▼' : '▶'}</span>
+                                </button>
+                              )}
+                              {getResourceIcon('sewage') && (
+                                <img src={getResourceIcon('sewage')} alt="" className="w-6 h-6 object-contain flex-shrink-0" />
+                              )}
+                              <span className="font-medium">{t('resources.sewage')}</span>
+                            </div>
+                          </td>
+                          <td className="py-3 px-4 text-right font-mono align-middle">
+                            <span>0 {t('units.m3')}</span>
+                          </td>
+                          {hasAnySurplus && (
+                            <td className="py-3 px-4 text-right font-mono align-middle">
+                              <Tooltip content={`${productionCalculator.formatInteger(amountPerDay * 365)} ${t('units.m3_year')}`}>
+                                <span className="text-soviet-gold">+ {productionCalculator.formatValue(amountPerDay)} {t('units.m3')}</span>
+                              </Tooltip>
+                            </td>
+                          )}
+                          <td className="py-3 px-4 text-gray-400 align-middle" />
+                          {(hasAnyMine || hasAnyVehicleMine) && <td className="py-3 px-4 text-gray-400 align-middle" />}
+                        </tr>
+                        {isRowExpanded && hasCoproductDetail && result.coproductBreakdown && (
+                          <tr className="border-b border-gray-700 bg-gray-800/80">
+                            <td colSpan={chainTableColCount} className="py-2 px-4 pl-12 text-sm text-gray-300">
+                              <div>
+                                <p className="text-gray-500 font-medium mb-1">{t('industry.coproductsByBuilding')}</p>
+                                <ul className="list-disc list-inside space-y-0.5">
+                                  {result.coproductBreakdown.map((entry, i) => (
+                                    <li key={`${entry.sourceResourceId}-${entry.buildingName}-${i}`}>
+                                      {t(`resources.${entry.sourceResourceId}`)} ({t(`buildings:${entry.buildingName}`)}): {productionCalculator.formatValue(entry.amountPerSecond * 24 * 60 * 60)} m³/j
+                                    </li>
+                                  ))}
+                                </ul>
+                              </div>
+                            </td>
+                          </tr>
+                        )}
+                      </Fragment>
+                    );
+                  })()}
                 </tbody>
               </table>
             </div>

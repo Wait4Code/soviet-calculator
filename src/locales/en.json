@@ -63,6 +63,7 @@
     "resetCharge": "Reset to initial charge rate",
     "surplusLabel": "including surplus",
     "emptySlot": "Empty",
+    "coproductsByBuilding": "Breakdown by building",
     "waterLivestockWarning": "The displayed water consumption does not include water for stored livestock (~0.05 m³/t of livestock)."
   },
   "settings": {
@@ -124,6 +125,7 @@
     "wood": "Wood",
     "yellowcake": "Uranium oxide",
     "water": "Water",
+    "sewage": "Sewage",
     "eletric": "Electricity",
     "waste_aluminium": "Aluminium scrap",
     "waste_bio": "Organic waste",

@@ -45,6 +45,7 @@ export const resourceIcons: Record<string, string> = {
   uf6: 'uf6.png',
   uranium: 'uranium.png',
   water: 'water.png',
+  sewage: 'usagewater.png',
   wood: 'wood.png',
   workers: 'workers.png',
   yellowcake: 'yellowcake.png',

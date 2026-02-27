@@ -48,6 +48,7 @@ const resourceNames: Record<string, string> = {
   yellowcake: 'Oxyde d\'uranium',
   // Ressources de consommation
   water: 'Eau',
+  sewage: 'Eaux usées',
   eletric: 'Électricité',
   // Déchets
   waste_aluminium: 'Rebuts d\'aluminium',

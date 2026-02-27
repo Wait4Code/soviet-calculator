@@ -63,6 +63,7 @@
     "resetCharge": "Revenir au taux de charge initial",
     "surplusLabel": "dont surplus",
     "emptySlot": "Vide",
+    "coproductsByBuilding": "Détail par bâtiment",
     "waterLivestockWarning": "La consommation d'eau affichée n'inclut pas l'eau liée au bétail stocké (~0,05 m³/t de livestock)."
   },
   "settings": {
@@ -124,6 +125,7 @@
     "wood": "Bois",
     "yellowcake": "Oxyde d'uranium",
     "water": "Eau",
+    "sewage": "Eaux usées",
     "eletric": "Électricité",
     "waste_aluminium": "Rebuts d'aluminium",
     "waste_bio": "Déchets organiques",

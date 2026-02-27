@@ -501,6 +501,12 @@ export class ProductionCalculator {
       inputsPerDay.set('water', (inputsPerDay.get('water') ?? 0) + workerWaterPerDay);
     }
 
+    // Eaux usées (sewage) : 1 m³ d'eau consommée → 1 m³ de sewage (travailleurs + production)
+    const waterConsumedPerDay = (inputsPerDay.get('water') ?? 0) + (inputsPerDay.get('usagewater') ?? 0);
+    if (waterConsumedPerDay > 0) {
+      outputsPerDay.set('sewage', (outputsPerDay.get('sewage') ?? 0) + waterConsumedPerDay);
+    }
+
     // Convertir en par seconde pour l'affichage
     const inputsPerSecond = new Map<string, number>();
     const outputsPerSecond = new Map<string, number>();
@@ -1329,10 +1335,17 @@ export class ProductionCalculator {
   }
 
   /**
+   * Vérifie si une ressource est des eaux usées (sewage, m³)
+   */
+  isSewage(resourceId: string): boolean {
+    return resourceId === 'sewage';
+  }
+
+  /**
    * Formate une valeur pour l'affichage (t/jour ou m3/jour)
    */
   formatProductionValue(value: number, resourceId: string): string {
-    const unit = this.isWater(resourceId) ? 'm³' : 't';
+    const unit = (this.isWater(resourceId) || this.isSewage(resourceId)) ? 'm³' : 't';
     return `${formatNumber(value)} ${unit}/jour`;
   }
 
@@ -1347,7 +1360,7 @@ export class ProductionCalculator {
    * Vérifie si une ressource peut être désactivée (pas l'eau ni l'électricité)
    */
   canDisableResource(resourceId: string): boolean {
-    return !this.isWater(resourceId) && !this.isElectricity(resourceId);
+    return !this.isWater(resourceId) && !this.isElectricity(resourceId) && !this.isSewage(resourceId);
   }
 
   /**

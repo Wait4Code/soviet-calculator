@@ -144,6 +144,8 @@ export interface ProductionResult {
   maxProductionPerDay?: number;
   /** Production véhicules t/jour (pelleteuses, charge 0% = production réelle quand personnel non utilisé) */
   vehicleProductionPerDay?: number;
+  /** Détail par bâtiment pour une ligne coproduit (ex. sewage) : contribution de chaque bâtiment */
+  coproductBreakdown?: Array<{ sourceResourceId: string; buildingName: string; amountPerSecond: number }>;
 }
 
 /**
