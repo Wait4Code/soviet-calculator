@@ -13,7 +13,7 @@ function getConsumptionUnitKey(resourceId: string, forElectricityMWh = false): s
   return 'units.t_day';
 }
 
-/** Consommation variable (par charge) et fixe, séparées pour eau et électricité */
+/** Consommation variable (par charge) et eau travailleurs (0,02 u./travailleur/jour), électricité fixe */
 function getWaterAndElectricConsumption(recipe: ProductionRecipe): {
   waterVariable: number;
   waterFixed: number;
@@ -32,7 +32,7 @@ function getWaterAndElectricConsumption(recipe: ProductionRecipe): {
     if (resId === 'eletric') electricVariable += amountPerDay;
   });
   const fixed = recipe.consumption_fixed ?? {};
-  const waterFixed = (fixed.water ?? 0) + (fixed.usagewater ?? 0);
+  const waterFixed = recipe.workers > 0 ? 0.02 * recipe.workers : 0;
   const electricFixed = fixed.eletric ?? 0;
   return { waterVariable, waterFixed, electricVariable, electricFixed };
 }
@@ -140,7 +140,7 @@ export function RecipeTooltipContent({ recipe }: { recipe: ProductionRecipe }) {
         <p><span className="text-gray-500">{t('tooltips.travailleursMax')}:</span> {workersStr}</p>
         <p><span className="text-gray-500">{t('tooltips.productionMax')}:</span> {maxProd}</p>
         {waterFixed > 0 && (
-          <p><span className="text-gray-500">{t('tooltips.eauFixe')}:</span> {formatNumber(waterFixed)} {t('units.m3_day')}</p>
+          <p><span className="text-gray-500">{t('tooltips.eauTravailleurs')}:</span> {formatNumber(waterFixed)} {t('units.m3_day')}</p>
         )}
         {electricFixed > 0 && (
           <p><span className="text-gray-500">{t('tooltips.electriciteFixe')}:</span> {formatNumber(electricFixed * 60)} {t('units.MWh')}</p>

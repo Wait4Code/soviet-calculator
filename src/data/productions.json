@@ -11,8 +11,7 @@
                 "eletric": 0.17
             },
             "consumption_fixed": {
-                "eletric": 0.220,
-                "water": 2
+                "eletric": 0.220
             }
         }
     ],
@@ -29,8 +28,7 @@
                 "water": 0.08
             },
             "consumption_fixed": {
-                "eletric": 0.285,
-                "water": 7.40
+                "eletric": 0.285
             }
         }
     ],
@@ -46,8 +44,7 @@
                 "eletric": 2.35
             },
             "consumption_fixed": {
-                "eletric": 2.52,
-                "water": 7
+                "eletric": 2.52
             }
         },
         {
@@ -59,8 +56,7 @@
                 "waste_aluminium": 1.0
             },
             "consumption_fixed": {
-                "eletric": 0.05,
-                "water": 0.5
+                "eletric": 0.05
             }
         }
     ],
@@ -76,8 +72,7 @@
                 "eletric": 3.0
             },
             "consumption_fixed": {
-                "eletric": 0.302,
-                "water": 0.10
+                "eletric": 0.302
             }
         }
     ],
@@ -91,8 +86,7 @@
                 "rawbauxite": 5.0
             },
             "consumption_fixed": {
-                "eletric": 0.05,
-                "water": 0.50
+                "eletric": 0.05
             }
         }
     ],
@@ -107,8 +101,7 @@
                 "eletric": 0.21
             },
             "consumption_fixed": {
-                "eletric": 0.610,
-                "water": 10
+                "eletric": 0.610
             },
             "production_co": {
                 "fuel": 0.25
@@ -126,8 +119,7 @@
                 "eletric": 0.027
             },
             "consumption_fixed": {
-                "eletric": 0.111,
-                "water": 0.40
+                "eletric": 0.111
             }
         }
     ],
@@ -141,8 +133,7 @@
                 "coal": 0.45
             },
             "consumption_fixed": {
-                "eletric": 0.05,
-                "water": 1.5
+                "eletric": 0.05
             }
         }
     ],
@@ -158,8 +149,7 @@
                 "eletric": 0.085
             },
             "consumption_fixed": {
-                "eletric": 0.105,
-                "water": 0.80
+                "eletric": 0.105
             }
         },
         {
@@ -173,8 +163,7 @@
                 "eletric": 0.1
             },
             "consumption_fixed": {
-                "eletric": 0.115,
-                "water": 0.60
+                "eletric": 0.115
             }
         }
     ],
@@ -193,8 +182,7 @@
                 "eletric": 0.24
             },
             "consumption_fixed": {
-                "eletric": 0.420,
-                "water": 1.20
+                "eletric": 0.420
             }
         },
         {
@@ -211,8 +199,7 @@
                 "eletric": 2.8
             },
             "consumption_fixed": {
-                "eletric": 3.30,
-                "water": 14.00
+                "eletric": 3.30
             }
         }
     ],
@@ -226,8 +213,7 @@
                 "fabric": 0.03
             },
             "consumption_fixed": {
-                "eletric": 0.060,
-                "water": 1.60
+                "eletric": 0.060
             }
         }
     ],
@@ -238,12 +224,11 @@
             "workers": 30,
             "profesors": 0,
             "consumption": {
-                "rawcoal": 14.0,
+                "rawcoal": 14,
                 "eletric": 0.25
             },
             "consumption_fixed": {
-                "eletric": 0.265,
-                "water": 0.60
+                "eletric": 0.265
             }
         }
     ],
@@ -260,8 +245,7 @@
                 "eletric": 0.2
             },
             "consumption_fixed": {
-                "eletric": 0.252,
-                "water": 0.10
+                "eletric": 0.252
             }
         }
     ],
@@ -277,18 +261,17 @@
                 "chemicals": 0.008
             },
             "consumption_increase_parameters": {
-                "p1":1960,
-                "p2":85,
-                "p3":1.7
+                "p1": 1960,
+                "p2": 85,
+                "p3": 1.7
             },
             "production_decrease_parameters": {
-                "p1":1960,
-                "p2":120,
-                "p3":0.3
+                "p1": 1960,
+                "p2": 120,
+                "p3": 0.3
             },
             "consumption_fixed": {
-                "eletric": 0.105,
-                "water": 3.00
+                "eletric": 0.105
             }
         }
     ],
@@ -304,18 +287,17 @@
                 "mcomponents": 0.01
             },
             "consumption_increase_parameters": {
-                "p1":1960,
-                "p2":100,
-                "p3":2.0
+                "p1": 1960,
+                "p2": 100,
+                "p3": 2.0
             },
             "production_decrease_parameters": {
-                "p1":1960,
-                "p2":110,
-                "p3":0.3
+                "p1": 1960,
+                "p2": 110,
+                "p3": 0.3
             },
             "consumption_fixed": {
-                "eletric": 0.090,
-                "water": 3.00
+                "eletric": 0.090
             }
         }
     ],
@@ -331,8 +313,7 @@
                 "wood": 0.02
             },
             "consumption_fixed": {
-                "eletric": 0.050,
-                "water": 1.50
+                "eletric": 0.050
             }
         }
     ],
@@ -349,8 +330,7 @@
                 "eletric": 0.18
             },
             "consumption_fixed": {
-                "eletric": 0.330,
-                "water": 2.00
+                "eletric": 0.330
             }
         }
     ],
@@ -365,8 +345,7 @@
                 "chemicals": 0.003
             },
             "consumption_fixed": {
-                "eletric": 0.050,
-                "water": 0.50
+                "eletric": 0.050
             }
         }
     ],
@@ -381,8 +360,7 @@
                 "water": 0.6
             },
             "consumption_fixed": {
-                "eletric": 0.162,
-                "water": 0.50
+                "eletric": 0.162
             }
         }
     ],
@@ -397,8 +375,7 @@
                 "water": 0.05
             },
             "consumption_fixed": {
-                "eletric": 0.127,
-                "water": 3.40
+                "eletric": 0.127
             }
         }
     ],
@@ -413,8 +390,7 @@
                 "eletric": 0.21
             },
             "consumption_fixed": {
-                "eletric": 0.610,
-                "water": 10.00
+                "eletric": 0.610
             },
             "production_co": {
                 "bitumen": 0.15
@@ -432,8 +408,7 @@
                 "eletric": 0.4
             },
             "consumption_fixed": {
-                "eletric": 0.407,
-                "water": 0.30
+                "eletric": 0.407
             }
         },
         {
@@ -446,8 +421,7 @@
                 "eletric": 0.15
             },
             "consumption_fixed": {
-                "eletric": 0.152,
-                "water": 0.10
+                "eletric": 0.152
             }
         },
         {
@@ -460,8 +434,7 @@
                 "eletric": 0.3
             },
             "consumption_fixed": {
-                "eletric": 0.307,
-                "water": 0.30
+                "eletric": 0.307
             }
         }
     ],
@@ -476,8 +449,7 @@
                 "eletric": 0.28
             },
             "consumption_fixed": {
-                "eletric": 0.287,
-                "water": 0.30
+                "eletric": 0.287
             }
         }
     ],
@@ -492,8 +464,7 @@
                 "water": 0.25
             },
             "consumption_fixed": {
-                "eletric": 0.050,
-                "water": 2.30
+                "eletric": 0.050
             }
         }
     ],
@@ -507,8 +478,7 @@
                 "steel": 0.15
             },
             "consumption_fixed": {
-                "eletric": 0.135,
-                "water": 3.00
+                "eletric": 0.135
             }
         }
     ],
@@ -522,8 +492,7 @@
                 "livestock": 3.0
             },
             "consumption_fixed": {
-                "eletric": 0.056,
-                "water": 1.56
+                "eletric": 0.056
             }
         }
     ],
@@ -539,8 +508,7 @@
                 "eletric": 0.7
             },
             "consumption_fixed": {
-                "eletric": 1.102,
-                "water": 2.40
+                "eletric": 1.102
             }
         }
     ],
@@ -571,8 +539,7 @@
                 "eletric": 0.26
             },
             "consumption_fixed": {
-                "eletric": 0.340,
-                "water": 1.20
+                "eletric": 0.340
             }
         },
         {
@@ -585,8 +552,7 @@
                 "eletric": 0.07
             },
             "consumption_fixed": {
-                "eletric": 0.080,
-                "water": 0.40
+                "eletric": 0.080
             }
         }
     ],
@@ -602,8 +568,7 @@
                 "eletric": 0.1
             },
             "consumption_fixed": {
-                "eletric": 0.132,
-                "water": 1.30
+                "eletric": 0.132
             }
         }
     ],
@@ -618,8 +583,7 @@
             "requiresVehicles": true,
             "maxVehicles": 3,
             "consumption_fixed": {
-                "eletric": 0.072,
-                "water": 0.90
+                "eletric": 0.072
             }
         }
     ],
@@ -632,8 +596,7 @@
             "profesors": 0,
             "consumption": {},
             "consumption_fixed": {
-                "eletric": 0.154,
-                "water": 4.40
+                "eletric": 0.154
             }
         }
     ],
@@ -650,7 +613,8 @@
             "consumption_fixed": {
                 "eletric": 0.390
             }
-        },{
+        },
+        {
             "name": "gravel_mine_small",
             "production": 3.5,
             "workers": 40,
@@ -673,8 +637,7 @@
             "profesors": 0,
             "consumption": {},
             "consumption_fixed": {
-                "eletric": 0.187,
-                "water": 5.00
+                "eletric": 0.187
             }
         }
     ],
@@ -690,8 +653,7 @@
                 "eletric": 0.55
             },
             "consumption_fixed": {
-                "eletric": 0.800,
-                "water": 10.00
+                "eletric": 0.800
             }
         },
         {
@@ -704,8 +666,7 @@
                 "eletric": 10.55
             },
             "consumption_fixed": {
-                "eletric": 0.050,
-                "water": 0.60
+                "eletric": 0.05
             }
         }
     ],
@@ -721,8 +682,7 @@
                 "eletric": 0.8
             },
             "consumption_fixed": {
-                "eletric": 1.214,
-                "water": 2.40
+                "eletric": 1.214
             }
         }
     ],
@@ -735,8 +695,7 @@
             "profesors": 0,
             "consumption": {},
             "consumption_fixed": {
-                "eletric": 0.075,
-                "water": 2.00
+                "eletric": 0.075
             }
         }
     ],
@@ -748,8 +707,7 @@
             "profesors": 0,
             "consumption": {},
             "consumption_fixed": {
-                "eletric": 0.119,
-                "water": 0.20
+                "eletric": 0.119
             }
         }
     ],
@@ -764,8 +722,7 @@
                 "eletric": 0.6
             },
             "consumption_fixed": {
-                "eletric": 0.637,
-                "water": 1.50
+                "eletric": 0.637
             }
         }
     ]

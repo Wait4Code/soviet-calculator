@@ -62,7 +62,8 @@
     "chargeTo100": "Set charge rate to 100%",
     "resetCharge": "Reset to initial charge rate",
     "surplusLabel": "including surplus",
-    "emptySlot": "Empty"
+    "emptySlot": "Empty",
+    "waterLivestockWarning": "The displayed water consumption does not include water for stored livestock (~0.05 m³/t of livestock)."
   },
   "settings": {
     "title": "Settings",
@@ -144,6 +145,7 @@
     "travailleursMax": "Max workers",
     "productionMax": "Max production",
     "eauFixe": "Water (fixed)",
+    "eauTravailleurs": "Water (workers)",
     "electriciteFixe": "Electricity (fixed)",
     "puissance": "Power",
     "consommationMax": "Max consumption",

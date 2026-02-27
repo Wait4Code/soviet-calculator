@@ -485,12 +485,21 @@ export class ProductionCalculator {
     });
 
     // Consommation fixe par bâtiment (indépendante de la charge) : consommation_fixed × buildingCount
+    // L'eau n'est plus en consumption_fixed : elle est calculée ci-dessous (0,02 u./travailleur/jour)
     const consumptionFixed = recipe.consumption_fixed ?? {};
     Object.entries(consumptionFixed).forEach(([inputResourceId, perBuildingPerDay]) => {
+      if (inputResourceId === 'water' || inputResourceId === 'usagewater') return;
       const consumptionPerDay = perBuildingPerDay * buildingCount;
       const current = inputsPerDay.get(inputResourceId) ?? 0;
       inputsPerDay.set(inputResourceId, current + consumptionPerDay);
     });
+
+    // Eau des travailleurs : 0,02 u./travailleur/jour (indépendant de la production)
+    const effectiveTotalWorkersForWater = noPersonnel ? 0 : totalWorkers;
+    if (effectiveTotalWorkersForWater > 0) {
+      const workerWaterPerDay = 0.02 * effectiveTotalWorkersForWater;
+      inputsPerDay.set('water', (inputsPerDay.get('water') ?? 0) + workerWaterPerDay);
+    }
 
     // Convertir en par seconde pour l'affichage
     const inputsPerSecond = new Map<string, number>();
