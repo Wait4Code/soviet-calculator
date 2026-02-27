@@ -146,6 +146,8 @@ export interface ProductionResult {
   vehicleProductionPerDay?: number;
   /** Détail par bâtiment pour une ligne coproduit (ex. sewage) : contribution de chaque bâtiment */
   coproductBreakdown?: Array<{ sourceResourceId: string; buildingName: string; amountPerSecond: number }>;
+  /** Détail par bâtiment pour une ligne consommation (eau, électricité) : consommation de chaque bâtiment */
+  consumptionBreakdown?: Array<{ sourceResourceId: string; buildingName: string; amountPerSecond: number }>;
 }
 
 /**

@@ -678,6 +678,28 @@ export function ProductionCalculator() {
       }
     });
 
+    // Détail par bâtiment pour eau et électricité (consommation)
+    const waterConsumptionBreakdown: Array<{ sourceResourceId: string; buildingName: string; amountPerSecond: number }> = [];
+    const electricityConsumptionBreakdown: Array<{ sourceResourceId: string; buildingName: string; amountPerSecond: number }> = [];
+    finalResults.forEach(result => {
+      const waterAmt = (result.inputsPerSecond.get('water') ?? 0) + (result.inputsPerSecond.get('usagewater') ?? 0);
+      if (waterAmt > 0) {
+        waterConsumptionBreakdown.push({ sourceResourceId: result.resourceId, buildingName: result.buildingName, amountPerSecond: waterAmt });
+      }
+      const elecAmt = result.inputsPerSecond.get('eletric') ?? 0;
+      if (elecAmt > 0) {
+        electricityConsumptionBreakdown.push({ sourceResourceId: result.resourceId, buildingName: result.buildingName, amountPerSecond: elecAmt });
+      }
+    });
+
+    // Attacher les breakdowns aux lignes eau et électricité
+    if (waterResource && waterConsumptionBreakdown.length > 0) {
+      waterResource = { ...waterResource, consumptionBreakdown: waterConsumptionBreakdown };
+    }
+    if (electricityResource && electricityConsumptionBreakdown.length > 0) {
+      electricityResource = { ...electricityResource, consumptionBreakdown: electricityConsumptionBreakdown };
+    }
+
     // Construire le tableau final : ressources normales (y compris sewage), puis eau, puis électricité
     const sortedResults: ProductionResult[] = [];
     
@@ -707,6 +729,10 @@ export function ProductionCalculator() {
       const surplusToShow = r.isCoProduct ? amountPerDay : surplusPerDay;
       return surplusToShow > 0.01;
     }) || totalSewagePerSecond > 0;
+    // Détail par bâtiment pour la ligne Personnels
+    const personnelBreakdown = results
+      .filter((r) => (r.totalWorkers + r.totalProfesors) > 0)
+      .map((r) => ({ sourceResourceId: r.resourceId, buildingName: r.buildingName, workers: r.totalWorkers, profesors: r.totalProfesors }));
     // Ligne sewage en fin de chaîne (après le personnel), jamais triée avec les autres
     const sewageResult: ProductionResult | null = totalSewagePerSecond > 0 ? {
       resourceId: 'sewage',
@@ -721,13 +747,14 @@ export function ProductionCalculator() {
       coproductBreakdown: sewageBreakdown,
     } : null;
 
-    return { results, surplusByResource, hasAnySurplus, sewageResult };
+    return { results, surplusByResource, hasAnySurplus, sewageResult, personnelBreakdown };
   }, [productionGoals, disabledResources, fullChainResults, effectiveSourceQuality, sourceQualityByResource, chainYear, defaultVehicleId, effectiveBuildingByResource, vehicleConfigByResource, chargeRatioByResource]);
 
   const results = resultsWithMeta.results;
   const surplusByResource = resultsWithMeta.surplusByResource;
   const hasAnySurplus = resultsWithMeta.hasAnySurplus;
   const sewageResult = resultsWithMeta.sewageResult;
+  const personnelBreakdown = resultsWithMeta.personnelBreakdown;
 
   const primaryResourceIds = useMemo(() => new Set(productionGoals.map((g) => g.resourceId)), [productionGoals]);
 
@@ -1003,7 +1030,7 @@ export function ProductionCalculator() {
                       (nextIsCoProduct && nextResult?.buildingName === result.buildingName);
                     const isCoProductGroupedWithPrev = result.isCoProduct && index > 0 && prevResult?.buildingName === result.buildingName;
                     const rowKey = `${result.resourceId}-${result.buildingName}-${index}`;
-                    const hasCoproductDetail = !!(result.coproductBreakdown && result.coproductBreakdown.length > 0);
+                    const hasCoproductDetail = !!(result.coproductBreakdown && result.coproductBreakdown.length > 0) || !!(result.consumptionBreakdown && result.consumptionBreakdown.length > 0);
                     const isRowExpanded = expandedChainRows.has(rowKey);
                     const toggleRowExpanded = () => setExpandedChainRows((prev) => {
                       const next = new Set(prev);
@@ -1308,17 +1335,27 @@ export function ProductionCalculator() {
                           </td>
                         )}
                       </tr>
-                      {isRowExpanded && hasCoproductDetail && result.coproductBreakdown && (
+                      {isRowExpanded && hasCoproductDetail && (result.coproductBreakdown || result.consumptionBreakdown) && (
                         <tr className="border-b border-gray-700 bg-gray-800/80">
                           <td colSpan={chainTableColCount} className="py-2 px-4 pl-12 text-sm text-gray-300">
                             <div>
                               <p className="text-gray-500 font-medium mb-1">{t('industry.coproductsByBuilding')}</p>
                               <ul className="list-disc list-inside space-y-0.5">
-                                {result.coproductBreakdown.map((entry, i) => (
-                                  <li key={`${entry.sourceResourceId}-${entry.buildingName}-${i}`}>
-                                    {t(`resources.${entry.sourceResourceId}`)} ({t(`buildings:${entry.buildingName}`)}): {productionCalculator.formatValue(entry.amountPerSecond * 24 * 60 * 60)} m³/j
+                                {result.coproductBreakdown?.map((entry, i) => (
+                                  <li key={`co-${entry.sourceResourceId}-${entry.buildingName}-${i}`}>
+                                    {t(`resources.${entry.sourceResourceId}`)} ({t(`buildings:${entry.buildingName}`)}): {productionCalculator.formatValue(entry.amountPerSecond * 24 * 60 * 60)} {t('units.m3_day')}
                                   </li>
                                 ))}
+                                {result.consumptionBreakdown?.map((entry, i) => {
+                                  const isElec = result.resourceId === 'eletric';
+                                  const amountPerDay = entry.amountPerSecond * 24 * 60 * 60;
+                                  const unitKey = isElec ? 'units.MWh_day' : 'units.m3_day';
+                                  return (
+                                    <li key={`cons-${entry.sourceResourceId}-${entry.buildingName}-${i}`}>
+                                      {t(`resources.${entry.sourceResourceId}`)} ({t(`buildings:${entry.buildingName}`)}): {isElec ? productionCalculator.formatInteger(amountPerDay) : productionCalculator.formatValue(amountPerDay)} {t(unitKey)}
+                                    </li>
+                                  );
+                                })}
                               </ul>
                             </div>
                           </td>
@@ -1329,34 +1366,76 @@ export function ProductionCalculator() {
                   })}
                   
                   {/* Ligne Personnels */}
-                  <tr className="border-b border-gray-700 hover:bg-gray-700/50 h-[53px]">
-                    <td className="py-3 px-4 align-middle">
-                      <div className="flex items-center gap-2">
-                        {getResourceIcon('workers') && (
-                          <img
-                            src={getResourceIcon('workers')}
-                            alt=""
-                            className="w-6 h-6 object-contain flex-shrink-0 invert"
-                          />
+                  {(() => {
+                    const personnelRowKey = 'personnel';
+                    const isPersonnelExpanded = expandedChainRows.has(personnelRowKey);
+                    const togglePersonnelExpanded = () => setExpandedChainRows((prev) => {
+                      const next = new Set(prev);
+                      if (next.has(personnelRowKey)) next.delete(personnelRowKey);
+                      else next.add(personnelRowKey);
+                      return next;
+                    });
+                    const personnelColCount = 3 + (hasAnySurplus ? 1 : 0) + ((hasAnyMine || hasAnyVehicleMine) ? 1 : 0);
+                    return (
+                      <Fragment key={personnelRowKey}>
+                        <tr className="border-b border-gray-700 hover:bg-gray-700/50 h-[53px]">
+                          <td className="py-3 px-4 align-middle">
+                            <div className="flex items-center gap-2">
+                              {personnelBreakdown.length > 0 && (
+                                <button
+                                  type="button"
+                                  onClick={togglePersonnelExpanded}
+                                  className="flex-shrink-0 w-5 h-5 flex items-center justify-center rounded text-gray-400 hover:text-soviet-gold transition-colors"
+                                  title={t('industry.coproductsByBuilding')}
+                                  aria-expanded={isPersonnelExpanded}
+                                >
+                                  <span className="text-xs">{isPersonnelExpanded ? '▼' : '▶'}</span>
+                                </button>
+                              )}
+                              {getResourceIcon('workers') && (
+                                <img
+                                  src={getResourceIcon('workers')}
+                                  alt=""
+                                  className="w-6 h-6 object-contain flex-shrink-0 invert"
+                                />
+                              )}
+                              <span className="text-gray-400">{t('tooltips.personnels')}</span>
+                            </div>
+                          </td>
+                          <td className="py-3 px-4 text-right font-mono text-gray-400 align-middle">
+                            <Tooltip content={`${formatNumber(totalWorkers)} ${t('tooltips.workersBlue')}, ${formatNumber(totalProfesors)} ${t('tooltips.workersWhite')}`}>
+                              <span>{formatNumber(totalWorkers + totalProfesors)}</span>
+                            </Tooltip>
+                          </td>
+                          <td className="py-3 px-4 text-gray-400 align-middle">
+                            {/* Vide - Bâtiment */}
+                          </td>
+                          {(hasAnyMine || hasAnyVehicleMine) && <td className="py-3 px-4 text-gray-400 align-middle" />}
+                        </tr>
+                        {isPersonnelExpanded && personnelBreakdown.length > 0 && (
+                          <tr className="border-b border-gray-700 bg-gray-800/80">
+                            <td colSpan={personnelColCount} className="py-2 px-4 pl-12 text-sm text-gray-300">
+                              <div>
+                                <p className="text-gray-500 font-medium mb-1">{t('industry.coproductsByBuilding')}</p>
+                                <ul className="list-disc list-inside space-y-0.5">
+                                  {personnelBreakdown.map((entry, i) => (
+                                    <li key={`personnel-${entry.sourceResourceId}-${entry.buildingName}-${i}`}>
+                                      {t(`resources.${entry.sourceResourceId}`)} ({t(`buildings:${entry.buildingName}`)}): {formatNumber(entry.workers)} {t('tooltips.workersBlue')}{entry.profesors > 0 ? `, ${formatNumber(entry.profesors)} ${t('tooltips.workersWhite')}` : ''}
+                                    </li>
+                                  ))}
+                                </ul>
+                              </div>
+                            </td>
+                          </tr>
                         )}
-                        <span className="text-gray-400">{t('tooltips.personnels')}</span>
-                      </div>
-                    </td>
-                    <td className="py-3 px-4 text-right font-mono text-gray-400 align-middle">
-                      <Tooltip content={`${formatNumber(totalWorkers)} ${t('tooltips.workersBlue')}, ${formatNumber(totalProfesors)} ${t('tooltips.workersWhite')}`}>
-                        <span>{formatNumber(totalWorkers + totalProfesors)}</span>
-                      </Tooltip>
-                    </td>
-                    <td className="py-3 px-4 text-gray-400 align-middle">
-                      {/* Vide - Bâtiment */}
-                    </td>
-                    {(hasAnyMine || hasAnyVehicleMine) && <td className="py-3 px-4 text-gray-400 align-middle" />}
-                  </tr>
+                      </Fragment>
+                    );
+                  })()}
                   {/* Ligne sewage en fin de chaîne, après le personnel */}
                   {sewageResult && (() => {
                     const result = sewageResult;
                     const rowKey = 'sewage-Coproduct-end';
-                    const hasCoproductDetail = !!(result.coproductBreakdown && result.coproductBreakdown.length > 0);
+                    const hasCoproductDetail = !!(result.coproductBreakdown && result.coproductBreakdown.length > 0) || !!(result.consumptionBreakdown && result.consumptionBreakdown.length > 0);
                     const isRowExpanded = expandedChainRows.has(rowKey);
                     const toggleRowExpanded = () => setExpandedChainRows((prev) => {
                       const next = new Set(prev);
@@ -1409,7 +1488,7 @@ export function ProductionCalculator() {
                                 <ul className="list-disc list-inside space-y-0.5">
                                   {result.coproductBreakdown.map((entry, i) => (
                                     <li key={`${entry.sourceResourceId}-${entry.buildingName}-${i}`}>
-                                      {t(`resources.${entry.sourceResourceId}`)} ({t(`buildings:${entry.buildingName}`)}): {productionCalculator.formatValue(entry.amountPerSecond * 24 * 60 * 60)} m³/j
+                                      {t(`resources.${entry.sourceResourceId}`)} ({t(`buildings:${entry.buildingName}`)}): {productionCalculator.formatValue(entry.amountPerSecond * 24 * 60 * 60)} {t('units.m3_day')}
                                     </li>
                                   ))}
                                 </ul>
