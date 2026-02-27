@@ -700,25 +700,17 @@ export function ProductionCalculator() {
       electricityResource = { ...electricityResource, consumptionBreakdown: electricityConsumptionBreakdown };
     }
 
-    // Construire le tableau final : ressources normales (y compris sewage), puis eau, puis électricité
+    // Construire le tableau final : ressources normales, puis eau, puis électricité
     const sortedResults: ProductionResult[] = [];
-    
-    // Ajouter toutes les ressources normales (sans sewage : affiché en fin de chaîne après le personnel)
     normalResources.forEach(result => {
       sortedResults.push(result);
     });
-    
-    // Ajouter l'eau
     if (waterResource) {
       sortedResults.push(waterResource);
     }
-    
-    // Ajouter l'électricité en dernière
     if (electricityResource) {
       sortedResults.push(electricityResource);
     }
-    
-    // Tri selon sort.md : groupes par dépendance, produit final → matières premières
     const results = sortProductionChain(sortedResults);
     // Surplus et visibilité colonne : calculés depuis les mêmes données (aggregated) que l'affichage
     const surplusByResource = productionCalculator.computeSurplusByResource(aggregated);
@@ -1106,9 +1098,10 @@ export function ProductionCalculator() {
                             const surplusPerDay = surplusPerSec * (24 * 60 * 60);
                             const requiredPerDay = Math.max(0, amountPerDay - surplusPerDay);
                             if (result.isCoProduct) {
-                              return (
-                                <span>0 {unitShort}</span>
-                              );
+                              return <span className="text-gray-500">—</span>;
+                            }
+                            if (requiredPerDay <= 0 && surplusPerDay > 0.01) {
+                              return <span className="text-gray-500">—</span>;
                             }
                             const formattedRequired = isElectricity
                               ? `${productionCalculator.formatInteger(requiredPerDay * 60)} ${unitShort}`
@@ -1468,7 +1461,7 @@ export function ProductionCalculator() {
                             </div>
                           </td>
                           <td className="py-3 px-4 text-right font-mono align-middle">
-                            <span>0 {t('units.m3')}</span>
+                            <span className="text-gray-500">—</span>
                           </td>
                           {hasAnySurplus && (
                             <td className="py-3 px-4 text-right font-mono align-middle">
