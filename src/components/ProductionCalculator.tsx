@@ -11,6 +11,7 @@ import { getSavedPlans, savePlan, updatePlan, deletePlan, getPlanState, type Sav
 import { formatNumber } from '@/lib/format';
 import { getResourceIcon } from '@/data/resourceIcons';
 import { getResourceName } from '@/data/productions';
+import { Tooltip } from '@/components/Tooltip';
 import { vehicles, getVehicle, formatVehicleSkills, ORIGIN_TO_KEY } from '@/data/vehicles';
 import { BuildingPicker } from '@/components/BuildingPicker';
 import { ResourcePicker } from '@/components/ResourcePicker';
@@ -45,54 +46,6 @@ function getVehicleImageSrc(vehicle: { image?: string } | undefined): string {
 
 function getBlocForOrigin(origin: string): 'east' | 'west' {
   return BLOC_EAST_ORIGINS.has(origin) ? 'east' : 'west';
-}
-
-// Composant Tooltip simple (placement: au-dessus par défaut, ou à droite pour éviter débordement gauche)
-function Tooltip({ children, content, placement = 'top' }: { children: React.ReactNode; content: string; placement?: 'top' | 'right' }) {
-  const [show, setShow] = useState(false);
-  const timeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
-
-  const handleMouseEnter = () => {
-    timeoutRef.current = setTimeout(() => {
-      setShow(true);
-    }, 100); // Délai court de 100ms
-  };
-
-  const handleMouseLeave = () => {
-    if (timeoutRef.current) {
-      clearTimeout(timeoutRef.current);
-      timeoutRef.current = null;
-    }
-    setShow(false);
-  };
-
-  useEffect(() => {
-    return () => {
-      if (timeoutRef.current) {
-        clearTimeout(timeoutRef.current);
-      }
-    };
-  }, []);
-
-  const tooltipClasses = placement === 'right'
-    ? 'absolute z-50 left-full ml-1 top-1/2 -translate-y-1/2 px-2 py-1 text-xs text-white bg-gray-900 rounded shadow-lg whitespace-normal max-w-[240px]'
-    : 'absolute z-50 px-2 py-1 text-xs text-white bg-gray-900 rounded shadow-lg whitespace-nowrap bottom-full right-0 mb-1';
-
-  const arrowClasses = placement === 'right'
-    ? 'absolute top-1/2 -translate-y-1/2 right-full border-4 border-transparent border-r-gray-900'
-    : 'absolute top-full right-4 border-4 border-transparent border-t-gray-900';
-
-  return (
-    <div className="relative inline-block" onMouseEnter={handleMouseEnter} onMouseLeave={handleMouseLeave}>
-      {children}
-      {show && (
-        <div className={tooltipClasses}>
-          {content}
-          <div className={arrowClasses} />
-        </div>
-      )}
-    </div>
-  );
 }
 
 function getDefaultVehicleConfig(recipe: { maxVehicles?: number }, defaultVehicleId: string): MineVehicleConfig {
@@ -908,14 +861,15 @@ export function ProductionCalculator() {
                   key={goal.id}
                   className="flex flex-wrap items-center gap-3 bg-gray-700/50 rounded-lg px-3 py-2"
                 >
-                  <button
-                    type="button"
-                    onClick={() => removeGoal(goal.id)}
-                    className="flex-shrink-0 w-8 h-8 rounded flex items-center justify-center text-red-400 hover:bg-gray-600 transition-colors"
-                    title={t('industry.removeGoalTitle')}
-                  >
-                    ✕
-                  </button>
+                  <Tooltip content={t('industry.removeGoalTitle')}>
+                    <button
+                      type="button"
+                      onClick={() => removeGoal(goal.id)}
+                      className="flex-shrink-0 w-8 h-8 rounded flex items-center justify-center text-red-400 hover:bg-gray-600 transition-colors"
+                    >
+                      ✕
+                    </button>
+                  </Tooltip>
                   <ResourcePicker
                     productions={allProductions}
                     selectedResourceId={goal.resourceId}
@@ -1094,30 +1048,32 @@ export function ProductionCalculator() {
                         <td className="py-3 px-4 align-middle">
                           <div className="flex items-center gap-2">
                             {hasCoproductDetail && (
-                              <button
-                                type="button"
-                                onClick={toggleRowExpanded}
-                                className="flex-shrink-0 w-5 h-5 flex items-center justify-center rounded text-gray-400 hover:text-soviet-gold transition-colors"
-                                title={t('industry.coproductsByBuilding')}
-                                aria-expanded={isRowExpanded}
-                              >
-                                <span className="text-xs">{isRowExpanded ? '▼' : '▶'}</span>
-                              </button>
+                                <Tooltip content={t('industry.coproductsByBuilding')} placement="right">
+                                  <button
+                                    type="button"
+                                    onClick={toggleRowExpanded}
+                                    className="flex-shrink-0 w-5 h-5 flex items-center justify-center rounded text-gray-400 hover:text-soviet-gold transition-colors"
+                                    aria-expanded={isRowExpanded}
+                                  >
+                                    <span className="text-xs">{isRowExpanded ? '▼' : '▶'}</span>
+                                  </button>
+                                </Tooltip>
                             )}
                             {getResourceIcon(result.resourceId) && (
                               canDisable ? (
-                                <button
-                                  type="button"
-                                  onClick={() => toggleResourceDisabled(result.resourceId)}
-                                  className={`flex-shrink-0 p-0.5 rounded transition-opacity ${isDisabled ? 'opacity-40' : 'opacity-100'}`}
-                                  title={isDisabled ? t('industry.enableResource') : t('industry.disableResource')}
-                                >
+                                <Tooltip content={isDisabled ? t('industry.enableResource') : t('industry.disableResource')} placement="right">
+                                  <button
+                                    type="button"
+                                    onClick={() => toggleResourceDisabled(result.resourceId)}
+                                    className={`flex-shrink-0 p-0.5 rounded transition-opacity ${isDisabled ? 'opacity-40' : 'opacity-100'}`}
+                                  >
                                   <img
                                     src={getResourceIcon(result.resourceId)}
                                     alt=""
                                     className="w-6 h-6 object-contain"
                                   />
                                 </button>
+                                </Tooltip>
                               ) : (
                                 <img
                                   src={getResourceIcon(result.resourceId)}
@@ -1130,12 +1086,11 @@ export function ProductionCalculator() {
                               {t(`resources.${result.resourceId}`)}
                             </span>
                             {hasInvalidConfig && (
-                              <span
-                                className="text-red-400"
-                                title={t('industry.quarryNoVehicleOrPersonnel')}
-                              >
-                                ⚠
-                              </span>
+                              <Tooltip content={t('industry.quarryNoVehicleOrPersonnel')} placement="right">
+                                <span className="text-red-400">
+                                  ⚠
+                                </span>
+                              </Tooltip>
                             )}
                             {chainHasLivestockBuilding && productionCalculator.isWater(result.resourceId) && (
                               <Tooltip content={t('industry.waterLivestockWarning')} placement="right">
@@ -1163,7 +1118,7 @@ export function ProductionCalculator() {
                               : `${productionCalculator.formatValue(requiredPerDay)} ${unitShort}`;
                             const tooltipContent = formattedPerYear;
                             return (
-                              <Tooltip content={tooltipContent}>
+                              <Tooltip content={tooltipContent} placement="top">
                                 <span>{formattedRequired}</span>
                               </Tooltip>
                             );
@@ -1184,7 +1139,7 @@ export function ProductionCalculator() {
                                 ? `${productionCalculator.formatInteger(surplusToShow * 60 * 365)} ${unitYear}`
                                 : `${productionCalculator.formatInteger(surplusToShow * 365)} ${unitYear}`;
                               return (
-                                <Tooltip content={surplusPerYearFormatted}>
+                                <Tooltip content={surplusPerYearFormatted} placement="top">
                                   <span className="text-soviet-gold">+ {surplusFormatted}</span>
                                 </Tooltip>
                               );
@@ -1212,33 +1167,35 @@ export function ProductionCalculator() {
                                 )}
                                 {showCharge ? (
                                   <span className="flex items-center gap-1 flex-wrap">
-                                    <Tooltip content={`${formatNumber(workersPerBuilding)} ${t('tooltips.workersBlue')}${profesorsPerBuilding > 0 ? `, ${formatNumber(profesorsPerBuilding)} ${t('tooltips.workersWhite')}` : ''}`}>
+                                    <Tooltip content={`${formatNumber(workersPerBuilding)} ${t('tooltips.workersBlue')}${profesorsPerBuilding > 0 ? `, ${formatNumber(profesorsPerBuilding)} ${t('tooltips.workersWhite')}` : ''}`} placement="top">
                                       <span> x {formatNumber(result.buildingCount)} - {formatNumber(chargePercentage)} %</span>
                                     </Tooltip>
                                     {!isImported && (
                                       <span className="flex items-center gap-1">
                                         {chargePercentage < 100 && (
-                                          <button
-                                            type="button"
-                                            onClick={() => setChargeRatioByResource((prev) => ({ ...prev, [result.resourceId]: 1 }))}
-                                            title={t('industry.chargeTo100')}
-                                            className="text-xs px-1.5 py-0.5 rounded bg-gray-700 hover:bg-soviet-gold hover:text-gray-900 text-soviet-gold"
-                                          >
-                                            ➞100 %
-                                          </button>
+                                          <Tooltip content={t('tooltips.chargeTo100')} placement="top">
+                                            <button
+                                              type="button"
+                                              onClick={() => setChargeRatioByResource((prev) => ({ ...prev, [result.resourceId]: 1 }))}
+                                              className="text-xs px-1.5 py-0.5 rounded bg-gray-700 hover:bg-soviet-gold hover:text-gray-900 text-soviet-gold"
+                                            >
+                                              ➞100 %
+                                            </button>
+                                          </Tooltip>
                                         )}
                                         {chargeRatioByResource[result.resourceId] !== undefined && (
-                                          <button
-                                            type="button"
-                                            onClick={() => {
-                                              const { [result.resourceId]: _, ...rest } = chargeRatioByResource;
-                                              setChargeRatioByResource(rest);
-                                            }}
-                                            title={t('industry.resetCharge')}
-                                            className="text-xs px-1.5 py-0.5 rounded bg-gray-700 hover:bg-gray-500 text-gray-400"
-                                          >
-                                            ✕
-                                          </button>
+                                          <Tooltip content={t('industry.resetCharge')} placement="top">
+                                            <button
+                                              type="button"
+                                              onClick={() => {
+                                                const { [result.resourceId]: _, ...rest } = chargeRatioByResource;
+                                                setChargeRatioByResource(rest);
+                                              }}
+                                              className="text-xs px-1.5 py-0.5 rounded bg-gray-700 hover:bg-gray-500 text-gray-400"
+                                            >
+                                              ✕
+                                            </button>
+                                          </Tooltip>
                                         )}
                                       </span>
                                     )}
@@ -1257,6 +1214,7 @@ export function ProductionCalculator() {
                             {result.isCoProduct ? null : (
                             <div className="flex items-center justify-end gap-2 flex-wrap">
                               {!isImported && productionCalculator.isMineResult(result.resourceId, result.buildingName) && (
+                                <Tooltip content={t('industry.qualitySource')} placement="top">
                                 <div className="flex items-center gap-1">
                                   <input
                                     type="number"
@@ -1266,10 +1224,10 @@ export function ProductionCalculator() {
                                     value={sourceQualityByResource[result.resourceId] ?? effectiveSourceQuality}
                                     onChange={(e) => setSourceQualityForResource(result.resourceId, parseFloat(e.target.value) || 50)}
                                     className="w-14 h-6 bg-gray-700 border border-gray-600 rounded px-2 text-sm text-white text-right"
-                                    title={t('industry.qualitySource')}
                                   />
                                   <span className="text-gray-400 text-xs">%</span>
                                 </div>
+                                </Tooltip>
                               )}
                               {!isImported && productionCalculator.isVehicleMineResult(result.resourceId, result.buildingName) && (() => {
                                 const recipe = productionCalculator.getRecipe(result.resourceId, result.buildingName);
@@ -1286,20 +1244,21 @@ export function ProductionCalculator() {
                                   <div className="flex items-center justify-end gap-2 flex-wrap">
                                     {/* Toggle personnel : icône cliquable, grisée si non coché */}
                                     {workersIcon && (
-                                      <button
-                                        type="button"
-                                        onClick={() => setVehicleConfigByResource((prev) => ({
-                                          ...prev,
-                                          [result.resourceId]: {
-                                            ...cfg,
-                                            allowPersonnel: !allowPersonnel,
-                                          },
-                                        }))}
-                                        title={allowPersonnel ? t('tooltips.personnelOn') : t('tooltips.personnelOff')}
-                                        className={`flex-shrink-0 w-8 h-8 rounded overflow-hidden flex items-center justify-center transition-opacity ${allowPersonnel ? 'opacity-100' : 'opacity-40'}`}
-                                      >
-                                        <img src={workersIcon} alt="" className="w-full h-full object-contain invert" />
-                                      </button>
+                                      <Tooltip content={allowPersonnel ? t('tooltips.personnelOn') : t('tooltips.personnelOff')} placement="top">
+                                        <button
+                                          type="button"
+                                          onClick={() => setVehicleConfigByResource((prev) => ({
+                                            ...prev,
+                                            [result.resourceId]: {
+                                              ...cfg,
+                                              allowPersonnel: !allowPersonnel,
+                                            },
+                                          }))}
+                                          className={`flex-shrink-0 w-8 h-8 rounded overflow-hidden flex items-center justify-center transition-opacity ${allowPersonnel ? 'opacity-100' : 'opacity-40'}`}
+                                        >
+                                          <img src={workersIcon} alt="" className="w-full h-full object-contain invert" />
+                                        </button>
+                                      </Tooltip>
                                     )}
                                     {/* Emplacements véhicules : image par slot, clic ouvre picker */}
                                     {Array.from({ length: maxVehicles }, (_, slotIdx) => {
@@ -1308,6 +1267,7 @@ export function ProductionCalculator() {
                                       const isPickerOpen = vehicleSlotPickerOpen?.resourceId === result.resourceId && vehicleSlotPickerOpen?.slotIndex === slotIdx;
                                       return (
                                         <div key={slotIdx} ref={vehicleSlotPickerRef} className="relative">
+                                          <Tooltip content={vehicle ? vehicle.name : t('tooltips.chooseVehicle')} placement="top">
                                           <button
                                             type="button"
                                             onClick={() => setVehicleSlotPickerOpen((o) =>
@@ -1316,7 +1276,6 @@ export function ProductionCalculator() {
                                                 : { resourceId: result.resourceId, slotIndex: slotIdx }
                                             )}
                                             className="flex-shrink-0 w-10 h-10 rounded overflow-hidden bg-gray-700 border-2 border-gray-600 hover:border-soviet-gold flex items-center justify-center transition-colors"
-                                            title={vehicle ? vehicle.name : t('tooltips.chooseVehicle')}
                                           >
                                             <img
                                               src={vehicle ? getVehicleImageSrc(vehicle) : VEHICLE_PLACEHOLDER}
@@ -1324,6 +1283,7 @@ export function ProductionCalculator() {
                                               className={`w-full h-full object-contain p-0.5 ${!vehicle ? 'opacity-50' : ''}`}
                                             />
                                           </button>
+                                          </Tooltip>
                                           {isPickerOpen && (
                                             <div
                                               data-vehicle-slot-picker
@@ -1430,15 +1390,16 @@ export function ProductionCalculator() {
                           <td className="py-3 px-4 align-middle">
                             <div className="flex items-center gap-2">
                               {(personnelBreakdown?.length ?? 0) > 0 && (
-                                <button
-                                  type="button"
-                                  onClick={togglePersonnelExpanded}
-                                  className="flex-shrink-0 w-5 h-5 flex items-center justify-center rounded text-gray-400 hover:text-soviet-gold transition-colors"
-                                  title={t('industry.coproductsByBuilding')}
-                                  aria-expanded={isPersonnelExpanded}
-                                >
-                                  <span className="text-xs">{isPersonnelExpanded ? '▼' : '▶'}</span>
-                                </button>
+                                <Tooltip content={t('industry.coproductsByBuilding')} placement="right">
+                                  <button
+                                    type="button"
+                                    onClick={togglePersonnelExpanded}
+                                    className="flex-shrink-0 w-5 h-5 flex items-center justify-center rounded text-gray-400 hover:text-soviet-gold transition-colors"
+                                    aria-expanded={isPersonnelExpanded}
+                                  >
+                                    <span className="text-xs">{isPersonnelExpanded ? '▼' : '▶'}</span>
+                                  </button>
+                                </Tooltip>
                               )}
                               {getResourceIcon('workers') && (
                                 <img
@@ -1451,7 +1412,7 @@ export function ProductionCalculator() {
                             </div>
                           </td>
                           <td className="py-3 px-4 text-right font-mono text-gray-400 align-middle">
-                            <Tooltip content={`${formatNumber(totalWorkers)} ${t('tooltips.workersBlue')}, ${formatNumber(totalProfesors)} ${t('tooltips.workersWhite')}`}>
+                            <Tooltip content={`${formatNumber(totalWorkers)} ${t('tooltips.workersBlue')}, ${formatNumber(totalProfesors)} ${t('tooltips.workersWhite')}`} placement="top">
                               <span>{formatNumber(totalWorkers + totalProfesors)}</span>
                             </Tooltip>
                           </td>
@@ -1499,15 +1460,16 @@ export function ProductionCalculator() {
                           <td className="py-3 px-4 align-middle">
                             <div className="flex items-center gap-2">
                               {hasCoproductDetail && (
-                                <button
-                                  type="button"
-                                  onClick={toggleRowExpanded}
-                                  className="flex-shrink-0 w-5 h-5 flex items-center justify-center rounded text-gray-400 hover:text-soviet-gold transition-colors"
-                                  title={t('industry.coproductsByBuilding')}
-                                  aria-expanded={isRowExpanded}
-                                >
-                                  <span className="text-xs">{isRowExpanded ? '▼' : '▶'}</span>
-                                </button>
+                                <Tooltip content={t('industry.coproductsByBuilding')} placement="right">
+                                  <button
+                                    type="button"
+                                    onClick={toggleRowExpanded}
+                                    className="flex-shrink-0 w-5 h-5 flex items-center justify-center rounded text-gray-400 hover:text-soviet-gold transition-colors"
+                                    aria-expanded={isRowExpanded}
+                                  >
+                                    <span className="text-xs">{isRowExpanded ? '▼' : '▶'}</span>
+                                  </button>
+                                </Tooltip>
                               )}
                               {getResourceIcon('sewage') && (
                                 <img src={getResourceIcon('sewage')} alt="" className="w-6 h-6 object-contain flex-shrink-0" />
@@ -1520,7 +1482,7 @@ export function ProductionCalculator() {
                           </td>
                           {hasAnySurplus && (
                             <td className="py-3 px-4 text-right font-mono text-gray-400 align-middle">
-                              <Tooltip content={`${productionCalculator.formatInteger(amountPerDay * 365)} ${t('units.m3_year')}`}>
+                              <Tooltip content={`${productionCalculator.formatInteger(amountPerDay * 365)} ${t('units.m3_year')}`} placement="top">
                                 <span className="text-gray-400">+ {productionCalculator.formatValue(amountPerDay)} {t('units.m3')}</span>
                               </Tooltip>
                             </td>
@@ -1579,15 +1541,16 @@ export function ProductionCalculator() {
                           <td className="py-3 px-4 align-middle">
                             <div className="flex items-center gap-2">
                               {hasCoproductDetail && (
-                                <button
-                                  type="button"
-                                  onClick={toggleRowExpanded}
-                                  className="flex-shrink-0 w-5 h-5 flex items-center justify-center rounded text-gray-400 hover:text-soviet-gold transition-colors"
-                                  title={t('industry.coproductsByBuilding')}
-                                  aria-expanded={isRowExpanded}
-                                >
-                                  <span className="text-xs">{isRowExpanded ? '▼' : '▶'}</span>
-                                </button>
+                                <Tooltip content={t('industry.coproductsByBuilding')} placement="right">
+                                  <button
+                                    type="button"
+                                    onClick={toggleRowExpanded}
+                                    className="flex-shrink-0 w-5 h-5 flex items-center justify-center rounded text-gray-400 hover:text-soviet-gold transition-colors"
+                                    aria-expanded={isRowExpanded}
+                                  >
+                                    <span className="text-xs">{isRowExpanded ? '▼' : '▶'}</span>
+                                  </button>
+                                </Tooltip>
                               )}
                               {getResourceIcon('waste_mixed') && (
                                 <img src={getResourceIcon('waste_mixed')} alt="" className="w-6 h-6 object-contain flex-shrink-0" />
@@ -1600,7 +1563,7 @@ export function ProductionCalculator() {
                           </td>
                           {hasAnySurplus && (
                             <td className="py-3 px-4 text-right font-mono text-gray-400 align-middle">
-                              <Tooltip content={`${productionCalculator.formatInteger(amountPerDay * 365)} ${t('units.t_year')}`}>
+                              <Tooltip content={`${productionCalculator.formatInteger(amountPerDay * 365)} ${t('units.t_year')}`} placement="top">
                                 <span className="text-gray-400">+ {productionCalculator.formatValue(amountPerDay)} {t('units.t_day')}</span>
                               </Tooltip>
                             </td>
@@ -1722,15 +1685,16 @@ export function ProductionCalculator() {
                           <td className="py-3 px-4 align-middle">
                             <div className="flex items-center gap-2">
                               {hasCoproductDetail && (
-                                <button
-                                  type="button"
-                                  onClick={toggleRowExpanded}
-                                  className="flex-shrink-0 w-5 h-5 flex items-center justify-center rounded text-gray-400 hover:text-soviet-gold transition-colors"
-                                  title={t('industry.coproductsByBuilding')}
-                                  aria-expanded={isRowExpanded}
-                                >
-                                  <span className="text-xs">{isRowExpanded ? '▼' : '▶'}</span>
-                                </button>
+                                <Tooltip content={t('industry.coproductsByBuilding')} placement="right">
+                                  <button
+                                    type="button"
+                                    onClick={toggleRowExpanded}
+                                    className="flex-shrink-0 w-5 h-5 flex items-center justify-center rounded text-gray-400 hover:text-soviet-gold transition-colors"
+                                    aria-expanded={isRowExpanded}
+                                  >
+                                    <span className="text-xs">{isRowExpanded ? '▼' : '▶'}</span>
+                                  </button>
+                                </Tooltip>
                               )}
                               {getResourceIcon('waste_toxic') && (
                                 <img src={getResourceIcon('waste_toxic')} alt="" className="w-6 h-6 object-contain flex-shrink-0" />
@@ -1743,7 +1707,7 @@ export function ProductionCalculator() {
                           </td>
                           {hasAnySurplus && (
                             <td className="py-3 px-4 text-right font-mono text-gray-400 align-middle">
-                              <Tooltip content={`${productionCalculator.formatInteger(amountPerDay * 365)} ${t('units.t_year')}`}>
+                              <Tooltip content={`${productionCalculator.formatInteger(amountPerDay * 365)} ${t('units.t_year')}`} placement="top">
                                 <span className="text-gray-400">+ {productionCalculator.formatValue(amountPerDay)} {t('units.t_day')}</span>
                               </Tooltip>
                             </td>
@@ -1835,22 +1799,24 @@ export function ProductionCalculator() {
         </div>
         {savedPlansList.length > 1 && (
           <div className="flex justify-end gap-3 px-3 pt-1 pb-0.5 border-b border-gray-700/50">
+            <Tooltip content={plansSort.order === 'desc' ? t('industry.sortDateDesc') : t('industry.sortDateAsc')}>
             <button
               type="button"
               onClick={() => toggleSort('date')}
               className="text-xs text-gray-500 hover:text-soviet-gold transition-colors underline-offset-2 hover:underline"
-              title={plansSort.order === 'desc' ? t('industry.sortDateDesc') : t('industry.sortDateAsc')}
             >
               {t('industry.sortDate')} {plansSort.field === 'date' ? (plansSort.order === 'desc' ? '↓' : '↑') : ''}
             </button>
-            <button
-              type="button"
-              onClick={() => toggleSort('name')}
-              className="text-xs text-gray-500 hover:text-soviet-gold transition-colors underline-offset-2 hover:underline"
-              title={plansSort.field === 'name' && plansSort.order === 'asc' ? t('industry.sortNameAZ') : t('industry.sortNameZA')}
-            >
-              {t('industry.sortName')} {plansSort.field === 'name' ? (plansSort.order === 'asc' ? '↑' : '↓') : ''}
-            </button>
+            </Tooltip>
+            <Tooltip content={plansSort.field === 'name' && plansSort.order === 'asc' ? t('industry.sortNameAZ') : t('industry.sortNameZA')}>
+              <button
+                type="button"
+                onClick={() => toggleSort('name')}
+                className="text-xs text-gray-500 hover:text-soviet-gold transition-colors underline-offset-2 hover:underline"
+              >
+                {t('industry.sortName')} {plansSort.field === 'name' ? (plansSort.order === 'asc' ? '↑' : '↓') : ''}
+              </button>
+            </Tooltip>
           </div>
         )}
         <ul className="flex-1 overflow-y-auto p-2 space-y-1">
@@ -1881,10 +1847,7 @@ export function ProductionCalculator() {
                     className="w-full bg-gray-600 border border-gray-500 rounded px-2 py-1 text-sm text-white"
                   />
                 ) : (
-                  <span
-                    className="text-sm text-white truncate cursor-default"
-                    title={plan.name}
-                  >
+                  <span className="text-sm text-white truncate cursor-default">
                     {plan.name}
                   </span>
                 )}
@@ -1903,30 +1866,33 @@ export function ProductionCalculator() {
                   >
                     {t('industry.load')}
                   </button>
-                  <button
-                    type="button"
-                    onClick={() => handleDuplicatePlan(plan.id)}
-                    className="px-2 py-1 text-xs rounded bg-gray-600 hover:bg-gray-500 text-gray-200 transition-colors"
-                    title={t('industry.duplicate')}
-                  >
-                    {t('industry.duplicate')}
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => startRename(plan)}
-                    className="px-2 py-1 text-xs rounded bg-gray-600 hover:bg-gray-500 text-gray-200 transition-colors"
-                    title={t('industry.rename')}
-                  >
-                    {t('industry.rename')}
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => handleDeletePlan(plan.id)}
-                    className="px-2 py-1 text-xs rounded bg-gray-600 hover:bg-red-600 text-gray-200 transition-colors"
-                    title={t('industry.delete')}
-                  >
-                    {t('industry.delete')}
-                  </button>
+                  <Tooltip content={t('industry.duplicate')}>
+                    <button
+                      type="button"
+                      onClick={() => handleDuplicatePlan(plan.id)}
+                      className="px-2 py-1 text-xs rounded bg-gray-600 hover:bg-gray-500 text-gray-200 transition-colors"
+                    >
+                      {t('industry.duplicate')}
+                    </button>
+                  </Tooltip>
+                  <Tooltip content={t('industry.rename')}>
+                    <button
+                      type="button"
+                      onClick={() => startRename(plan)}
+                      className="px-2 py-1 text-xs rounded bg-gray-600 hover:bg-gray-500 text-gray-200 transition-colors"
+                    >
+                      {t('industry.rename')}
+                    </button>
+                  </Tooltip>
+                  <Tooltip content={t('industry.delete')}>
+                    <button
+                      type="button"
+                      onClick={() => handleDeletePlan(plan.id)}
+                      className="px-2 py-1 text-xs rounded bg-gray-600 hover:bg-red-600 text-gray-200 transition-colors"
+                    >
+                      {t('industry.delete')}
+                    </button>
+                  </Tooltip>
                 </div>
               </div>
             </li>

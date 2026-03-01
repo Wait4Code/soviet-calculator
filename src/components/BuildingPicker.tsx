@@ -3,6 +3,7 @@ import { useTranslation } from 'react-i18next';
 import { getBuildingImageUrls } from '@/data/buildingIcons';
 import type { ProductionRecipe } from '@/data/types';
 import { RecipeTooltipContent } from '@/components/BuildingImage';
+import { Tooltip } from '@/components/Tooltip';
 
 interface BuildingPickerProps {
   recipes: ProductionRecipe[];
@@ -75,18 +76,27 @@ export function BuildingPicker({ recipes, selectedRecipe, onSelect, size = 36 }:
       onMouseEnter={() => setShowTooltip(true)}
       onMouseLeave={() => setShowTooltip(false)}
     >
-      <button
-        type="button"
-        onClick={() => !isSingle && setOpen((o) => !o)}
-        disabled={isSingle}
-        className={`flex-shrink-0 rounded overflow-hidden bg-gray-800 border-2 transition-colors ${
-          isSingle ? 'border-gray-700 cursor-default' : 'border-gray-600 hover:border-soviet-gold cursor-pointer'
-        }`}
-        style={{ width: size, height: size }}
-        title={isSingle ? undefined : t('tooltips.chooseBuilding')}
-      >
-        <BuildingImageThumb recipe={selectedRecipe} size={size} key={selectedRecipe.name} />
-      </button>
+      {isSingle ? (
+        <button
+          type="button"
+          disabled
+          className="flex-shrink-0 rounded overflow-hidden bg-gray-800 border-2 border-gray-700 cursor-default"
+          style={{ width: size, height: size }}
+        >
+          <BuildingImageThumb recipe={selectedRecipe} size={size} key={selectedRecipe.name} />
+        </button>
+      ) : (
+        <Tooltip content={t('tooltips.chooseBuilding')}>
+          <button
+            type="button"
+            onClick={() => setOpen((o) => !o)}
+            className="flex-shrink-0 rounded overflow-hidden bg-gray-800 border-2 border-gray-600 hover:border-soviet-gold cursor-pointer transition-colors"
+            style={{ width: size, height: size }}
+          >
+            <BuildingImageThumb recipe={selectedRecipe} size={size} key={selectedRecipe.name} />
+          </button>
+        </Tooltip>
+      )}
       {showTooltip && (
         <div className="absolute z-50 left-full ml-2 top-0 px-3 py-3 text-white bg-gray-900 rounded-lg shadow-xl border border-gray-700">
           <RecipeTooltipContent recipe={selectedRecipe} />

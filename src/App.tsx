@@ -3,6 +3,7 @@ import { useTranslation } from 'react-i18next';
 import { Changelog } from './components/Changelog';
 import { ProductionCalculator } from './components/ProductionCalculator';
 import { Settings } from './components/Settings';
+import { Tooltip } from './components/Tooltip';
 import { supportedLngs, type SupportedLocale } from './i18n';
 
 const languageFlags: Record<SupportedLocale, string> = {
@@ -65,11 +66,10 @@ function App() {
             </div>
             <div className="flex items-center gap-1 py-1">
               {supportedLngs.map((lng) => (
+                <Tooltip key={lng} content={t(`language.${lng}`)}>
                 <button
-                  key={lng}
                   type="button"
                   onClick={() => i18n.changeLanguage(lng)}
-                  title={t(`language.${lng}`)}
                   className={`p-1.5 text-xl rounded transition-colors ${
                     i18n.language === lng || i18n.language.startsWith(lng)
                       ? 'bg-soviet-gold text-gray-900'
@@ -78,6 +78,7 @@ function App() {
                 >
                   {languageFlags[lng]}
                 </button>
+              </Tooltip>
               ))}
             </div>
           </div>

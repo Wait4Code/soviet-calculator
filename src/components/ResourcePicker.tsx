@@ -2,6 +2,7 @@ import { useState, useRef, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { getResourceIcon } from '@/data/resourceIcons';
 import type { ResourceProduction } from '@/data/types';
+import { Tooltip } from '@/components/Tooltip';
 
 interface ResourcePickerProps {
   productions: ResourceProduction[];
@@ -35,12 +36,12 @@ export function ResourcePicker({
 
   return (
     <div ref={pickerRef} className="relative inline-block">
+      <Tooltip content={selectedName}>
       <button
         type="button"
         onClick={() => setOpen((o) => !o)}
         className="flex-shrink-0 rounded overflow-hidden bg-gray-700 border-2 border-gray-600 hover:border-soviet-gold transition-colors"
         style={{ width: size, height: size }}
-        title={selectedName}
       >
         {selectedIcon ? (
           <img src={selectedIcon} alt="" className="w-full h-full object-contain p-1" />
@@ -48,6 +49,7 @@ export function ResourcePicker({
           <span className="text-xs text-gray-500 flex items-center justify-center h-full">?</span>
         )}
       </button>
+      </Tooltip>
       {open && (
         <div className="absolute left-0 top-full mt-1 z-50 w-64 max-h-72 overflow-y-auto rounded-lg bg-gray-800 border border-gray-600 shadow-xl py-2">
           {productions.map((production) => (
