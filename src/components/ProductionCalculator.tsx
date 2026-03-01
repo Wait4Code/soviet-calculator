@@ -1512,16 +1512,16 @@ export function ProductionCalculator() {
                               {getResourceIcon('sewage') && (
                                 <img src={getResourceIcon('sewage')} alt="" className="w-6 h-6 object-contain flex-shrink-0" />
                               )}
-                              <span className="font-medium">{t('resources.sewage')}</span>
+                              <span className="text-gray-400">{t('resources.sewage')}</span>
                             </div>
                           </td>
-                          <td className="py-3 px-4 text-right font-mono align-middle">
+                          <td className="py-3 px-4 text-right font-mono text-gray-400 align-middle">
                             <span className="text-gray-500">—</span>
                           </td>
                           {hasAnySurplus && (
-                            <td className="py-3 px-4 text-right font-mono align-middle">
+                            <td className="py-3 px-4 text-right font-mono text-gray-400 align-middle">
                               <Tooltip content={`${productionCalculator.formatInteger(amountPerDay * 365)} ${t('units.m3_year')}`}>
-                                <span className="text-soviet-gold">+ {productionCalculator.formatValue(amountPerDay)} {t('units.m3')}</span>
+                                <span className="text-gray-400">+ {productionCalculator.formatValue(amountPerDay)} {t('units.m3')}</span>
                               </Tooltip>
                             </td>
                           )}
@@ -1592,16 +1592,16 @@ export function ProductionCalculator() {
                               {getResourceIcon('waste_mixed') && (
                                 <img src={getResourceIcon('waste_mixed')} alt="" className="w-6 h-6 object-contain flex-shrink-0" />
                               )}
-                              <span className="font-medium">{t('resources.waste_mixed')}</span>
+                              <span className="text-gray-400">{t('resources.waste_mixed')}</span>
                             </div>
                           </td>
-                          <td className="py-3 px-4 text-right font-mono align-middle">
+                          <td className="py-3 px-4 text-right font-mono text-gray-400 align-middle">
                             <span className="text-gray-500">—</span>
                           </td>
                           {hasAnySurplus && (
-                            <td className="py-3 px-4 text-right font-mono align-middle">
+                            <td className="py-3 px-4 text-right font-mono text-gray-400 align-middle">
                               <Tooltip content={`${productionCalculator.formatInteger(amountPerDay * 365)} ${t('units.t_year')}`}>
-                                <span className="text-soviet-gold">+ {productionCalculator.formatValue(amountPerDay)} {t('units.t_day')}</span>
+                                <span className="text-gray-400">+ {productionCalculator.formatValue(amountPerDay)} {t('units.t_day')}</span>
                               </Tooltip>
                             </td>
                           )}
@@ -1735,16 +1735,16 @@ export function ProductionCalculator() {
                               {getResourceIcon('waste_toxic') && (
                                 <img src={getResourceIcon('waste_toxic')} alt="" className="w-6 h-6 object-contain flex-shrink-0" />
                               )}
-                              <span className="font-medium">{t('resources.waste_toxic')}</span>
+                              <span className="text-gray-400">{t('resources.waste_toxic')}</span>
                             </div>
                           </td>
-                          <td className="py-3 px-4 text-right font-mono align-middle">
+                          <td className="py-3 px-4 text-right font-mono text-gray-400 align-middle">
                             <span className="text-gray-500">—</span>
                           </td>
                           {hasAnySurplus && (
-                            <td className="py-3 px-4 text-right font-mono align-middle">
+                            <td className="py-3 px-4 text-right font-mono text-gray-400 align-middle">
                               <Tooltip content={`${productionCalculator.formatInteger(amountPerDay * 365)} ${t('units.t_year')}`}>
-                                <span className="text-soviet-gold">+ {productionCalculator.formatValue(amountPerDay)} {t('units.t_day')}</span>
+                                <span className="text-gray-400">+ {productionCalculator.formatValue(amountPerDay)} {t('units.t_day')}</span>
                               </Tooltip>
                             </td>
                           )}
