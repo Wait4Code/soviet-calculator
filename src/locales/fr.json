@@ -60,7 +60,7 @@
     "chargeTo100": "Monter le taux de charge à 100 %",
     "resetCharge": "Revenir au taux de charge initial",
     "emptySlot": "Vide",
-    "coproductsByBuilding": "Détail par bâtiment",
+    "coproductsByBuilding": "Détails",
     "wasteComposition": "Composition des déchets dangereux",
     "wasteCompositionMixed": "Composition des déchets mixtes",
     "waterLivestockWarning": "La consommation d'eau affichée n'inclut pas l'eau liée au bétail stocké (~0,05 m³/t de livestock)."
