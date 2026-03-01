@@ -13,9 +13,10 @@
     "afterLink": ": "
   },
   "footer": {
-    "inspired": "Inspired by",
-    "factorioLink": "Factorio Calculator",
-    "game": "For the game: Workers & Resources: Soviet Republic © 3DIVISION"
+    "title": "Acknowledgments & references",
+    "thanksBballjoAfter": " for his many videos on the game which taught me a lot.",
+    "thanksKirkAfter": " for his Factorio calculator, which I used extensively as a player and which inspired this project.",
+    "thanksPavAfter": " for his research on waste and the resulting guide."
   },
   "language": {
     "fr": "Français",

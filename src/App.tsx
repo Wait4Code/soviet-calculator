@@ -97,19 +97,41 @@ function App() {
 
       {/* Footer */}
       <footer className="mt-auto bg-gray-800 border-t border-gray-700">
-        <div className="container mx-auto px-4 py-6 text-center text-gray-400 text-sm">
+        <div className="container mx-auto px-4 py-6 text-center text-gray-400 text-sm space-y-2">
+          <h2 className="text-base font-semibold text-gray-300 mb-3">{t('footer.title')}</h2>
           <p>
-            {t('footer.inspired')}{' '}
             <a
-              href="https://kirkmcdonald.github.io/calc.html"
+              href="https://www.youtube.com/@bballjo/featured"
               target="_blank"
               rel="noopener noreferrer"
               className="text-soviet-gold hover:underline"
             >
-              {t('footer.factorioLink')}
+              Bballjo
             </a>
+            {t('footer.thanksBballjoAfter')}
           </p>
-          <p className="mt-2">{t('footer.game')}</p>
+          <p>
+            <a
+              href="https://github.com/KirkMcDonald"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-soviet-gold hover:underline"
+            >
+              Kirk McDonald
+            </a>
+            {t('footer.thanksKirkAfter')}
+          </p>
+          <p>
+            <a
+              href="https://steamcommunity.com/sharedfiles/filedetails/?id=3360799886"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-soviet-gold hover:underline"
+            >
+              Pav
+            </a>
+            {t('footer.thanksPavAfter')}
+          </p>
         </div>
       </footer>
     </div>
