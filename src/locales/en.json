@@ -64,6 +64,8 @@
     "surplusLabel": "including surplus",
     "emptySlot": "Empty",
     "coproductsByBuilding": "Breakdown by building",
+    "wasteComposition": "Hazardous waste composition",
+    "wasteCompositionMixed": "Mixed waste composition",
     "waterLivestockWarning": "The displayed water consumption does not include water for stored livestock (~0.05 m³/t of livestock)."
   },
   "settings": {
@@ -127,15 +129,17 @@
     "water": "Water",
     "sewage": "Sewage",
     "eletric": "Electricity",
-    "waste_aluminium": "Aluminium scrap",
-    "waste_bio": "Organic waste",
-    "waste_burnable": "Combustible waste",
-    "waste_gravel": "Gravel waste",
-    "waste_mixed": "Mixed waste",
     "waste_other": "Other waste",
-    "waste_plastic": "Plastic waste",
+    "waste_bio": "Biological waste",
     "waste_steel": "Metal scrap",
-    "waste_toxic": "Hazardous waste"
+    "waste_aluminium": "Aluminium scrap",
+    "waste_plastic": "Plastic waste",
+    "waste_burnable": "Burnable waste",
+    "waste_toxic": "Hazardous waste",
+    "waste_mixed": "Mixed waste",
+    "waste_construction": "Construction waste",
+    "waste_gravel": "Construction waste",
+    "waste_ash": "Ash"
   },
   "tooltips": {
     "workersBlue": "blue-collar",

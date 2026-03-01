@@ -55,6 +55,14 @@ export interface ProductionRecipe {
   vehicleSkill?: string;
   /** Production connexe (co-produits) : ressourceId → taux (même unité que production) */
   production_co?: Record<string, number>;
+  /** Déchet par travailleur (kg/jour). Absent si pas de travailleurs (ex. oil rig, carrières véhicules sans personnel). */
+  worker_waste_kg_per_day?: number;
+  /** Production de déchet max de l'usine (t/jour, POQM). */
+  production_waste_max_t_per_day?: number;
+  /** Composition des déchets de production (fractions 0–1) : construction, metal_scrap, aluminium_scrap, plastic, bio, fertilizer, burnable, hazardous, other, ash. */
+  production_waste_composition?: Record<string, number>;
+  /** Présence d'une sortie déchets dangereux (Stock DD) : 70 % non-dangereux → mixte, 30 % + 100 % HAZ → dangereux. */
+  has_hazardous_waste_output?: boolean;
 }
 
 /**
@@ -144,8 +152,8 @@ export interface ProductionResult {
   maxProductionPerDay?: number;
   /** Production véhicules t/jour (pelleteuses, charge 0% = production réelle quand personnel non utilisé) */
   vehicleProductionPerDay?: number;
-  /** Détail par bâtiment pour une ligne coproduit (ex. sewage) : contribution de chaque bâtiment */
-  coproductBreakdown?: Array<{ sourceResourceId: string; buildingName: string; amountPerSecond: number }>;
+  /** Détail par bâtiment pour une ligne coproduit (ex. sewage) : contribution de chaque bâtiment. workerWasteTPerDay optionnel pour déchets mixtes (t/j). */
+  coproductBreakdown?: Array<{ sourceResourceId: string; buildingName: string; amountPerSecond: number; workerWasteTPerDay?: number }>;
   /** Détail par bâtiment pour une ligne consommation (eau, électricité) : consommation de chaque bâtiment */
   consumptionBreakdown?: Array<{ sourceResourceId: string; buildingName: string; amountPerSecond: number }>;
 }

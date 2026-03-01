@@ -507,6 +507,47 @@ export class ProductionCalculator {
       outputsPerDay.set('sewage', (outputsPerDay.get('sewage') ?? 0) + waterConsumedPerDay);
     }
 
+    // Déchets (t/j) : travailleurs + production. Sans travailleurs (oil rig, carrières véhicules sans personnel) : pas de déchet travailleur.
+    const workerWasteKgPerDay = recipe.worker_waste_kg_per_day;
+    const prodWasteMaxTPerDay = recipe.production_waste_max_t_per_day;
+    const prodWasteComposition = recipe.production_waste_composition;
+    const hasHazardousOutput = recipe.has_hazardous_waste_output === true;
+
+    let wasteMixedTPerDay = 0;
+    let wasteToxicTPerDay = 0;
+
+    // Déchets travailleurs : uniquement si des travailleurs sont actifs (pas pour carrières en mode véhicules seuls)
+    if (workerWasteKgPerDay !== undefined && !noPersonnel && totalWorkers > 0) {
+      wasteMixedTPerDay += (totalWorkers * workerWasteKgPerDay) / 1000;
+    }
+
+    // Ratio pour les déchets de production : charge travailleurs, ou (carrières sans personnel) ratio basé sur la production véhicules
+    const isVehicleQuarryNoPersonnel = noPersonnel && vehicleProductionPerDay !== undefined && buildingCount > 0
+      && recipe.workers > 0 && recipe.production > 0 && this.isMineRecipe(recipe) && this.requiresVehiclesRecipe(recipe);
+    const wasteProductionChargeRatio = isVehicleQuarryNoPersonnel
+      ? Math.min(1, vehicleProductionPerDay! / (buildingCount * recipe.production * recipe.workers))
+      : actualChargeRatio;
+
+    if (prodWasteMaxTPerDay !== undefined && prodWasteComposition && Object.keys(prodWasteComposition).length > 0) {
+      const prodWasteTPerDay = prodWasteMaxTPerDay * wasteProductionChargeRatio * buildingCount;
+      const hazardousFraction = prodWasteComposition.hazardous ?? 0;
+      const hazardousT = prodWasteTPerDay * hazardousFraction;
+      const nonHazardousT = prodWasteTPerDay - hazardousT;
+      if (hasHazardousOutput) {
+        wasteMixedTPerDay += 0.7 * nonHazardousT;
+        wasteToxicTPerDay += 0.3 * nonHazardousT + hazardousT;
+      } else {
+        wasteMixedTPerDay += prodWasteTPerDay;
+      }
+    }
+
+    if (wasteMixedTPerDay > 0) {
+      outputsPerDay.set('waste_mixed', (outputsPerDay.get('waste_mixed') ?? 0) + wasteMixedTPerDay);
+    }
+    if (wasteToxicTPerDay > 0) {
+      outputsPerDay.set('waste_toxic', (outputsPerDay.get('waste_toxic') ?? 0) + wasteToxicTPerDay);
+    }
+
     // Convertir en par seconde pour l'affichage
     const inputsPerSecond = new Map<string, number>();
     const outputsPerSecond = new Map<string, number>();
@@ -1342,6 +1383,13 @@ export class ProductionCalculator {
   }
 
   /**
+   * Vérifie si une ressource est une sortie déchets (mixte ou dangereux, t/j)
+   */
+  isWasteOutput(resourceId: string): boolean {
+    return resourceId === 'waste_mixed' || resourceId === 'waste_toxic';
+  }
+
+  /**
    * Formate une valeur pour l'affichage (t/jour ou m3/jour)
    */
   formatProductionValue(value: number, resourceId: string): string {
@@ -1360,7 +1408,7 @@ export class ProductionCalculator {
    * Vérifie si une ressource peut être désactivée (pas l'eau ni l'électricité)
    */
   canDisableResource(resourceId: string): boolean {
-    return !this.isWater(resourceId) && !this.isElectricity(resourceId) && !this.isSewage(resourceId);
+    return !this.isWater(resourceId) && !this.isElectricity(resourceId) && !this.isSewage(resourceId) && !this.isWasteOutput(resourceId);
   }
 
   /**

@@ -12,7 +12,10 @@
             },
             "consumption_fixed": {
                 "eletric": 0.220
-            }
+            },
+            "worker_waste_kg_per_day": 0.6,
+            "production_waste_max_t_per_day": 2.39,
+            "production_waste_composition": { "bio": 0.3, "burnable": 0.5, "other": 0.2 }
         }
     ],
     "alumina": [
@@ -29,7 +32,11 @@
             },
             "consumption_fixed": {
                 "eletric": 0.285
-            }
+            },
+            "worker_waste_kg_per_day": 0.6,
+            "production_waste_max_t_per_day": 4.02,
+            "production_waste_composition": { "burnable": 0.0311, "hazardous": 0.0156, "ash": 0.9427, "other": 0.0107 },
+            "has_hazardous_waste_output": true
         }
     ],
     "aluminium": [
@@ -45,7 +52,11 @@
             },
             "consumption_fixed": {
                 "eletric": 2.52
-            }
+            },
+            "worker_waste_kg_per_day": 0.6,
+            "production_waste_max_t_per_day": 8.28,
+            "production_waste_composition": { "burnable": 0.0092, "hazardous": 0.0229, "ash": 0.9679 },
+            "has_hazardous_waste_output": true
         },
         {
             "name": "waste_aluminiumrecycling",
@@ -57,7 +68,8 @@
             },
             "consumption_fixed": {
                 "eletric": 0.05
-            }
+            },
+            "worker_waste_kg_per_day": 0.6
         }
     ],
     "asphalt": [
@@ -73,7 +85,8 @@
             },
             "consumption_fixed": {
                 "eletric": 0.302
-            }
+            },
+            "worker_waste_kg_per_day": 0.6
         }
     ],
     "bauxite": [
@@ -87,7 +100,10 @@
             },
             "consumption_fixed": {
                 "eletric": 0.05
-            }
+            },
+            "worker_waste_kg_per_day": 0.6,
+            "production_waste_max_t_per_day": 2.5,
+            "production_waste_composition": { "burnable": 0.2, "ash": 0.8 }
         }
     ],
     "bitumen": [
@@ -105,7 +121,11 @@
             },
             "production_co": {
                 "fuel": 0.25
-            }
+            },
+            "worker_waste_kg_per_day": 0.6,
+            "production_waste_max_t_per_day": 3.13,
+            "production_waste_composition": { "burnable": 0.8, "hazardous": 0.1, "other": 0.1 },
+            "has_hazardous_waste_output": true
         }
     ],
     "boards": [
@@ -120,7 +140,10 @@
             },
             "consumption_fixed": {
                 "eletric": 0.111
-            }
+            },
+            "worker_waste_kg_per_day": 0.6,
+            "production_waste_max_t_per_day": 2.08,
+            "production_waste_composition": { "bio": 0.1, "burnable": 0.8, "other": 0.1 }
         }
     ],
     "bricks": [
@@ -134,7 +157,10 @@
             },
             "consumption_fixed": {
                 "eletric": 0.05
-            }
+            },
+            "worker_waste_kg_per_day": 0.6,
+            "production_waste_max_t_per_day": 0.04,
+            "production_waste_composition": { "burnable": 0.7, "ash": 0.3 }
         }
     ],
     "cement": [
@@ -150,7 +176,10 @@
             },
             "consumption_fixed": {
                 "eletric": 0.105
-            }
+            },
+            "worker_waste_kg_per_day": 0.6,
+            "production_waste_max_t_per_day": 7.48,
+            "production_waste_composition": { "construction": 0.7908, "bio": 0.0081, "burnable": 0.1977, "ash": 0.0035 }
         },
         {
             "name": "cement_plant_v3",
@@ -164,7 +193,10 @@
             },
             "consumption_fixed": {
                 "eletric": 0.115
-            }
+            },
+            "worker_waste_kg_per_day": 0.6,
+            "production_waste_max_t_per_day": 7.19,
+            "production_waste_composition": { "construction": 0.7915, "bio": 0.0074, "burnable": 0.1979, "ash": 0.0032 }
         }
     ],
     "chemicals": [
@@ -183,7 +215,11 @@
             },
             "consumption_fixed": {
                 "eletric": 0.420
-            }
+            },
+            "worker_waste_kg_per_day": 0.6,
+            "production_waste_max_t_per_day": 1.37,
+            "production_waste_composition": { "construction": 0.1627, "plastic": 0.0898, "burnable": 0.5712, "hazardous": 0.0339, "other": 0.1424 },
+            "has_hazardous_waste_output": true
         },
         {
             "name": "chemical_plant_big",
@@ -200,7 +236,11 @@
             },
             "consumption_fixed": {
                 "eletric": 3.30
-            }
+            },
+            "worker_waste_kg_per_day": 0.6,
+            "production_waste_max_t_per_day": 15.94,
+            "production_waste_composition": { "construction": 0.1627, "plastic": 0.0898, "burnable": 0.5712, "hazardous": 0.0339, "other": 0.1424 },
+            "has_hazardous_waste_output": true
         }
     ],
     "clothes": [
@@ -214,7 +254,10 @@
             },
             "consumption_fixed": {
                 "eletric": 0.060
-            }
+            },
+            "worker_waste_kg_per_day": 0.6,
+            "production_waste_max_t_per_day": 0.03,
+            "production_waste_composition": { "bio": 0.2, "burnable": 0.6, "other": 0.2 }
         }
     ],
     "coal": [
@@ -229,7 +272,10 @@
             },
             "consumption_fixed": {
                 "eletric": 0.265
-            }
+            },
+            "worker_waste_kg_per_day": 0.6,
+            "production_waste_max_t_per_day": 9.75,
+            "production_waste_composition": { "construction": 0.2, "burnable": 0.3, "ash": 0.5 }
         }
     ],
     "concrete": [
@@ -246,7 +292,10 @@
             },
             "consumption_fixed": {
                 "eletric": 0.252
-            }
+            },
+            "worker_waste_kg_per_day": 0.6,
+            "production_waste_max_t_per_day": 4.35,
+            "production_waste_composition": { "construction": 0.6545, "ash": 0.3455 }
         }
     ],
     "ecomponents": [
@@ -272,7 +321,11 @@
             },
             "consumption_fixed": {
                 "eletric": 0.105
-            }
+            },
+            "worker_waste_kg_per_day": 0.6,
+            "production_waste_max_t_per_day": 0.05,
+            "production_waste_composition": { "metal_scrap": 0.3214, "aluminium_scrap": 0.3214, "burnable": 0.0571, "hazardous": 0.1429, "other": 0.1571 },
+            "has_hazardous_waste_output": true
         }
     ],
     "eletronics": [
@@ -298,7 +351,10 @@
             },
             "consumption_fixed": {
                 "eletric": 0.090
-            }
+            },
+            "worker_waste_kg_per_day": 0.6,
+            "production_waste_max_t_per_day": 0.07,
+            "production_waste_composition": { "metal_scrap": 0.2571, "aluminium_scrap": 0.4429, "other": 0.3 }
         }
     ],
     "explosives": [
@@ -314,7 +370,11 @@
             },
             "consumption_fixed": {
                 "eletric": 0.050
-            }
+            },
+            "worker_waste_kg_per_day": 0.6,
+            "production_waste_max_t_per_day": 0.06,
+            "production_waste_composition": { "construction": 0.4, "burnable": 0.0333, "hazardous": 0.3, "other": 0.0833, "ash": 0.1833 },
+            "has_hazardous_waste_output": true
         }
     ],
     "fabric": [
@@ -331,7 +391,11 @@
             },
             "consumption_fixed": {
                 "eletric": 0.330
-            }
+            },
+            "worker_waste_kg_per_day": 0.6,
+            "production_waste_max_t_per_day": 1.87,
+            "production_waste_composition": { "bio": 0.2927, "burnable": 0.4927, "hazardous": 0.0122, "other": 0.2024 },
+            "has_hazardous_waste_output": true
         }
     ],
     "fertiliser": [
@@ -346,7 +410,8 @@
             },
             "consumption_fixed": {
                 "eletric": 0.050
-            }
+            },
+            "worker_waste_kg_per_day": 0.6
         }
     ],
     "fertiliser_liquid": [
@@ -361,7 +426,11 @@
             },
             "consumption_fixed": {
                 "eletric": 0.162
-            }
+            },
+            "worker_waste_kg_per_day": 0.6,
+            "production_waste_max_t_per_day": 0.19,
+            "production_waste_composition": { "burnable": 0.2, "hazardous": 0.5, "other": 0.3 },
+            "has_hazardous_waste_output": true
         }
     ],
     "food": [
@@ -376,7 +445,10 @@
             },
             "consumption_fixed": {
                 "eletric": 0.127
-            }
+            },
+            "worker_waste_kg_per_day": 0.6,
+            "production_waste_max_t_per_day": 1.53,
+            "production_waste_composition": { "bio": 0.3, "burnable": 0.5, "other": 0.2 }
         }
     ],
     "fuel": [
@@ -394,7 +466,11 @@
             },
             "production_co": {
                 "bitumen": 0.15
-            }
+            },
+            "worker_waste_kg_per_day": 0.6,
+            "production_waste_max_t_per_day": 3.13,
+            "production_waste_composition": { "burnable": 0.8, "hazardous": 0.1, "other": 0.1 },
+            "has_hazardous_waste_output": true
         }
     ],
     "gravel": [
@@ -409,7 +485,10 @@
             },
             "consumption_fixed": {
                 "eletric": 0.407
-            }
+            },
+            "worker_waste_kg_per_day": 0.6,
+            "production_waste_max_t_per_day": 3.08,
+            "production_waste_composition": { "construction": 0.6, "ash": 0.4 }
         },
         {
             "name": "gravel_processing_small",
@@ -422,7 +501,10 @@
             },
             "consumption_fixed": {
                 "eletric": 0.152
-            }
+            },
+            "worker_waste_kg_per_day": 0.6,
+            "production_waste_max_t_per_day": 1.08,
+            "production_waste_composition": { "construction": 0.6, "ash": 0.4 }
         },
         {
             "name": "waste_gravelrecycling",
@@ -435,7 +517,8 @@
             },
             "consumption_fixed": {
                 "eletric": 0.307
-            }
+            },
+            "worker_waste_kg_per_day": 0.6
         }
     ],
     "iron": [
@@ -450,7 +533,10 @@
             },
             "consumption_fixed": {
                 "eletric": 0.287
-            }
+            },
+            "worker_waste_kg_per_day": 0.6,
+            "production_waste_max_t_per_day": 6.84,
+            "production_waste_composition": { "construction": 0.2, "burnable": 0.1, "ash": 0.7 }
         }
     ],
     "livestock": [
@@ -465,7 +551,10 @@
             },
             "consumption_fixed": {
                 "eletric": 0.050
-            }
+            },
+            "worker_waste_kg_per_day": 0.6,
+            "production_waste_max_t_per_day": 1.13,
+            "production_waste_composition": { "bio": 0.3, "burnable": 0.5, "other": 0.2 }
         }
     ],
     "mcomponents": [
@@ -479,7 +568,10 @@
             },
             "consumption_fixed": {
                 "eletric": 0.135
-            }
+            },
+            "worker_waste_kg_per_day": 0.6,
+            "production_waste_max_t_per_day": 0.38,
+            "production_waste_composition": { "construction": 0.9, "other": 0.1 }
         }
     ],
     "meat": [
@@ -493,7 +585,10 @@
             },
             "consumption_fixed": {
                 "eletric": 0.056
-            }
+            },
+            "worker_waste_kg_per_day": 0.6,
+            "production_waste_max_t_per_day": 4.5,
+            "production_waste_composition": { "bio": 0.15, "ash": 0.85 }
         }
     ],
     "nuclearfuel": [
@@ -509,7 +604,11 @@
             },
             "consumption_fixed": {
                 "eletric": 1.102
-            }
+            },
+            "worker_waste_kg_per_day": 0.6,
+            "production_waste_max_t_per_day": 2.15,
+            "production_waste_composition": { "burnable": 0.0029, "hazardous": 0.0136, "ash": 0.9835 },
+            "has_hazardous_waste_output": true
         }
     ],
     "oil": [
@@ -540,7 +639,11 @@
             },
             "consumption_fixed": {
                 "eletric": 0.340
-            }
+            },
+            "worker_waste_kg_per_day": 0.6,
+            "production_waste_max_t_per_day": 1.95,
+            "production_waste_composition": { "burnable": 0.74, "hazardous": 0.14, "other": 0.12 },
+            "has_hazardous_waste_output": true
         },
         {
             "name": "waste_plasticrecycling",
@@ -553,7 +656,8 @@
             },
             "consumption_fixed": {
                 "eletric": 0.080
-            }
+            },
+            "worker_waste_kg_per_day": 0.6
         }
     ],
     "prefabpanels": [
@@ -569,7 +673,10 @@
             },
             "consumption_fixed": {
                 "eletric": 0.132
-            }
+            },
+            "worker_waste_kg_per_day": 0.6,
+            "production_waste_max_t_per_day": 0.46,
+            "production_waste_composition": { "construction": 0.6957, "ash": 0.3044 }
         }
     ],
     "rawbauxite": [
@@ -584,7 +691,10 @@
             "maxVehicles": 3,
             "consumption_fixed": {
                 "eletric": 0.072
-            }
+            },
+            "worker_waste_kg_per_day": 0.43,
+            "production_waste_max_t_per_day": 0.39,
+            "production_waste_composition": { "construction": 0.5, "ash": 0.5 }
         }
     ],
     "rawcoal": [
@@ -597,7 +707,10 @@
             "consumption": {},
             "consumption_fixed": {
                 "eletric": 0.154
-            }
+            },
+            "worker_waste_kg_per_day": 0.43,
+            "production_waste_max_t_per_day": 16.17,
+            "production_waste_composition": { "construction": 0.5, "ash": 0.5 }
         }
     ],
     "rawgravel": [
@@ -612,7 +725,10 @@
             "consumption": {},
             "consumption_fixed": {
                 "eletric": 0.390
-            }
+            },
+            "worker_waste_kg_per_day": 0.43,
+            "production_waste_max_t_per_day": 6.13,
+            "production_waste_composition": { "construction": 0.5, "ash": 0.5 }
         },
         {
             "name": "gravel_mine_small",
@@ -625,7 +741,10 @@
             "consumption": {},
             "consumption_fixed": {
                 "eletric": 0.163
-            }
+            },
+            "worker_waste_kg_per_day": 0.43,
+            "production_waste_max_t_per_day": 2.45,
+            "production_waste_composition": { "construction": 0.5, "ash": 0.5 }
         }
     ],
     "rawiron": [
@@ -638,7 +757,10 @@
             "consumption": {},
             "consumption_fixed": {
                 "eletric": 0.187
-            }
+            },
+            "worker_waste_kg_per_day": 0.43,
+            "production_waste_max_t_per_day": 17.5,
+            "production_waste_composition": { "construction": 0.5, "ash": 0.5 }
         }
     ],
     "steel": [
@@ -654,7 +776,10 @@
             },
             "consumption_fixed": {
                 "eletric": 0.800
-            }
+            },
+            "worker_waste_kg_per_day": 0.6,
+            "production_waste_max_t_per_day": 11.67,
+            "production_waste_composition": { "metal_scrap": 0.1684, "burnable": 0.1105, "ash": 0.6737, "other": 0.0474 }
         },
         {
             "name": "waste_steelrecycling",
@@ -667,7 +792,8 @@
             },
             "consumption_fixed": {
                 "eletric": 0.05
-            }
+            },
+            "worker_waste_kg_per_day": 0.6
         }
     ],
     "uf6": [
@@ -683,7 +809,11 @@
             },
             "consumption_fixed": {
                 "eletric": 1.214
-            }
+            },
+            "worker_waste_kg_per_day": 0.6,
+            "production_waste_max_t_per_day": 0.63,
+            "production_waste_composition": { "burnable": 0.0188, "hazardous": 0.2283, "ash": 0.7529 },
+            "has_hazardous_waste_output": true
         }
     ],
     "uranium": [
@@ -696,7 +826,10 @@
             "consumption": {},
             "consumption_fixed": {
                 "eletric": 0.075
-            }
+            },
+            "worker_waste_kg_per_day": 0.43,
+            "production_waste_max_t_per_day": 1.31,
+            "production_waste_composition": { "hazardous": 1.0 }
         }
     ],
     "wood": [
@@ -708,7 +841,8 @@
             "consumption": {},
             "consumption_fixed": {
                 "eletric": 0.119
-            }
+            },
+            "worker_waste_kg_per_day": 0.43
         }
     ],
     "yellowcake": [
@@ -723,7 +857,11 @@
             },
             "consumption_fixed": {
                 "eletric": 0.637
-            }
+            },
+            "worker_waste_kg_per_day": 0.6,
+            "production_waste_max_t_per_day": 3.51,
+            "production_waste_composition": { "burnable": 0.2, "ash": 0.8 },
+            "has_hazardous_waste_output": true
         }
     ]
 }

@@ -54,6 +54,12 @@ export const resourceIcons: Record<string, string> = {
   waste_gravel: 'waste_gravel.png',
   waste_plastic: 'waste_plastic.png',
   waste_steel: 'waste_steel.png',
+  waste_mixed: 'waste_mixed.png',
+  waste_toxic: 'waste_toxic.png',
+  waste_burnable: 'waste_burnable.png',
+  waste_other: 'waste_other.png',
+  waste_ash: 'waste_ash.png',
+  waste_construction: 'waste_gravel.png',
 };
 
 /**

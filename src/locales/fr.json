@@ -64,6 +64,8 @@
     "surplusLabel": "dont surplus",
     "emptySlot": "Vide",
     "coproductsByBuilding": "Détail par bâtiment",
+    "wasteComposition": "Composition des déchets dangereux",
+    "wasteCompositionMixed": "Composition des déchets mixtes",
     "waterLivestockWarning": "La consommation d'eau affichée n'inclut pas l'eau liée au bétail stocké (~0,05 m³/t de livestock)."
   },
   "settings": {
@@ -127,15 +129,17 @@
     "water": "Eau",
     "sewage": "Eaux usées",
     "eletric": "Électricité",
-    "waste_aluminium": "Rebuts d'aluminium",
-    "waste_bio": "Déchets organiques",
-    "waste_burnable": "Déchets combustibles",
-    "waste_gravel": "Déchets de gravier",
-    "waste_mixed": "Autres déchets",
     "waste_other": "Autres déchets",
-    "waste_plastic": "Déchets plastiques",
+    "waste_mixed": "Autres déchets",
+    "waste_bio": "Déchets organiques",
     "waste_steel": "Rebuts de métal",
-    "waste_toxic": "Déchets dangereux"
+    "waste_aluminium": "Rebuts d'aluminium",
+    "waste_plastic": "Déchets plastiques",
+    "waste_burnable": "Déchets combustibles",
+    "waste_toxic": "Déchets dangereux",
+    "waste_gravel": "Gravats",
+    "waste_construction": "Gravats",
+    "waste_ash": "Cendres"
   },
   "tooltips": {
     "workersBlue": "cols-bleus",

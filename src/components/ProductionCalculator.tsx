@@ -634,6 +634,8 @@ export function ProductionCalculator() {
         waterResource = result;
       } else if (productionCalculator.isSewage(result.resourceId)) {
         // Ne pas ajouter une ligne sewage venue des données : on utilise la ligne synthétique ci-dessous
+      } else if (productionCalculator.isWasteOutput(result.resourceId)) {
+        // Idem pour déchets mixtes / dangereux : lignes synthétiques ci-dessous
       } else {
         normalResources.push(result);
       }
@@ -671,11 +673,34 @@ export function ProductionCalculator() {
     
     // Détail par bâtiment pour la ligne sewage (coproduit commun à plusieurs bâtiments) — exclure les ressources désactivées
     const sewageBreakdown: Array<{ sourceResourceId: string; buildingName: string; amountPerSecond: number }> = [];
+    let totalWasteMixedPerSecond = 0;
+    let totalWasteToxicPerSecond = 0;
+    const wasteMixedBreakdown: Array<{ sourceResourceId: string; buildingName: string; amountPerSecond: number; workerWasteTPerDay?: number }> = [];
+    const wasteToxicBreakdown: Array<{ sourceResourceId: string; buildingName: string; amountPerSecond: number }> = [];
     finalResults.forEach(result => {
       if (disabledResources.has(result.resourceId)) return;
       const amt = result.outputsPerSecond.get('sewage') ?? 0;
       if (amt > 0) {
         sewageBreakdown.push({ sourceResourceId: result.resourceId, buildingName: result.buildingName, amountPerSecond: amt });
+      }
+      const wasteMixedAmt = result.outputsPerSecond.get('waste_mixed') ?? 0;
+      if (wasteMixedAmt > 0) {
+        totalWasteMixedPerSecond += wasteMixedAmt;
+        const recipe = productionCalculator.getRecipe(result.resourceId, result.buildingName);
+        const workerWasteTPerDay = recipe?.worker_waste_kg_per_day != null && result.totalWorkers > 0
+          ? (result.totalWorkers * recipe.worker_waste_kg_per_day) / 1000
+          : undefined;
+        wasteMixedBreakdown.push({
+          sourceResourceId: result.resourceId,
+          buildingName: result.buildingName,
+          amountPerSecond: wasteMixedAmt,
+          ...(workerWasteTPerDay != null && workerWasteTPerDay > 0 ? { workerWasteTPerDay } : {}),
+        });
+      }
+      const wasteToxicAmt = result.outputsPerSecond.get('waste_toxic') ?? 0;
+      if (wasteToxicAmt > 0) {
+        totalWasteToxicPerSecond += wasteToxicAmt;
+        wasteToxicBreakdown.push({ sourceResourceId: result.resourceId, buildingName: result.buildingName, amountPerSecond: wasteToxicAmt });
       }
     });
 
@@ -696,10 +721,10 @@ export function ProductionCalculator() {
 
     // Attacher les breakdowns aux lignes eau et électricité
     if (waterResource && waterConsumptionBreakdown.length > 0) {
-      waterResource = { ...waterResource, consumptionBreakdown: waterConsumptionBreakdown };
+      waterResource = Object.assign({}, waterResource, { consumptionBreakdown: waterConsumptionBreakdown });
     }
     if (electricityResource && electricityConsumptionBreakdown.length > 0) {
-      electricityResource = { ...electricityResource, consumptionBreakdown: electricityConsumptionBreakdown };
+      electricityResource = Object.assign({}, electricityResource, { consumptionBreakdown: electricityConsumptionBreakdown });
     }
 
     // Construire le tableau final : trier uniquement les ressources normales, puis ajouter eau et électricité en fin de chaîne
@@ -741,13 +766,41 @@ export function ProductionCalculator() {
       coproductBreakdown: sewageBreakdown,
     } : null;
 
-    return { results, surplusByResource, hasAnySurplus, sewageResult, personnelBreakdown };
+    const wasteMixedResult: ProductionResult | null = totalWasteMixedPerSecond > 0 ? {
+      resourceId: 'waste_mixed',
+      resourceName: getResourceName('waste_mixed'),
+      buildingName: 'Coproduct',
+      buildingCount: 0,
+      inputsPerSecond: new Map(),
+      outputsPerSecond: new Map([['waste_mixed', totalWasteMixedPerSecond]]),
+      totalWorkers: 0,
+      totalProfesors: 0,
+      isCoProduct: true,
+      coproductBreakdown: wasteMixedBreakdown,
+    } : null;
+
+    const wasteToxicResult: ProductionResult | null = totalWasteToxicPerSecond > 0 ? {
+      resourceId: 'waste_toxic',
+      resourceName: getResourceName('waste_toxic'),
+      buildingName: 'Coproduct',
+      buildingCount: 0,
+      inputsPerSecond: new Map(),
+      outputsPerSecond: new Map([['waste_toxic', totalWasteToxicPerSecond]]),
+      totalWorkers: 0,
+      totalProfesors: 0,
+      isCoProduct: true,
+      coproductBreakdown: wasteToxicBreakdown,
+    } : null;
+
+    return { results, surplusByResource, hasAnySurplus, sewageResult, wasteMixedResult, wasteToxicResult, personnelBreakdown };
   }, [productionGoals, disabledResources, fullChainResults, effectiveSourceQuality, sourceQualityByResource, chainYear, defaultVehicleId, effectiveBuildingByResource, vehicleConfigByResource, chargeRatioByResource]);
 
   const results = resultsWithMeta.results;
   const surplusByResource = resultsWithMeta.surplusByResource;
   const hasAnySurplus = resultsWithMeta.hasAnySurplus;
   const sewageResult = resultsWithMeta.sewageResult;
+  const wasteMixedResult = resultsWithMeta.wasteMixedResult;
+  const wasteToxicResult = resultsWithMeta.wasteToxicResult;
   const personnelBreakdown = resultsWithMeta.personnelBreakdown;
 
   const primaryResourceIds = useMemo(() => new Set(productionGoals.map((g) => g.resourceId)), [productionGoals]);
@@ -1376,7 +1429,7 @@ export function ProductionCalculator() {
                         <tr className="border-b border-gray-700 hover:bg-gray-700/50 h-[53px]">
                           <td className="py-3 px-4 align-middle">
                             <div className="flex items-center gap-2">
-                              {personnelBreakdown.length > 0 && (
+                              {(personnelBreakdown?.length ?? 0) > 0 && (
                                 <button
                                   type="button"
                                   onClick={togglePersonnelExpanded}
@@ -1407,13 +1460,13 @@ export function ProductionCalculator() {
                           </td>
                           {(hasAnyMine || hasAnyVehicleMine) && <td className="py-3 px-4 text-gray-400 align-middle" />}
                         </tr>
-                        {isPersonnelExpanded && personnelBreakdown.length > 0 && (
+                        {isPersonnelExpanded && (personnelBreakdown?.length ?? 0) > 0 && (
                           <tr className="border-b border-gray-700 bg-gray-800/80">
                             <td colSpan={personnelColCount} className="py-2 px-4 pl-12 text-sm text-gray-300">
                               <div>
                                 <p className="text-gray-500 font-medium mb-1">{t('industry.coproductsByBuilding')}</p>
                                 <ul className="list-disc list-inside space-y-0.5">
-                                  {personnelBreakdown.map((entry, i) => (
+                                  {(personnelBreakdown ?? []).map((entry, i) => (
                                     <li key={`personnel-${entry.sourceResourceId}-${entry.buildingName}-${i}`}>
                                       {t(`resources.${entry.sourceResourceId}`)} ({t(`buildings:${entry.buildingName}`)}): {formatNumber(entry.workers)} {t('tooltips.workersBlue')}{entry.profesors > 0 ? `, ${formatNumber(entry.profesors)} ${t('tooltips.workersWhite')}` : ''}
                                     </li>
@@ -1491,6 +1544,271 @@ export function ProductionCalculator() {
                             </td>
                           </tr>
                         )}
+                      </Fragment>
+                    );
+                  })()}
+                  {/* Ligne déchets mixtes (t/j) avec composition au dépliage */}
+                  {wasteMixedResult && (() => {
+                    const result = wasteMixedResult;
+                    const rowKey = 'waste_mixed-Coproduct-end';
+                    const hasCoproductDetail = !!(result.coproductBreakdown && result.coproductBreakdown.length > 0);
+                    const isRowExpanded = expandedChainRows.has(rowKey);
+                    const toggleRowExpanded = () => setExpandedChainRows((prev) => {
+                      const next = new Set(prev);
+                      if (next.has(rowKey)) next.delete(rowKey);
+                      else next.add(rowKey);
+                      return next;
+                    });
+                    const amountPerDay = (result.outputsPerSecond.get('waste_mixed') ?? 0) * (24 * 60 * 60);
+                    const chainTableColCount = 3 + (hasAnySurplus ? 1 : 0) + ((hasAnyMine || hasAnyVehicleMine) ? 1 : 0);
+                    const wasteCompositionLabelKey: Record<string, string> = {
+                      construction: 'waste_construction',
+                      metal_scrap: 'waste_steel',
+                      aluminium_scrap: 'waste_aluminium',
+                      plastic: 'waste_plastic',
+                      bio: 'waste_bio',
+                      fertilizer: 'fertiliser',
+                      burnable: 'waste_burnable',
+                      hazardous: 'waste_toxic',
+                      other: 'waste_other',
+                      ash: 'waste_ash',
+                    };
+                    return (
+                      <Fragment key={rowKey}>
+                        <tr className="border-b border-gray-700 hover:bg-gray-700/50 h-[53px]">
+                          <td className="py-3 px-4 align-middle">
+                            <div className="flex items-center gap-2">
+                              {hasCoproductDetail && (
+                                <button
+                                  type="button"
+                                  onClick={toggleRowExpanded}
+                                  className="flex-shrink-0 w-5 h-5 flex items-center justify-center rounded text-gray-400 hover:text-soviet-gold transition-colors"
+                                  title={t('industry.coproductsByBuilding')}
+                                  aria-expanded={isRowExpanded}
+                                >
+                                  <span className="text-xs">{isRowExpanded ? '▼' : '▶'}</span>
+                                </button>
+                              )}
+                              {getResourceIcon('waste_mixed') && (
+                                <img src={getResourceIcon('waste_mixed')} alt="" className="w-6 h-6 object-contain flex-shrink-0" />
+                              )}
+                              <span className="font-medium">{t('resources.waste_mixed')}</span>
+                            </div>
+                          </td>
+                          <td className="py-3 px-4 text-right font-mono align-middle">
+                            <span className="text-gray-500">—</span>
+                          </td>
+                          {hasAnySurplus && (
+                            <td className="py-3 px-4 text-right font-mono align-middle">
+                              <Tooltip content={`${productionCalculator.formatInteger(amountPerDay * 365)} ${t('units.t_year')}`}>
+                                <span className="text-soviet-gold">+ {productionCalculator.formatValue(amountPerDay)} {t('units.t_day')}</span>
+                              </Tooltip>
+                            </td>
+                          )}
+                          <td className="py-3 px-4 text-gray-400 align-middle" />
+                          {(hasAnyMine || hasAnyVehicleMine) && <td className="py-3 px-4 text-gray-400 align-middle" />}
+                        </tr>
+                        {isRowExpanded && hasCoproductDetail && result.coproductBreakdown && (() => {
+                            const WORKER_WASTE_COMPOSITION_060: Record<string, number> = { bio: 0.10 / 0.60, burnable: 0.20 / 0.60, other: 0.30 / 0.60 };
+                            const WORKER_WASTE_COMPOSITION_043: Record<string, number> = { bio: 0.10 / 0.43, burnable: 0.12 / 0.43, other: 0.10 / 0.43, construction: 0.11 / 0.43 };
+                            type BuildingAmount = { sourceResourceId: string; buildingName: string; amountTPerDay: number };
+                            const byType: Record<string, { totalTPerDay: number; byBuilding: Record<string, number>; buildingKeys: Array<{ sourceResourceId: string; buildingName: string }> }> = {};
+                            const addToType = (typeKey: string, sourceResourceId: string, buildingName: string, amount: number) => {
+                              if (!byType[typeKey]) {
+                                byType[typeKey] = { totalTPerDay: 0, byBuilding: {}, buildingKeys: [] };
+                              }
+                              byType[typeKey].totalTPerDay += amount;
+                              const buildingKey = `${sourceResourceId}|${buildingName}`;
+                              if (byType[typeKey].byBuilding[buildingKey] == null) {
+                                byType[typeKey].buildingKeys.push({ sourceResourceId, buildingName });
+                              }
+                              byType[typeKey].byBuilding[buildingKey] = (byType[typeKey].byBuilding[buildingKey] ?? 0) + amount;
+                            };
+                            let totalTPerDay = 0;
+                            result.coproductBreakdown.forEach((entry) => {
+                              const entryTPerDay = entry.amountPerSecond * 24 * 60 * 60;
+                              totalTPerDay += entryTPerDay;
+                              const recipe = productionCalculator.getRecipe(entry.sourceResourceId, entry.buildingName);
+                              const workerWasteTPerDay = entry.workerWasteTPerDay ?? 0;
+                              const productionMixedTPerDay = entryTPerDay - workerWasteTPerDay;
+                              if (workerWasteTPerDay > 0 && recipe?.worker_waste_kg_per_day != null) {
+                                const workerComp = recipe.worker_waste_kg_per_day === 0.43 ? WORKER_WASTE_COMPOSITION_043 : WORKER_WASTE_COMPOSITION_060;
+                                Object.entries(workerComp).forEach(([key, frac]) => {
+                                  addToType(key, entry.sourceResourceId, entry.buildingName, workerWasteTPerDay * frac);
+                                });
+                              }
+                              const comp = recipe?.production_waste_composition;
+                              if (productionMixedTPerDay > 0 && comp) {
+                                const entries = Object.entries(comp).filter(([k, frac]) => k !== 'hazardous' && frac > 0);
+                                const sumFrac = entries.reduce((s, [, frac]) => s + frac, 0);
+                                if (sumFrac > 0) {
+                                  entries.forEach(([key, frac]) => {
+                                    addToType(key, entry.sourceResourceId, entry.buildingName, productionMixedTPerDay * (frac / sumFrac));
+                                  });
+                                }
+                              }
+                            });
+                            const sortedTypes = Object.entries(byType).sort((a, b) => b[1].totalTPerDay - a[1].totalTPerDay);
+                            return (
+                              <tr className="border-b border-gray-700 bg-gray-800/80">
+                                <td colSpan={chainTableColCount} className="py-2 px-4 pl-12 text-sm text-gray-300">
+                                  <div>
+                                    <p className="text-gray-500 font-medium mb-1">{t('industry.wasteCompositionMixed')}</p>
+                                    <ul className="space-y-1.5">
+                                      {sortedTypes.map(([typeKey, { totalTPerDay: typeTotal, buildingKeys, byBuilding }]) => {
+                                        const iconId = wasteCompositionLabelKey[typeKey] ?? typeKey;
+                                        const pct = totalTPerDay > 0 ? (typeTotal / totalTPerDay) * 100 : 0;
+                                        const buildings: BuildingAmount[] = buildingKeys.map((b) => ({
+                                          ...b,
+                                          amountTPerDay: byBuilding[`${b.sourceResourceId}|${b.buildingName}`] ?? 0,
+                                        }));
+                                        return (
+                                          <li key={typeKey} className="flex items-center gap-2 flex-wrap">
+                                            {getResourceIcon(iconId) && (
+                                              <img src={getResourceIcon(iconId)!} alt="" className="w-5 h-5 object-contain flex-shrink-0" />
+                                            )}
+                                            <span>
+                                              {t(`resources.${iconId}`)}: {productionCalculator.formatValue(typeTotal)} {t('units.t_day')} ({pct.toFixed(1)} %)
+                                            </span>
+                                            <span className="text-gray-500 text-xs">
+                                              {buildings.map((b, i) => (
+                                                <span key={`${b.sourceResourceId}-${b.buildingName}-${i}`}>
+                                                  {i > 0 && ' · '}
+                                                  {t(`buildings:${b.buildingName}`)} {productionCalculator.formatValue(b.amountTPerDay)} {t('units.t_day')}
+                                                </span>
+                                              ))}
+                                            </span>
+                                          </li>
+                                        );
+                                      })}
+                                    </ul>
+                                  </div>
+                                </td>
+                              </tr>
+                            );
+                          })()}
+                      </Fragment>
+                    );
+                  })()}
+                  {/* Ligne déchets dangereux (t/j) avec composition au dépliage */}
+                  {wasteToxicResult && (() => {
+                    const result = wasteToxicResult;
+                    const rowKey = 'waste_toxic-Coproduct-end';
+                    const hasCoproductDetail = !!(result.coproductBreakdown && result.coproductBreakdown.length > 0);
+                    const isRowExpanded = expandedChainRows.has(rowKey);
+                    const toggleRowExpanded = () => setExpandedChainRows((prev) => {
+                      const next = new Set(prev);
+                      if (next.has(rowKey)) next.delete(rowKey);
+                      else next.add(rowKey);
+                      return next;
+                    });
+                    const amountPerDay = (result.outputsPerSecond.get('waste_toxic') ?? 0) * (24 * 60 * 60);
+                    const chainTableColCount = 3 + (hasAnySurplus ? 1 : 0) + ((hasAnyMine || hasAnyVehicleMine) ? 1 : 0);
+                    const wasteCompositionLabelKey: Record<string, string> = {
+                      construction: 'waste_construction',
+                      metal_scrap: 'waste_steel',
+                      aluminium_scrap: 'waste_aluminium',
+                      plastic: 'waste_plastic',
+                      bio: 'waste_bio',
+                      fertilizer: 'fertiliser',
+                      burnable: 'waste_burnable',
+                      hazardous: 'waste_toxic',
+                      other: 'waste_other',
+                      ash: 'waste_ash',
+                    };
+                    return (
+                      <Fragment key={rowKey}>
+                        <tr className="border-b border-gray-700 hover:bg-gray-700/50 h-[53px]">
+                          <td className="py-3 px-4 align-middle">
+                            <div className="flex items-center gap-2">
+                              {hasCoproductDetail && (
+                                <button
+                                  type="button"
+                                  onClick={toggleRowExpanded}
+                                  className="flex-shrink-0 w-5 h-5 flex items-center justify-center rounded text-gray-400 hover:text-soviet-gold transition-colors"
+                                  title={t('industry.coproductsByBuilding')}
+                                  aria-expanded={isRowExpanded}
+                                >
+                                  <span className="text-xs">{isRowExpanded ? '▼' : '▶'}</span>
+                                </button>
+                              )}
+                              {getResourceIcon('waste_toxic') && (
+                                <img src={getResourceIcon('waste_toxic')} alt="" className="w-6 h-6 object-contain flex-shrink-0" />
+                              )}
+                              <span className="font-medium">{t('resources.waste_toxic')}</span>
+                            </div>
+                          </td>
+                          <td className="py-3 px-4 text-right font-mono align-middle">
+                            <span className="text-gray-500">—</span>
+                          </td>
+                          {hasAnySurplus && (
+                            <td className="py-3 px-4 text-right font-mono align-middle">
+                              <Tooltip content={`${productionCalculator.formatInteger(amountPerDay * 365)} ${t('units.t_year')}`}>
+                                <span className="text-soviet-gold">+ {productionCalculator.formatValue(amountPerDay)} {t('units.t_day')}</span>
+                              </Tooltip>
+                            </td>
+                          )}
+                          <td className="py-3 px-4 text-gray-400 align-middle" />
+                          {(hasAnyMine || hasAnyVehicleMine) && <td className="py-3 px-4 text-gray-400 align-middle" />}
+                        </tr>
+                        {isRowExpanded && hasCoproductDetail && result.coproductBreakdown && (() => {
+                            const byType: Record<string, { totalTPerDay: number; buildings: Array<{ sourceResourceId: string; buildingName: string; amountTPerDay: number }> }> = {};
+                            let totalTPerDay = 0;
+                            result.coproductBreakdown.forEach((entry) => {
+                              const entryTPerDay = entry.amountPerSecond * 24 * 60 * 60;
+                              totalTPerDay += entryTPerDay;
+                              const recipe = productionCalculator.getRecipe(entry.sourceResourceId, entry.buildingName);
+                              const comp = recipe?.production_waste_composition;
+                              const hasHazardous = recipe?.has_hazardous_waste_output === true;
+                              if (!comp) return;
+                              const hFrac = comp.hazardous ?? 0;
+                              if (!hasHazardous || (hFrac === 0 && Object.entries(comp).every(([, f]) => f === 0))) return;
+                              const coef = 0.3 * (1 - hFrac) + hFrac;
+                              if (coef <= 0) return;
+                              const prodWasteTPerDay = entryTPerDay / coef;
+                              Object.entries(comp).filter(([, frac]) => frac > 0).forEach(([key, frac]) => {
+                                const amount = key === 'hazardous' ? prodWasteTPerDay * frac : 0.3 * prodWasteTPerDay * frac;
+                                if (amount <= 0) return;
+                                if (!byType[key]) byType[key] = { totalTPerDay: 0, buildings: [] };
+                                byType[key].totalTPerDay += amount;
+                                byType[key].buildings.push({ sourceResourceId: entry.sourceResourceId, buildingName: entry.buildingName, amountTPerDay: amount });
+                              });
+                            });
+                            const sortedTypes = Object.entries(byType).sort((a, b) => b[1].totalTPerDay - a[1].totalTPerDay);
+                            return (
+                              <tr className="border-b border-gray-700 bg-gray-800/80">
+                                <td colSpan={chainTableColCount} className="py-2 px-4 pl-12 text-sm text-gray-300">
+                                  <div>
+                                    <p className="text-gray-500 font-medium mb-1">{t('industry.wasteComposition')}</p>
+                                    <ul className="space-y-1.5">
+                                      {sortedTypes.map(([typeKey, { totalTPerDay: typeTotal, buildings }]) => {
+                                        const iconId = wasteCompositionLabelKey[typeKey] ?? typeKey;
+                                        const pct = totalTPerDay > 0 ? (typeTotal / totalTPerDay) * 100 : 0;
+                                        return (
+                                          <li key={typeKey} className="flex items-center gap-2 flex-wrap">
+                                            {getResourceIcon(iconId) && (
+                                              <img src={getResourceIcon(iconId)!} alt="" className="w-5 h-5 object-contain flex-shrink-0" />
+                                            )}
+                                            <span>
+                                              {t(`resources.${iconId}`)}: {productionCalculator.formatValue(typeTotal)} {t('units.t_day')} ({pct.toFixed(1)} %)
+                                            </span>
+                                            <span className="text-gray-500 text-xs">
+                                              {buildings.map((b, i) => (
+                                                <span key={`${b.sourceResourceId}-${b.buildingName}-${i}`}>
+                                                  {i > 0 && ' · '}
+                                                  {t(`buildings:${b.buildingName}`)} {productionCalculator.formatValue(b.amountTPerDay)} {t('units.t_day')}
+                                                </span>
+                                              ))}
+                                            </span>
+                                          </li>
+                                        );
+                                      })}
+                                    </ul>
+                                  </div>
+                                </td>
+                              </tr>
+                            );
+                          })()}
                       </Fragment>
                     );
                   })()}
