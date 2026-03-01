@@ -58,7 +58,7 @@
     "noCalculations": "Aucun calcul. Cliquez sur \"Nouveau calcul\".",
     "unnamed": "Sans nom",
     "copyOf": "Copie de {{name}}",
-    "quarryNoVehicleOrPersonnel": "Cette carrière n'a ni pelleteuse ni personnel activé. Elle ne produit rien. Ajoutez des véhicules ou activez le personnel pour produire.",
+    "quarryNoVehicleOrPersonnel": "Cette carrière n'a ni pelleteuse ni travailleurs. Elle ne produit rien. Ajoutez des véhicules ou activez les travailleurs pour produire.",
     "chargeTo100": "Monter le taux de charge à 100 %",
     "resetCharge": "Revenir au taux de charge initial",
     "surplusLabel": "dont surplus",
@@ -77,7 +77,7 @@
     "defaultYearHint": "L'année affecte les recettes de composants électroniques et d'appareils électroniques : la production diminue et la consommation augmente avec les années.",
     "defaultVehicleLabel": "Véhicule par défaut pour les carrières",
     "defaultVehicleHint": "Véhicule utilisé par défaut pour les carrières de rawgravel et rawbauxite. Cliquez sur l'image pour en choisir un autre.",
-    "defaultVehicleNote": "Les carrières peuvent fonctionner sans personnel si elles ont au moins un véhicule.",
+    "defaultVehicleNote": "Les carrières peuvent fonctionner sans aucun travailleur si elles ont au moins un véhicule.",
     "changeVehicle": "Changer de véhicule",
     "defaultBuildingLabel": "Bâtiment par défaut (ressources à plusieurs recettes)",
     "defaultBuildingHint": "Lorsqu'une ressource peut être produite par plusieurs bâtiments, le bâtiment utilisé par défaut dans le calculateur de production. Cliquez sur l'image pour en choisir un autre.",
@@ -142,10 +142,10 @@
     "waste_ash": "Cendres"
   },
   "tooltips": {
-    "workersBlue": "cols-bleus",
-    "workersWhite": "cols-blancs",
-    "personnelOn": "Personnel activé (cliquer pour désactiver)",
-    "personnelOff": "Personnel désactivé (cliquer pour activer)",
+    "workersBlue": "Ouvriers",
+    "workersWhite": "Ingénieurs",
+    "personnelOn": "Travailleurs utilisés (cliquer pour désactiver)",
+    "personnelOff": "Travailleurs non utilisés (cliquer pour activer)",
     "chooseVehicle": "Choisir un véhicule",
     "chooseBuilding": "Choisir un bâtiment",
     "travailleursMax": "Travailleurs max",
@@ -155,9 +155,9 @@
     "electriciteFixe": "Électricité (fixe)",
     "puissance": "Puissance",
     "consommationMax": "Consommation max",
-    "variableVehicules": "variable (véhicules + personnel)",
-    "personnels": "Personnels",
-    "noPersonnel": "Pas de personnel"
+    "variableVehicules": "variable (véhicules + travailleurs)",
+    "personnels": "Travailleurs",
+    "noPersonnel": "Aucun travailleur nécessaire"
   },
   "units": {
     "MWh_year": "MWh/an",

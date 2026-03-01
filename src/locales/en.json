@@ -58,7 +58,7 @@
     "noCalculations": "No calculations. Click \"New calculation\".",
     "unnamed": "Unnamed",
     "copyOf": "Copy of {{name}}",
-    "quarryNoVehicleOrPersonnel": "This quarry has no excavator or personnel enabled. It produces nothing. Add vehicles or enable personnel to produce.",
+    "quarryNoVehicleOrPersonnel": "This quarry has no excavator or workforce. It produces nothing. Add vehicles or enable workforce to produce.",
     "chargeTo100": "Set charge rate to 100%",
     "resetCharge": "Reset to initial charge rate",
     "surplusLabel": "including surplus",
@@ -77,7 +77,7 @@
     "defaultYearHint": "Year affects electronic components and electronic appliances recipes: production decreases and consumption increases over the years.",
     "defaultVehicleLabel": "Default vehicle for quarries",
     "defaultVehicleHint": "Vehicle used by default for rawgravel and rawbauxite quarries. Click the image to choose another.",
-    "defaultVehicleNote": "Quarries can run without personnel if they have at least one vehicle.",
+    "defaultVehicleNote": "Quarries can run without any workforce if they have at least one vehicle.",
     "changeVehicle": "Change vehicle",
     "defaultBuildingLabel": "Default building (resources with multiple recipes)",
     "defaultBuildingHint": "When a resource can be produced by several buildings, the default building used in the production calculator. Click the image to choose another.",
@@ -142,10 +142,10 @@
     "waste_ash": "Ash"
   },
   "tooltips": {
-    "workersBlue": "blue-collar",
-    "workersWhite": "white-collar",
-    "personnelOn": "Personnel enabled (click to disable)",
-    "personnelOff": "Personnel disabled (click to enable)",
+    "workersBlue": "workers",
+    "workersWhite": "engineers",
+    "personnelOn": "Workforce used (click to disable)",
+    "personnelOff": "Workforce not used (click to enable)",
     "chooseVehicle": "Choose a vehicle",
     "chooseBuilding": "Choose a building",
     "travailleursMax": "Max workers",
@@ -155,9 +155,9 @@
     "electriciteFixe": "Electricity (fixed)",
     "puissance": "Power",
     "consommationMax": "Max consumption",
-    "variableVehicules": "variable (vehicles + personnel)",
-    "personnels": "Personnel",
-    "noPersonnel": "No personnel"
+    "variableVehicules": "variable (vehicles + workforce)",
+    "personnels": "Workforce",
+    "noPersonnel": "No workforce needed"
   },
   "units": {
     "MWh_year": "MWh/year",
