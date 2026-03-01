@@ -21,7 +21,7 @@ function App() {
   }, [i18n.language]);
 
   return (
-    <div className="min-h-screen bg-gray-900 text-white">
+    <div className="min-h-screen flex flex-col bg-gray-900 text-white">
       {/* Header */}
       <header className="bg-soviet-red shadow-lg">
         <div className="container mx-auto px-4 py-5">
@@ -85,7 +85,7 @@ function App() {
       </div>
 
       {/* Main Content - tous les onglets restent montés pour mémoriser leur état */}
-      <main className="container mx-auto px-4 py-8">
+      <main className="flex-1 container mx-auto px-4 py-8">
         <div className={activeTab === 'industry' ? '' : 'hidden'}>
           <ProductionCalculator />
         </div>
@@ -95,7 +95,7 @@ function App() {
       </main>
 
       {/* Footer */}
-      <footer className="bg-gray-800 border-t border-gray-700 mt-12">
+      <footer className="mt-auto bg-gray-800 border-t border-gray-700">
         <div className="container mx-auto px-4 py-6 text-center text-gray-400 text-sm">
           <p>
             {t('footer.inspired')}{' '}
