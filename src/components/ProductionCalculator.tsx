@@ -1173,7 +1173,7 @@ export function ProductionCalculator() {
                                     {!isImported && (
                                       <span className="flex items-center gap-1">
                                         {chargePercentage < 100 && (
-                                          <Tooltip content={t('tooltips.chargeTo100')} placement="top">
+                                          <Tooltip content={t('industry.chargeTo100')} placement="top">
                                             <button
                                               type="button"
                                               onClick={() => setChargeRatioByResource((prev) => ({ ...prev, [result.resourceId]: 1 }))}

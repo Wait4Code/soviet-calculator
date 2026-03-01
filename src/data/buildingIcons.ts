@@ -17,15 +17,6 @@ function getBuildingImagePaths(buildingName: string): string[] {
 }
 
 /**
- * Retourne l'URL de l'image d'un bâtiment.
- * La première URL de la liste est retournée (le navigateur testera le chargement).
- * Utiliser onError sur l'img pour afficher un fallback si l'image n'existe pas.
- */
-export function getBuildingImageUrl(buildingName: string): string {
-  return getBuildingImagePaths(buildingName)[0];
-}
-
-/**
  * Retourne toutes les URLs possibles pour un bâtiment (pour préchargement ou fallback).
  */
 export function getBuildingImageUrls(buildingName: string): string[] {

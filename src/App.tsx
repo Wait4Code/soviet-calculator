@@ -11,7 +11,7 @@ const languageFlags: Record<SupportedLocale, string> = {
   en: '🇬🇧',
 };
 
-type Tab = 'industry' | 'city' | 'settings';
+type Tab = 'industry' | 'settings';
 
 function App() {
   const { t, i18n } = useTranslation();

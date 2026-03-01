@@ -1,6 +1,4 @@
-import { useState, useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
-import { getBuildingImageUrl, getBuildingImageUrls } from '@/data/buildingIcons';
 import type { ProductionRecipe } from '@/data/types';
 import { formatNumber } from '@/lib/format';
 
@@ -61,64 +59,6 @@ function getElectricPowerMW(recipe: ProductionRecipe): number | null {
   return eletric;
 }
 
-interface BuildingImageProps {
-  recipe: ProductionRecipe;
-  /** Taille en pixels (carré) */
-  size?: number;
-  /** Classe CSS supplémentaire */
-  className?: string;
-  /** Sélectionné (bordure highlight) */
-  selected?: boolean;
-  /** Clic pour sélectionner (si plusieurs recettes) */
-  onClick?: () => void;
-}
-
-export function BuildingImage({ recipe, size = 40, className = '', selected, onClick }: BuildingImageProps) {
-  const { t } = useTranslation();
-  const [imgError, setImgError] = useState(false);
-  const [showTooltip, setShowTooltip] = useState(false);
-  const displayName = t(`buildings:${recipe.name}`);
-
-  return (
-    <div
-      className={`relative inline-flex flex-col items-center ${onClick ? 'cursor-pointer' : ''} ${className}`}
-      onClick={onClick}
-      onMouseEnter={() => setShowTooltip(true)}
-      onMouseLeave={() => setShowTooltip(false)}
-      role={onClick ? 'button' : undefined}
-    >
-      <div
-        className={`flex items-center justify-center overflow-hidden rounded bg-gray-800 flex-shrink-0 ${selected ? 'ring-2 ring-soviet-gold' : ''}`}
-        style={{ width: size, height: size }}
-      >
-        {imgError ? (
-          <span className="text-xs text-gray-500 truncate px-1" title={displayName}>
-            {displayName.slice(0, 6)}…
-          </span>
-        ) : (
-          <img
-            src={getBuildingImageUrl(recipe.name)}
-            alt={displayName}
-            className="w-full h-full object-contain"
-            onError={() => setImgError(true)}
-          />
-        )}
-      </div>
-      {onClick && (
-        <span className="text-[10px] text-gray-400 mt-0.5 truncate" style={{ maxWidth: size }}>
-          {displayName}
-        </span>
-      )}
-      {showTooltip && (
-        <div className="absolute z-50 left-full ml-2 top-0 px-3 py-3 text-white bg-gray-900 rounded-lg shadow-xl border border-gray-700">
-          <RecipeTooltipContent recipe={recipe} />
-        </div>
-      )}
-    </div>
-  );
-}
-
-/** Tooltip au survol avec le détail complet */
 /** Contenu structuré du tooltip (style aéré comme panneau véhicules) - exporté pour BuildingPicker */
 export function RecipeTooltipContent({ recipe }: { recipe: ProductionRecipe }) {
   const { t } = useTranslation();
@@ -164,59 +104,6 @@ export function RecipeTooltipContent({ recipe }: { recipe: ProductionRecipe }) {
           </div>
         )}
       </div>
-    </div>
-  );
-}
-
-export function BuildingImageWithTooltip({
-  recipe,
-  size = 40,
-  className = '',
-  selected,
-  onClick,
-}: BuildingImageProps) {
-  const { t } = useTranslation();
-  const [currentUrlIndex, setCurrentUrlIndex] = useState(0);
-  const [showTooltip, setShowTooltip] = useState(false);
-  const urls = getBuildingImageUrls(recipe.name);
-  const currentUrl = urls[currentUrlIndex];
-  const allFailed = currentUrlIndex >= urls.length;
-  const displayName = t(`buildings:${recipe.name}`);
-
-  const handleError = useCallback(() => {
-    setCurrentUrlIndex((i) => i + 1);
-  }, []);
-
-  return (
-    <div
-      className={`relative inline-block ${onClick ? 'cursor-pointer' : ''} ${className}`}
-      onClick={onClick}
-      onMouseEnter={() => setShowTooltip(true)}
-      onMouseLeave={() => setShowTooltip(false)}
-      role={onClick ? 'button' : undefined}
-    >
-      <div
-        className={`flex items-center justify-center overflow-hidden rounded bg-gray-800 flex-shrink-0 ${selected ? 'ring-2 ring-soviet-gold' : ''}`}
-        style={{ width: size, height: size }}
-      >
-        {allFailed ? (
-          <span className="text-xs text-gray-500 truncate px-1" title={displayName}>
-            {displayName.slice(0, 6)}…
-          </span>
-        ) : (
-          <img
-            src={currentUrl}
-            alt={displayName}
-            className="w-full h-full object-contain"
-            onError={handleError}
-          />
-        )}
-      </div>
-      {showTooltip && (
-        <div className="absolute z-50 left-full ml-2 top-0 px-3 py-3 text-white bg-gray-900 rounded-lg shadow-xl border border-gray-700">
-          <RecipeTooltipContent recipe={recipe} />
-        </div>
-      )}
     </div>
   );
 }

@@ -8,11 +8,9 @@
     "settings": "Configuration"
   },
   "changelog": {
-    "title": "Changelog",
     "recentChanges": "Modifications récentes",
     "github": "Github",
-    "afterLink": " :",
-    "empty": "Aucune release disponible."
+    "afterLink": " :"
   },
   "footer": {
     "inspired": "Inspiré par le",
@@ -20,7 +18,6 @@
     "game": "Pour le jeu : Workers & Resources: Soviet Republic © 3DIVISION"
   },
   "language": {
-    "label": "Langue",
     "fr": "Français",
     "en": "English"
   },
@@ -61,7 +58,6 @@
     "quarryNoVehicleOrPersonnel": "Cette carrière n'a ni pelleteuse ni travailleurs. Elle ne produit rien. Ajoutez des véhicules ou activez les travailleurs pour produire.",
     "chargeTo100": "Monter le taux de charge à 100 %",
     "resetCharge": "Revenir au taux de charge initial",
-    "surplusLabel": "dont surplus",
     "emptySlot": "Vide",
     "coproductsByBuilding": "Détail par bâtiment",
     "wasteComposition": "Composition des déchets dangereux",
@@ -150,7 +146,6 @@
     "chooseBuilding": "Choisir un bâtiment",
     "travailleursMax": "Travailleurs max",
     "productionMax": "Production max",
-    "eauFixe": "Eau (fixe)",
     "eauTravailleurs": "Eau (travailleurs)",
     "electriciteFixe": "Électricité (fixe)",
     "puissance": "Puissance",

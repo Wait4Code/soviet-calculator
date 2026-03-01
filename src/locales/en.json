@@ -8,11 +8,9 @@
     "settings": "Settings"
   },
   "changelog": {
-    "title": "Changelog",
     "recentChanges": "Recent changes",
     "github": "Github",
-    "afterLink": ": ",
-    "empty": "No releases available."
+    "afterLink": ": "
   },
   "footer": {
     "inspired": "Inspired by",
@@ -20,7 +18,6 @@
     "game": "For the game: Workers & Resources: Soviet Republic © 3DIVISION"
   },
   "language": {
-    "label": "Language",
     "fr": "Français",
     "en": "English"
   },
@@ -61,7 +58,6 @@
     "quarryNoVehicleOrPersonnel": "This quarry has no excavator or workforce. It produces nothing. Add vehicles or enable workforce to produce.",
     "chargeTo100": "Set charge rate to 100%",
     "resetCharge": "Reset to initial charge rate",
-    "surplusLabel": "including surplus",
     "emptySlot": "Empty",
     "coproductsByBuilding": "Breakdown by building",
     "wasteComposition": "Hazardous waste composition",
@@ -150,7 +146,6 @@
     "chooseBuilding": "Choose a building",
     "travailleursMax": "Max workers",
     "productionMax": "Max production",
-    "eauFixe": "Water (fixed)",
     "eauTravailleurs": "Water (workers)",
     "electriciteFixe": "Electricity (fixed)",
     "puissance": "Power",

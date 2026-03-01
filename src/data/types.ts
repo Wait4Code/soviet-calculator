@@ -1,23 +1,4 @@
 /**
- * Représente une ressource du jeu
- */
-export interface Resource {
-  id: string;
-  name: string;
-  icon?: string;
-  /** Unité de mesure (tonnes, m3, etc.) */
-  unit?: string;
-}
-
-/**
- * Représente un ingrédient dans une recette
- */
-export interface Ingredient {
-  resourceId: string;
-  amount: number;
-}
-
-/**
  * Représente une recette de production (nouvelle structure depuis productions.json)
  */
 export interface ProductionRecipe {
@@ -78,39 +59,6 @@ export interface ResourceProduction {
 }
 
 /**
- * Représente une recette de production (ancienne structure, conservée pour compatibilité)
- */
-export interface Recipe {
-  id: string;
-  name: string;
-  buildingName: string;
-  /** Durée de production en secondes */
-  productionTime: number;
-  /** Ressources nécessaires */
-  inputs: Ingredient[];
-  /** Ressources produites */
-  outputs: Ingredient[];
-  /** Nombre de travailleurs requis */
-  workers?: number;
-}
-
-/**
- * Représente un bâtiment résidentiel
- */
-export interface ResidentialBuilding {
-  id: string;
-  name: string;
-  /** Capacité en nombre d'habitants */
-  capacity: number;
-  /** Type de population (workers, citizens, etc.) */
-  populationType: string;
-  /** Consommation électrique en kW */
-  electricityConsumption?: number;
-  /** Consommation de chauffage */
-  heatingConsumption?: number;
-}
-
-/**
  * Résultat d'un calcul de production
  */
 export interface ProductionResult {
@@ -156,17 +104,4 @@ export interface ProductionResult {
   coproductBreakdown?: Array<{ sourceResourceId: string; buildingName: string; amountPerSecond: number; workerWasteTPerDay?: number }>;
   /** Détail par bâtiment pour une ligne consommation (eau, électricité) : consommation de chaque bâtiment */
   consumptionBreakdown?: Array<{ sourceResourceId: string; buildingName: string; amountPerSecond: number }>;
-}
-
-/**
- * Résultat d'un calcul de population
- */
-export interface PopulationResult {
-  totalPopulation: number;
-  populationByType: Map<string, number>;
-  buildings: Array<{
-    buildingId: string;
-    buildingName: string;
-    count: number;
-  }>;
 }
