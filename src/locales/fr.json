@@ -63,6 +63,11 @@
     "coproductsByBuilding": "Détails",
     "wasteComposition": "Composition des déchets dangereux",
     "wasteCompositionMixed": "Composition des déchets mixtes",
+    "wasteAndSewageTitle": "Eaux usées & déchets",
+    "wasteTableBuilding": "Bâtiment",
+    "wasteTableTotal": "Total",
+    "wasteCategoryMixed": "Mixte",
+    "wasteCategoryHazardous": "Dangereux",
     "waterLivestockWarning": "La consommation d'eau affichée n'inclut pas l'eau liée au bétail stocké (~0,05 m³/t de livestock)."
   },
   "settings": {
