@@ -11,6 +11,7 @@ wrsr_files
 node_modules
 dist
 dist-ssr
+generated
 *.local
 tsconfig.tsbuildinfo
 .cursor

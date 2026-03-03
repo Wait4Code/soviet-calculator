@@ -1,5 +1,5 @@
 import { useTranslation } from 'react-i18next';
-import changelogData from '@/data/changelog.json';
+import changelogData from '@generated/changelog.json';
 
 const RELEASES_URL = 'https://github.com/Wait4Code/soviet-calculator/releases';
 const MAX_RECENT = 3;

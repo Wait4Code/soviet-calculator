@@ -1,5 +1,5 @@
 /**
- * Fetch GitHub releases and write src/data/changelog.json at build time.
+ * Fetch GitHub releases and write generated/changelog.json at build time.
  * Usage: node scripts/fetch-changelog.mjs
  */
 import { fileURLToPath } from 'node:url';
@@ -8,7 +8,7 @@ import { mkdir, writeFile } from 'node:fs/promises';
 
 const API_URL = 'https://api.github.com/repos/Wait4Code/soviet-calculator/releases';
 const __dirname = dirname(fileURLToPath(import.meta.url));
-const OUT_PATH = join(__dirname, '..', 'src', 'data', 'changelog.json');
+const OUT_PATH = join(__dirname, '..', 'generated', 'changelog.json');
 
 const maxReleases = 20;
 
@@ -39,7 +39,7 @@ async function main() {
 
   await mkdir(dirname(OUT_PATH), { recursive: true });
   await writeFile(OUT_PATH, JSON.stringify(list, null, 2), 'utf8');
-  console.log(`fetch-changelog: wrote ${list.length} releases to src/data/changelog.json`);
+  console.log(`fetch-changelog: wrote ${list.length} releases to generated/changelog.json`);
 }
 
 main();
