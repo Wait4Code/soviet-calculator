@@ -14,7 +14,7 @@ import LanguageDetector from 'i18next-browser-languagedetector';
 
 import fr from './locales/fr.json';
 import en from './locales/en.json';
-import buildingNamesFr from '@/data/buildingNames.json';
+import buildingNamesFr from './locales/buildingNamesFr.json';
 import buildingNamesEn from './locales/buildingNamesEn.json';
 
 export const supportedLngs = ['fr', 'en'] as const;
