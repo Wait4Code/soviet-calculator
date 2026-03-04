@@ -1744,7 +1744,12 @@ export function ProductionCalculator() {
                           {row.hazardousPerDay > 0 ? `${productionCalculator.formatValue(row.hazardousPerDay)} ${t('units.t_day')}` : '—'}
                         </td>
                         <td className="py-2 px-3 text-right font-mono text-sm text-gray-300">
-                          {row.pollutionTPerYear != null ? `${productionCalculator.formatValue(row.pollutionTPerYear)} ${t('units.t_year')}` : '—'}
+                          {row.pollutionTPerYear != null ? (
+                            <span className="inline-block text-right">
+                              <span>{productionCalculator.formatValue(row.pollutionTPerYear)} {t('units.t_year')}</span>
+                              <span className="block text-gray-500 text-xs mt-0.5">{getSafetyDistanceM(row.pollutionTPerYear)} {t('units.m')}</span>
+                            </span>
+                          ) : '—'}
                         </td>
                       </tr>
                       {isExpanded && hasDetail && (
@@ -1786,9 +1791,14 @@ export function ProductionCalculator() {
                     {wasteTableData.totals.hazardousPerDay > 0 ? `${productionCalculator.formatValue(wasteTableData.totals.hazardousPerDay)} ${t('units.t_day')}` : '—'}
                   </td>
                   <td className="py-2 px-3 text-right font-mono text-sm">
-                    {wasteTableData.pollutionMin != null && wasteTableData.pollutionMax != null
-                      ? `${productionCalculator.formatValue(wasteTableData.pollutionMin)} – ${productionCalculator.formatValue(wasteTableData.pollutionMax)} ${t('units.t_year')}`
-                      : '—'}
+                    {wasteTableData.pollutionMin != null && wasteTableData.pollutionMax != null ? (
+                      <span className="inline-block text-right">
+                        <span>{productionCalculator.formatValue(wasteTableData.pollutionMin)} – {productionCalculator.formatValue(wasteTableData.pollutionMax)} {t('units.t_year')}</span>
+                        {wasteTableData.distanceMin != null && wasteTableData.distanceMax != null && (
+                          <span className="block text-gray-500 text-xs mt-0.5">{wasteTableData.distanceMin} – {wasteTableData.distanceMax} {t('units.m')}</span>
+                        )}
+                      </span>
+                    ) : '—'}
                   </td>
                 </tr>
                 {expandedWasteRows.has(WASTE_TOTAL_ROW_KEY) && hasTotalDetail && (
