@@ -1745,9 +1745,13 @@ export function ProductionCalculator() {
                         </td>
                         <td className="py-2 px-3 text-right font-mono text-sm text-gray-300">
                           {row.pollutionTPerYear != null ? (
-                            <span className="inline-block text-right">
+                            <span className="block text-right">
                               <span>{productionCalculator.formatValue(row.pollutionTPerYear)} {t('units.t_year_building')}</span>
-                              <span className="block text-gray-500 text-xs mt-0.5">{getSafetyDistanceM(row.pollutionTPerYear)} {t('units.m')}</span>
+                              <span className="block mt-0.5">
+                                <Tooltip content={t('industry.safetyDistanceTooltip')}>
+                                  <span className="text-gray-500 text-xs">{getSafetyDistanceM(row.pollutionTPerYear)} {t('units.m')}</span>
+                                </Tooltip>
+                              </span>
                             </span>
                           ) : '—'}
                         </td>
@@ -1792,10 +1796,14 @@ export function ProductionCalculator() {
                   </td>
                   <td className="py-2 px-3 text-right font-mono text-sm">
                     {wasteTableData.pollutionMin != null && wasteTableData.pollutionMax != null ? (
-                      <span className="inline-block text-right">
+                      <span className="block text-right">
                         <span>{productionCalculator.formatValue(wasteTableData.pollutionMin)} – {productionCalculator.formatValue(wasteTableData.pollutionMax)} {t('units.t_year_building')}</span>
                         {wasteTableData.distanceMin != null && wasteTableData.distanceMax != null && (
-                          <span className="block text-gray-500 text-xs mt-0.5">{wasteTableData.distanceMin} – {wasteTableData.distanceMax} {t('units.m')}</span>
+                          <span className="block mt-0.5">
+                            <Tooltip content={t('industry.safetyDistanceTooltip')}>
+                              <span className="text-gray-500 text-xs">{wasteTableData.distanceMin} – {wasteTableData.distanceMax} {t('units.m')}</span>
+                            </Tooltip>
+                          </span>
                         )}
                       </span>
                     ) : '—'}

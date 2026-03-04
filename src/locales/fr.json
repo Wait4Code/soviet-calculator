@@ -68,6 +68,7 @@
     "wasteTableBuilding": "Bâtiment",
     "wasteTableTotal": "Total",
     "wasteTablePollution": "Pollution",
+    "safetyDistanceTooltip": "Distance de sécurité approximative",
     "wasteCategoryMixed": "Mixte",
     "wasteCategoryHazardous": "Dangereux",
     "waterLivestockWarning": "La consommation d'eau affichée n'inclut pas l'eau liée au bétail stocké (~0,05 m³/t de livestock)."
