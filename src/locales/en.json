@@ -166,6 +166,7 @@
     "MWh_year": "MWh/year",
     "m3_year": "m³/year",
     "t_year": "t/year",
+    "t_year_building": "t/year/building",
     "MWh_day": "MWh/day",
     "m3_day": "m³/day",
     "t_day": "t/day",
