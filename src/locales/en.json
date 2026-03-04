@@ -66,6 +66,7 @@
     "wasteAndSewageTitle": "Sewage & waste",
     "wasteTableBuilding": "Building",
     "wasteTableTotal": "Total",
+    "wasteTablePollution": "Pollution",
     "wasteCategoryMixed": "Mixed",
     "wasteCategoryHazardous": "Hazardous",
     "waterLivestockWarning": "The displayed water consumption does not include water for stored livestock (~0.05 m³/t of livestock)."
@@ -169,7 +170,8 @@
     "t_day": "t/day",
     "MWh": "MWh",
     "m3": "m³",
-    "t": "t"
+    "t": "t",
+    "m": "m"
   },
   "origins": {
     "union_sovietique": "Soviet Union",

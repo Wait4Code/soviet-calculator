@@ -12,6 +12,7 @@ import { formatNumber } from '@/lib/format';
 import { getResourceIcon } from '@/data/resourceIcons';
 import { getBuildingImageUrls } from '@/data/buildingIcons';
 import { getResourceName } from '@/data/productions';
+import { POLLUTION_T_PER_YEAR, getSafetyDistanceM } from '@/data/pollutionByBuilding';
 import { Tooltip } from '@/components/Tooltip';
 import { vehicles, getVehicle, formatVehicleSkills, ORIGIN_TO_KEY } from '@/data/vehicles';
 import { BuildingPicker } from '@/components/BuildingPicker';
@@ -790,6 +791,7 @@ export function ProductionCalculator() {
     hazardousPerDay: number;
     mixedComposition: Record<string, number>;
     hazardousComposition: Record<string, number>;
+    pollutionTPerYear: number | undefined;
   };
 
   const wasteTableData = useMemo(() => {
@@ -807,6 +809,7 @@ export function ProductionCalculator() {
           hazardousPerDay: 0,
           mixedComposition: {},
           hazardousComposition: {},
+          pollutionTPerYear: POLLUTION_T_PER_YEAR[buildingName],
         });
       }
       return byBuilding.get(k)!;
@@ -862,6 +865,11 @@ export function ProductionCalculator() {
     });
 
     const rows = Array.from(byBuilding.values()).filter((r) => r.sewagePerDay > 0 || r.mixedPerDay > 0 || r.hazardousPerDay > 0);
+    const polValues = rows.map((r) => r.pollutionTPerYear).filter((v): v is number => v != null);
+    const pollutionMin = polValues.length > 0 ? Math.min(...polValues) : undefined;
+    const pollutionMax = polValues.length > 0 ? Math.max(...polValues) : undefined;
+    const distanceMin = polValues.length > 0 ? Math.min(...polValues.map(getSafetyDistanceM)) : undefined;
+    const distanceMax = polValues.length > 0 ? Math.max(...polValues.map(getSafetyDistanceM)) : undefined;
     const totals = rows.reduce(
       (acc, r) => ({
         sewagePerDay: acc.sewagePerDay + r.sewagePerDay,
@@ -876,7 +884,7 @@ export function ProductionCalculator() {
       Object.entries(r.mixedComposition).forEach(([k, v]) => { totals.mixedComposition[k] = (totals.mixedComposition[k] ?? 0) + v; });
       Object.entries(r.hazardousComposition).forEach(([k, v]) => { totals.hazardousComposition[k] = (totals.hazardousComposition[k] ?? 0) + v; });
     });
-    return { rows, totals };
+    return { rows, totals, pollutionMin, pollutionMax, distanceMin, distanceMax };
   }, [sewageResult, wasteMixedResult, wasteToxicResult]);
 
   const [expandedWasteRows, setExpandedWasteRows] = useState<Set<string>>(new Set());
@@ -1680,6 +1688,7 @@ export function ProductionCalculator() {
                       {t('resources.waste_toxic')}
                     </span>
                   </th>
+                  <th className="py-2 px-3 text-right font-medium">{t('industry.wasteTablePollution')}</th>
                 </tr>
               </thead>
               <tbody>
@@ -1734,10 +1743,13 @@ export function ProductionCalculator() {
                         <td className="py-2 px-3 text-right font-mono text-sm text-gray-300">
                           {row.hazardousPerDay > 0 ? `${productionCalculator.formatValue(row.hazardousPerDay)} ${t('units.t_day')}` : '—'}
                         </td>
+                        <td className="py-2 px-3 text-right font-mono text-sm text-gray-300">
+                          {row.pollutionTPerYear != null ? `${productionCalculator.formatValue(row.pollutionTPerYear)} ${t('units.t_year')}` : '—'}
+                        </td>
                       </tr>
                       {isExpanded && hasDetail && (
                         <tr className="bg-gray-800/80">
-                          <td colSpan={5} className="py-2 px-4 pl-8">
+                          <td colSpan={6} className="py-2 px-4 pl-8">
                             <div className="overflow-x-auto">{renderCompositionTable(row.mixedComposition, row.hazardousComposition, allTypes)}</div>
                           </td>
                         </tr>
@@ -1773,10 +1785,15 @@ export function ProductionCalculator() {
                   <td className="py-2 px-3 text-right font-mono text-sm">
                     {wasteTableData.totals.hazardousPerDay > 0 ? `${productionCalculator.formatValue(wasteTableData.totals.hazardousPerDay)} ${t('units.t_day')}` : '—'}
                   </td>
+                  <td className="py-2 px-3 text-right font-mono text-sm">
+                    {wasteTableData.pollutionMin != null && wasteTableData.pollutionMax != null
+                      ? `${productionCalculator.formatValue(wasteTableData.pollutionMin)} – ${productionCalculator.formatValue(wasteTableData.pollutionMax)} ${t('units.t_year')}`
+                      : '—'}
+                  </td>
                 </tr>
                 {expandedWasteRows.has(WASTE_TOTAL_ROW_KEY) && hasTotalDetail && (
                   <tr className="bg-gray-800/80">
-                    <td colSpan={5} className="py-2 px-4 pl-8">
+                    <td colSpan={6} className="py-2 px-4 pl-8">
                       <div className="overflow-x-auto">{renderCompositionTable(wasteTableData.totals.mixedComposition, wasteTableData.totals.hazardousComposition, allTypesForTotal)}</div>
                     </td>
                   </tr>
