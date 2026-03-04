@@ -132,6 +132,17 @@ function App() {
             </a>
             {t('footer.thanksPavAfter')}
           </p>
+          <p>
+            <a
+              href="https://steamcommunity.com/sharedfiles/filedetails/?id=3146397536"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-soviet-gold hover:underline"
+            >
+              Silent_Shadow
+            </a>
+            {t('footer.thanksSilentShadowAfter')}
+          </p>
         </div>
       </footer>
     </div>
