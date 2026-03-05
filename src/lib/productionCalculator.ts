@@ -1194,9 +1194,28 @@ export class ProductionCalculator {
     });
     aggregatedList.forEach((result) => {
       this.recalculateBuildingCountForVehicleQuarries(result, totalDemandPerSecond);
+      this.recalculateBuildingCountForStandardFactories(result);
       this.recalculateChargeRatioFromAggregated(result);
     });
     return aggregatedList;
+  }
+
+  /**
+   * Recalcule buildingCount pour les usines standard à partir de la production agrégée.
+   * Quand une ressource (ex: chemicals) est demandée par plusieurs maillons (aluminium + alumine),
+   * on agrège les sorties puis on recalcule le nombre de bâtiments nécessaires (1 usine à 70% au lieu de 2 à 35%).
+   */
+  private recalculateBuildingCountForStandardFactories(result: ProductionResult): void {
+    if (result.invalidConfig || result.isCoProduct) return;
+    const recipe = this.getRecipe(result.resourceId, result.buildingName);
+    if (!recipe || recipe.production === 0 || recipe.workers === 0) return;
+    if (this.isMineRecipe(recipe) || this.requiresVehiclesRecipe(recipe)) return;
+
+    const totalOutputPerDay =
+      (result.outputsPerSecond.get(result.resourceId) ?? 0) * 24 * 60 * 60;
+    const maxProductionPerBuilding = recipe.production * recipe.workers;
+    const correctBuildingCount = Math.max(1, Math.ceil(totalOutputPerDay / maxProductionPerBuilding));
+    result.buildingCount = correctBuildingCount;
   }
 
   /**
