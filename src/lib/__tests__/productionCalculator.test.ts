@@ -487,6 +487,25 @@ describe('ProductionCalculator', () => {
     });
   });
 
+  describe('Fuel 1 building', () => {
+    it('affiche 1 raffinerie à 100% (pas 2 à 50%)', () => {
+      const chain = calc.calculateProductionChain({
+        resourceId: 'fuel',
+        buildingName: 'oil_rafinery_v2',
+        inputType: 'buildings',
+        value: 1,
+        disabledResources: new Set(),
+        sourceQuality: 50,
+        defaultVehicleId: 'e-10011d',
+      });
+      const results = calc.aggregateResults(chain);
+      const fuel = getResult(results, 'fuel', 'oil_rafinery_v2');
+      expect(fuel).toBeDefined();
+      expect(fuel!.buildingCount).toBe(1);
+      expect(fuel!.chargeRatio).toBeCloseTo(1, 2);
+    });
+  });
+
   describe('Bâtiment par défaut', () => {
     it('utilise defaultBuildingByResource pour les ressources à plusieurs recettes', () => {
       const chain = calc.calculateProductionChain({

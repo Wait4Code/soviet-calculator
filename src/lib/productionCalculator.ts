@@ -1215,7 +1215,11 @@ export class ProductionCalculator {
       (result.outputsPerSecond.get(result.resourceId) ?? 0) * 24 * 60 * 60;
     const maxProductionPerBuilding = recipe.production * recipe.workers;
     const correctBuildingCount = Math.max(1, Math.ceil(totalOutputPerDay / maxProductionPerBuilding));
-    result.buildingCount = correctBuildingCount;
+    // Only reduce building count (e.g. 2 → 1 when same resource was requested by multiple steps).
+    // Never increase: a single goal "1 building" must stay 1 even if totalOutputPerDay is rounded up.
+    if (correctBuildingCount < result.buildingCount) {
+      result.buildingCount = correctBuildingCount;
+    }
   }
 
   /**
