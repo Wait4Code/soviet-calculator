@@ -1,6 +1,6 @@
 /**
  * Environmental pollution (t/year) at max production per building.
- * Source: wrsr_files/readme.md (pol: values). Used for Sewage & waste table and safety distance.
+ * Source: wrsr_files/readme.md (pol: values). Used for Sewage, waste & pollution table and safety distance.
  */
 export const POLLUTION_T_PER_YEAR: Record<string, number> = {
   fertilizer: 16.4,
