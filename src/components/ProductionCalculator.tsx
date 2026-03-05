@@ -1688,7 +1688,12 @@ export function ProductionCalculator() {
                       {t('resources.waste_toxic')}
                     </span>
                   </th>
-                  <th className="py-2 px-3 text-right font-medium">{t('industry.wasteTablePollution')}</th>
+                  <th className="py-2 px-3 text-right font-medium">
+                    <span className="inline-flex items-center justify-end gap-1">
+                      {getResourceIcon('pollution') && <img src={getResourceIcon('pollution')!} alt="" className="w-5 h-5 object-contain" />}
+                      {t('industry.wasteTablePollution')}
+                    </span>
+                  </th>
                 </tr>
               </thead>
               <tbody>
