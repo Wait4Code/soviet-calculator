@@ -1708,7 +1708,6 @@ export function ProductionCalculator() {
                     ...Object.keys(row.hazardousComposition),
                   ]));
                   const buildingUrls = getBuildingImageUrls(row.buildingName);
-                  const resourceIcon = getResourceIcon(row.sourceResourceId);
                   return (
                     <Fragment key={rowKey}>
                       <tr className="border-b border-gray-700 hover:bg-gray-700/50">
@@ -1726,9 +1725,6 @@ export function ProductionCalculator() {
                         </td>
                         <td className="py-2 px-3">
                           <div className="flex items-center gap-2 flex-wrap">
-                            {resourceIcon && <img src={resourceIcon} alt="" className="w-6 h-6 object-contain flex-shrink-0" />}
-                            <span className="text-gray-200">{t(`resources.${row.sourceResourceId}`)}</span>
-                            <span className="text-gray-500">—</span>
                             {buildingUrls.length > 0 && (
                               <img src={buildingUrls[0]} alt="" className="w-6 h-6 object-contain flex-shrink-0 bg-gray-700 rounded" onError={(e) => { e.currentTarget.style.display = 'none'; }} />
                             )}
