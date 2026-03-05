@@ -1694,6 +1694,7 @@ export function ProductionCalculator() {
               <tbody>
                 {wasteTableData.rows.map((row) => {
                   const rowKey = `${row.sourceResourceId}|${row.buildingName}`;
+                  const chainResult = results.find((r) => r.resourceId === row.sourceResourceId && r.buildingName === row.buildingName);
                   const isExpanded = expandedWasteRows.has(rowKey);
                   const toggle = () => setExpandedWasteRows((prev) => {
                     const next = new Set(prev);
@@ -1732,6 +1733,11 @@ export function ProductionCalculator() {
                               <img src={buildingUrls[0]} alt="" className="w-6 h-6 object-contain flex-shrink-0 bg-gray-700 rounded" onError={(e) => { e.currentTarget.style.display = 'none'; }} />
                             )}
                             <span className="text-gray-200">{t(`buildings:${row.buildingName}`)}</span>
+                            {chainResult != null && (
+                              <span className="text-gray-400 font-mono text-sm">
+                                ×{chainResult.buildingCount} ({Math.round((chainResult.chargeRatio ?? 0) * 100)} %)
+                              </span>
+                            )}
                           </div>
                         </td>
                         <td className="py-2 px-3 text-right font-mono text-sm text-gray-300">
