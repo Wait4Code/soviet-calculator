@@ -19,6 +19,7 @@ export function ResourcePicker({
 }: ResourcePickerProps) {
   const { t } = useTranslation();
   const [open, setOpen] = useState(false);
+  const [search, setSearch] = useState('');
   const pickerRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -31,8 +32,20 @@ export function ResourcePicker({
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
 
+  useEffect(() => {
+    if (!open) setSearch('');
+  }, [open]);
+
   const selectedIcon = getResourceIcon(selectedResourceId);
   const selectedName = t(`resources.${selectedResourceId}`);
+
+  const filteredProductions = productions.filter((production) => {
+    if (!search.trim()) return true;
+    const q = search.trim().toLowerCase();
+    const name = t(`resources.${production.resourceId}`).toLowerCase();
+    const id = production.resourceId.toLowerCase();
+    return name.includes(q) || id.includes(q);
+  });
 
   return (
     <div ref={pickerRef} className="relative inline-block">
@@ -51,8 +64,19 @@ export function ResourcePicker({
       </button>
       </Tooltip>
       {open && (
-        <div className="absolute left-0 top-full mt-1 z-50 w-64 max-h-72 overflow-y-auto rounded-lg bg-gray-800 border border-gray-600 shadow-xl py-2">
-          {productions.map((production) => (
+        <div className="absolute left-0 top-full mt-1 z-50 w-64 max-h-72 overflow-hidden rounded-lg bg-gray-800 border border-gray-600 shadow-xl flex flex-col">
+          <div className="p-2 border-b border-gray-600 flex-shrink-0">
+            <input
+              type="text"
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+              placeholder={t('industry.searchResource')}
+              className="w-full px-3 py-2 rounded bg-gray-700 border border-gray-600 text-white text-sm placeholder-gray-400 focus:outline-none focus:ring-1 focus:ring-soviet-gold focus:border-soviet-gold"
+              autoFocus
+            />
+          </div>
+          <div className="overflow-y-auto py-2 flex-1 min-h-0 max-h-56">
+          {filteredProductions.map((production) => (
             <button
               key={production.resourceId}
               type="button"
@@ -78,6 +102,10 @@ export function ResourcePicker({
               <span className="font-medium text-white truncate text-sm">{t(`resources.${production.resourceId}`)}</span>
             </button>
           ))}
+          {filteredProductions.length === 0 && (
+            <p className="px-3 py-2 text-sm text-gray-400">{t('industry.noResourceMatch')}</p>
+          )}
+          </div>
         </div>
       )}
     </div>

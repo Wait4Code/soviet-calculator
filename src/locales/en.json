@@ -27,6 +27,8 @@
     "title": "Industry Calculator",
     "productionGoals": "Production goals",
     "productionGoalsHint": "Click the icon to choose the resource. Add multiple rows to calculate combined chains.",
+    "searchResource": "Search resource…",
+    "noResourceMatch": "No resource matches your search.",
     "buildings": "Buildings",
     "perDay": "t/day",
     "perYear": "t/year",

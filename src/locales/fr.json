@@ -27,6 +27,8 @@
     "title": "Calculateur d'Industrie",
     "productionGoals": "Objectifs de production",
     "productionGoalsHint": "Cliquez sur l'icône pour choisir la ressource. Ajoutez plusieurs lignes pour calculer des chaînes combinées.",
+    "searchResource": "Rechercher une ressource…",
+    "noResourceMatch": "Aucune ressource ne correspond à votre recherche.",
     "buildings": "Bâtiments",
     "perDay": "t/j",
     "perYear": "t/an",
