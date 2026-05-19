@@ -70,7 +70,7 @@
     "wasteTableBuilding": "Building",
     "wasteTableTotal": "Total",
     "wasteTablePollution": "Pollution",
-    "safetyDistanceTooltip": "Approximate safety distance",
+    "safetyDistanceTooltip": "Observed safety distance",
     "wasteCategoryMixed": "Mixed",
     "wasteCategoryHazardous": "Hazardous",
     "waterLivestockWarning": "The displayed water consumption does not include water for stored livestock (~0.05 m³/t of livestock)."
@@ -89,7 +89,19 @@
     "defaultBuildingLabel": "Default building (resources with multiple recipes)",
     "defaultBuildingHint": "When a resource can be produced by several buildings, the default building used in the production calculator. Click the image to choose another.",
     "blocEast": "Eastern Bloc",
-    "blocWest": "Western Bloc"
+    "blocWest": "Western Bloc",
+    "pollutionDistanceModeLabel": "Safety distance around polluting buildings",
+    "pollutionDistanceModeHint": "Safety distances were manually measured for each building. The factory runs at 100% capacity; water pump stations serve as indicators (their source quality reflects the ambient pollution level). On each of the four sides of the building, two pumps are placed: one at 80% life quality and one at 95%. The distance between the building center and each pump is measured. All four sides are measured because pollution does not spread uniformly. The slider offers 6 levels: from the minimum observed distance at 80% quality up to the maximum observed distance at 95%.",
+    "pollutionDistanceModeConfiant": "Lenient",
+    "pollutionDistanceModePrudent": "Cautious",
+    "pollutionDistanceModeHintConfiant": "Minimum distance (80% quality). Best for space efficiency, accepting that some areas may be slightly exposed.",
+    "pollutionDistanceModeHintPrudent": "Maximum distance (95% quality). Ensures your population is completely protected from pollution at all times.",
+    "pollutionDistanceModeDetailQ80Min": "80% quality · minimum value",
+    "pollutionDistanceModeDetailQ80Med": "80% quality · median value",
+    "pollutionDistanceModeDetailQ80Max": "80% quality · maximum value",
+    "pollutionDistanceModeDetailQ95Min": "95% quality · minimum value",
+    "pollutionDistanceModeDetailQ95Med": "95% quality · median value",
+    "pollutionDistanceModeDetailQ95Max": "95% quality · maximum value"
   },
   "resources": {
     "alcohol": "Alcohol",

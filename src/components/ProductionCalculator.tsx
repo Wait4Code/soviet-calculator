@@ -12,7 +12,7 @@ import { formatNumber } from '@/lib/format';
 import { getResourceIcon } from '@/data/resourceIcons';
 import { getBuildingImageUrls } from '@/data/buildingIcons';
 import { getResourceName } from '@/data/productions';
-import { POLLUTION_T_PER_YEAR, getSafetyDistanceM } from '@/data/pollutionByBuilding';
+import { POLLUTION_T_PER_YEAR, getSafetyDistance } from '@/data/pollutionByBuilding';
 import { Tooltip } from '@/components/Tooltip';
 import { vehicles, getVehicle, formatVehicleSkills, ORIGIN_TO_KEY } from '@/data/vehicles';
 import { BuildingPicker } from '@/components/BuildingPicker';
@@ -104,6 +104,7 @@ export function ProductionCalculator() {
   const defaultYear = useStore((state) => state.year);
   const defaultVehicleId = useStore((state) => state.defaultVehicleId);
   const defaultBuildingByResource = useStore((state) => state.defaultBuildingByResource);
+  const pollutionDistanceMode = useStore((state) => state.pollutionDistanceMode);
 
   const planFromUrl = useRef<ReturnType<typeof getPlanStateFromUrl>>(null);
   if (planFromUrl.current === null) planFromUrl.current = getPlanStateFromUrl();
@@ -783,6 +784,11 @@ export function ProductionCalculator() {
   const WORKER_WASTE_060: Record<string, number> = { bio: 0.10 / 0.60, burnable: 0.20 / 0.60, other: 0.30 / 0.60 };
   const WORKER_WASTE_043: Record<string, number> = { bio: 0.10 / 0.43, burnable: 0.12 / 0.43, other: 0.10 / 0.43, construction: 0.11 / 0.43 };
 
+  type SafetyDistanceData = {
+    q80_min: number; q80_med: number; q80_max: number;
+    q95_min: number; q95_med: number; q95_max: number;
+  };
+
   type WasteTableRow = {
     sourceResourceId: string;
     buildingName: string;
@@ -792,6 +798,7 @@ export function ProductionCalculator() {
     mixedComposition: Record<string, number>;
     hazardousComposition: Record<string, number>;
     pollutionTPerYear: number | undefined;
+    safetyDistance: SafetyDistanceData | undefined;
   };
 
   const wasteTableData = useMemo(() => {
@@ -801,6 +808,7 @@ export function ProductionCalculator() {
     const addRow = (sourceResourceId: string, buildingName: string) => {
       const k = key(sourceResourceId, buildingName);
       if (!byBuilding.has(k)) {
+        const recipe = productionCalculator.getRecipe(sourceResourceId, buildingName);
         byBuilding.set(k, {
           sourceResourceId,
           buildingName,
@@ -810,6 +818,7 @@ export function ProductionCalculator() {
           mixedComposition: {},
           hazardousComposition: {},
           pollutionTPerYear: POLLUTION_T_PER_YEAR[buildingName],
+          safetyDistance: recipe?.safetyDistance,
         });
       }
       return byBuilding.get(k)!;
@@ -868,8 +877,9 @@ export function ProductionCalculator() {
     const polValues = rows.map((r) => r.pollutionTPerYear).filter((v): v is number => v != null);
     const pollutionMin = polValues.length > 0 ? Math.min(...polValues) : undefined;
     const pollutionMax = polValues.length > 0 ? Math.max(...polValues) : undefined;
-    const distanceMin = polValues.length > 0 ? Math.min(...polValues.map(getSafetyDistanceM)) : undefined;
-    const distanceMax = polValues.length > 0 ? Math.max(...polValues.map(getSafetyDistanceM)) : undefined;
+    const sdValues = rows.map((r) => r.safetyDistance != null ? getSafetyDistance(r.safetyDistance, pollutionDistanceMode) : null).filter((v): v is number => v != null);
+    const distanceMin = sdValues.length > 0 ? Math.min(...sdValues) : undefined;
+    const distanceMax = sdValues.length > 0 ? Math.max(...sdValues) : undefined;
     const totals = rows.reduce(
       (acc, r) => ({
         sewagePerDay: acc.sewagePerDay + r.sewagePerDay,
@@ -885,7 +895,7 @@ export function ProductionCalculator() {
       Object.entries(r.hazardousComposition).forEach(([k, v]) => { totals.hazardousComposition[k] = (totals.hazardousComposition[k] ?? 0) + v; });
     });
     return { rows, totals, pollutionMin, pollutionMax, distanceMin, distanceMax };
-  }, [sewageResult, wasteMixedResult, wasteToxicResult]);
+  }, [sewageResult, wasteMixedResult, wasteToxicResult, pollutionDistanceMode]);
 
   const [expandedWasteRows, setExpandedWasteRows] = useState<Set<string>>(new Set());
 
@@ -1754,14 +1764,18 @@ export function ProductionCalculator() {
                           {row.hazardousPerDay > 0 ? `${productionCalculator.formatValue(row.hazardousPerDay)} ${t('units.t_day')}` : '—'}
                         </td>
                         <td className="py-2 px-3 text-right font-mono text-sm text-gray-300">
-                          {row.pollutionTPerYear != null ? (
+                          {(row.pollutionTPerYear != null || row.safetyDistance != null) ? (
                             <span className="block text-right">
-                              <span>{productionCalculator.formatValue(row.pollutionTPerYear)} {t('units.t_year_building')}</span>
-                              <span className="block mt-0.5">
-                                <Tooltip content={t('industry.safetyDistanceTooltip')}>
-                                  <span className="text-gray-500 text-xs">{getSafetyDistanceM(row.pollutionTPerYear)} {t('units.m')}</span>
-                                </Tooltip>
-                              </span>
+                              {row.pollutionTPerYear != null && (
+                                <span>{productionCalculator.formatValue(row.pollutionTPerYear)} {t('units.t_year_building')}</span>
+                              )}
+                              {row.safetyDistance != null && (
+                                <span className="block mt-0.5">
+                                  <Tooltip content={t('industry.safetyDistanceTooltip')}>
+                                    <span className="text-gray-500 text-xs">{getSafetyDistance(row.safetyDistance, pollutionDistanceMode)} {t('units.m')}</span>
+                                  </Tooltip>
+                                </span>
+                              )}
                             </span>
                           ) : '—'}
                         </td>
@@ -1805,9 +1819,11 @@ export function ProductionCalculator() {
                     {wasteTableData.totals.hazardousPerDay > 0 ? `${productionCalculator.formatValue(wasteTableData.totals.hazardousPerDay)} ${t('units.t_day')}` : '—'}
                   </td>
                   <td className="py-2 px-3 text-right font-mono text-sm">
-                    {wasteTableData.pollutionMin != null && wasteTableData.pollutionMax != null ? (
+                    {(wasteTableData.pollutionMin != null || wasteTableData.distanceMin != null) ? (
                       <span className="block text-right">
-                        <span>{productionCalculator.formatValue(wasteTableData.pollutionMin)} – {productionCalculator.formatValue(wasteTableData.pollutionMax)} {t('units.t_year_building')}</span>
+                        {wasteTableData.pollutionMin != null && wasteTableData.pollutionMax != null && (
+                          <span>{productionCalculator.formatValue(wasteTableData.pollutionMin)} – {productionCalculator.formatValue(wasteTableData.pollutionMax)} {t('units.t_year_building')}</span>
+                        )}
                         {wasteTableData.distanceMin != null && wasteTableData.distanceMax != null && (
                           <span className="block mt-0.5">
                             <Tooltip content={t('industry.safetyDistanceTooltip')}>

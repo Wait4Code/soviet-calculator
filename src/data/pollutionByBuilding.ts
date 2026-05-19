@@ -1,6 +1,6 @@
 /**
  * Environmental pollution (t/year) at max production per building.
- * Source: wrsr_files/readme.md (pol: values). Used for Sewage, waste & pollution table and safety distance.
+ * Source: wrsr_files/readme.md (pol: values). Used for Sewage, waste & pollution table.
  */
 export const POLLUTION_T_PER_YEAR: Record<string, number> = {
   fertilizer: 16.4,
@@ -50,15 +50,18 @@ export const POLLUTION_T_PER_YEAR: Record<string, number> = {
 };
 
 /**
- * Safety distance (m) from pollution source based on pollution output (t/year).
- * Ranges from the Steam guide "Stats and Figures Handbook" (Silent_Shadow).
+ * The 6 pollution distance modes, ordered from most optimistic to most pessimistic.
+ * q80 = targeting 80% life quality, q95 = targeting 95% life quality.
  */
-export function getSafetyDistanceM(pollutionTPerYear: number): number {
-  if (pollutionTPerYear < 3) return 300;
-  if (pollutionTPerYear <= 4) return 500;
-  if (pollutionTPerYear < 10) return 700;
-  if (pollutionTPerYear < 30) return 1000;
-  if (pollutionTPerYear < 40) return 1250;
-  if (pollutionTPerYear < 70) return 1500;
-  return 1800;
+export type PollutionDistanceMode = 'q80_min' | 'q80_med' | 'q80_max' | 'q95_min' | 'q95_med' | 'q95_max';
+
+export const POLLUTION_DISTANCE_MODES: PollutionDistanceMode[] = [
+  'q80_min', 'q80_med', 'q80_max', 'q95_min', 'q95_med', 'q95_max',
+];
+
+export function getSafetyDistance(
+  sd: { q80_min: number; q80_med: number; q80_max: number; q95_min: number; q95_med: number; q95_max: number },
+  mode: PollutionDistanceMode
+): number {
+  return sd[mode];
 }

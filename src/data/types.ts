@@ -44,6 +44,15 @@ export interface ProductionRecipe {
   production_waste_composition?: Record<string, number>;
   /** Présence d'une sortie déchets dangereux (Stock DD) : 70 % non-dangereux → mixte, 30 % + 100 % HAZ → dangereux. */
   has_hazardous_waste_output?: boolean;
+  /** Distances de sécurité observées (en mètres) selon le niveau de qualité de vie visé. */
+  safetyDistance?: {
+    q80_min: number;
+    q80_med: number;
+    q80_max: number;
+    q95_min: number;
+    q95_med: number;
+    q95_max: number;
+  };
 }
 
 /**

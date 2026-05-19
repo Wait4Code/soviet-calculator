@@ -5,6 +5,7 @@ import { vehicles, getVehicle, formatVehicleSkills, ORIGIN_TO_KEY } from '@/data
 import { productionCalculator } from '@/lib/productionCalculator';
 import { getResourceIcon } from '@/data/resourceIcons';
 import { BuildingPicker } from '@/components/BuildingPicker';
+import { POLLUTION_DISTANCE_MODES } from '@/data/pollutionByBuilding';
 
 const BASE = import.meta.env.BASE_URL;
 const VEHICLE_PLACEHOLDER = `${BASE}vehicles/excavator.svg`;
@@ -64,6 +65,13 @@ export function Settings() {
   const setDefaultVehicleId = useStore((state) => state.setDefaultVehicleId);
   const defaultBuildingByResource = useStore((state) => state.defaultBuildingByResource);
   const setDefaultBuilding = useStore((state) => state.setDefaultBuilding);
+  const pollutionDistanceMode = useStore((state) => state.pollutionDistanceMode);
+  const setPollutionDistanceMode = useStore((state) => state.setPollutionDistanceMode);
+  const [sliderHovered, setSliderHovered] = useState(false);
+  const sliderIndex = POLLUTION_DISTANCE_MODES.indexOf(pollutionDistanceMode);
+  const sliderMax = POLLUTION_DISTANCE_MODES.length - 1;
+  const thumbPct = (sliderIndex / sliderMax) * 100;
+  const sliderDetailKey = `settings.pollutionDistanceModeDetail${pollutionDistanceMode.split('_').map((s) => s.charAt(0).toUpperCase() + s.slice(1)).join('')}` as never;
 
   const productionsWithMultipleRecipes = productionCalculator
     .getAllProductions()
@@ -203,6 +211,50 @@ export function Settings() {
                 ))}
               </div>
             )}
+          </div>
+
+          {/* Distance de sécurité pollution */}
+          <div>
+            <label className="block text-sm font-medium mb-2">
+              {t('settings.pollutionDistanceModeLabel')}
+            </label>
+            <p className="text-sm text-gray-400 mb-3">
+              {t('settings.pollutionDistanceModeHint')}
+            </p>
+            <div className="space-y-1 text-xs text-gray-500 mb-4">
+              <p><span className="font-medium text-gray-300">{t('settings.pollutionDistanceModeConfiant')}</span> — {t('settings.pollutionDistanceModeHintConfiant')}</p>
+              <p><span className="font-medium text-gray-300">{t('settings.pollutionDistanceModePrudent')}</span> — {t('settings.pollutionDistanceModeHintPrudent')}</p>
+            </div>
+            <div
+              className="relative w-full md:w-80"
+              onMouseEnter={() => setSliderHovered(true)}
+              onMouseLeave={() => setSliderHovered(false)}
+            >
+              {sliderHovered && (
+                <div
+                  className="absolute bottom-full mb-2 z-10 pointer-events-none"
+                  style={{ left: `${thumbPct}%`, transform: 'translateX(-50%)' }}
+                >
+                  <div className="px-2 py-1 text-xs text-white bg-gray-900 rounded shadow-lg whitespace-nowrap">
+                    {t(sliderDetailKey)}
+                  </div>
+                  <div className="absolute left-1/2 -translate-x-1/2 top-full border-4 border-transparent border-t-gray-900" />
+                </div>
+              )}
+              <input
+                type="range"
+                min={0}
+                max={sliderMax}
+                step={1}
+                value={sliderIndex}
+                onChange={(e) => setPollutionDistanceMode(POLLUTION_DISTANCE_MODES[parseInt(e.target.value)])}
+                className="w-full accent-soviet-gold"
+              />
+            </div>
+            <div className="flex justify-between text-xs text-gray-400 mt-1 w-full md:w-80">
+              <span>{t('settings.pollutionDistanceModeConfiant')}</span>
+              <span>{t('settings.pollutionDistanceModePrudent')}</span>
+            </div>
           </div>
 
           {/* Bâtiment par défaut par ressource (plusieurs recettes) */}

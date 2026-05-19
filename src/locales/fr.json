@@ -70,7 +70,7 @@
     "wasteTableBuilding": "Bâtiment",
     "wasteTableTotal": "Total",
     "wasteTablePollution": "Pollution",
-    "safetyDistanceTooltip": "Distance de sécurité approximative",
+    "safetyDistanceTooltip": "Distance de sécurité observée",
     "wasteCategoryMixed": "Mixte",
     "wasteCategoryHazardous": "Dangereux",
     "waterLivestockWarning": "La consommation d'eau affichée n'inclut pas l'eau liée au bétail stocké (~0,05 m³/t de livestock)."
@@ -89,7 +89,19 @@
     "defaultBuildingLabel": "Bâtiment par défaut (ressources à plusieurs recettes)",
     "defaultBuildingHint": "Lorsqu'une ressource peut être produite par plusieurs bâtiments, le bâtiment utilisé par défaut dans le calculateur de production. Cliquez sur l'image pour en choisir un autre.",
     "blocEast": "Bloc de l'Est",
-    "blocWest": "Bloc de l'Ouest"
+    "blocWest": "Bloc de l'Ouest",
+    "pollutionDistanceModeLabel": "Distance de sécurité autour des bâtiments polluants",
+    "pollutionDistanceModeHint": "Les distances de sécurité ont été mesurées manuellement pour chaque bâtiment. L'usine tourne à 100% de capacité ; des stations de pompage servent d'indicateurs (leur qualité de source reflète le niveau de pollution ambiant). Sur chacun des quatre côtés de l'usine, deux pompes sont placées : une indiquant 80% de qualité de vie, une indiquant 95%. La distance entre le centre de l'usine et chaque pompe est mesurée. Quatre côtés sont mesurés car la propagation de la pollution n'est pas uniforme. Le curseur propose 6 niveaux : de la distance minimale observée à 80% de qualité jusqu'à la distance maximale observée à 95%.",
+    "pollutionDistanceModeConfiant": "Confiant",
+    "pollutionDistanceModePrudent": "Prudent",
+    "pollutionDistanceModeHintConfiant": "Distance minimale (80% de qualité). Pour gagner de la place, en acceptant que certaines zones puissent être légèrement exposées.",
+    "pollutionDistanceModeHintPrudent": "Distance maximale (95% de qualité). Pour une population totalement préservée de la pollution en toutes circonstances.",
+    "pollutionDistanceModeDetailQ80Min": "80% de qualité · valeur minimale",
+    "pollutionDistanceModeDetailQ80Med": "80% de qualité · valeur médiane",
+    "pollutionDistanceModeDetailQ80Max": "80% de qualité · valeur maximale",
+    "pollutionDistanceModeDetailQ95Min": "95% de qualité · valeur minimale",
+    "pollutionDistanceModeDetailQ95Med": "95% de qualité · valeur médiane",
+    "pollutionDistanceModeDetailQ95Max": "95% de qualité · valeur maximale"
   },
   "resources": {
     "alcohol": "Alcool",

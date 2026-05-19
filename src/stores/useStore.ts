@@ -1,5 +1,6 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
+import type { PollutionDistanceMode } from '@/data/pollutionByBuilding';
 
 interface StoreState {
   // Qualité de source pour les mines (0-100%, défaut 50%)
@@ -17,6 +18,10 @@ interface StoreState {
   // Année par défaut (affecte composants électroniques et appareils électroniques)
   year: number;
   setYear: (year: number) => void;
+
+  // Mode d'affichage des distances de sécurité pollution (de optimiste à pessimiste)
+  pollutionDistanceMode: PollutionDistanceMode;
+  setPollutionDistanceMode: (mode: PollutionDistanceMode) => void;
 }
 
 export const useStore = create<StoreState>()(
@@ -26,6 +31,7 @@ export const useStore = create<StoreState>()(
       defaultVehicleId: 'e-10011d',
       defaultBuildingByResource: {},
       year: 1960,
+      pollutionDistanceMode: 'q80_min',
 
       setSourceQuality: (quality) => set({ sourceQuality: Math.max(0, Math.min(100, quality)) }),
       setDefaultVehicleId: (vehicleId) => set({ defaultVehicleId: vehicleId }),
@@ -33,6 +39,7 @@ export const useStore = create<StoreState>()(
         defaultBuildingByResource: { ...state.defaultBuildingByResource, [resourceId]: buildingName },
       })),
       setYear: (year) => set({ year: Math.round(year) }),
+      setPollutionDistanceMode: (mode) => set({ pollutionDistanceMode: mode }),
     }),
     {
       name: 'soviet-calculator-storage',
