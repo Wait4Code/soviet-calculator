@@ -1249,7 +1249,10 @@ export function ProductionCalculator() {
                             const formattedRequired = isElectricity
                               ? `${productionCalculator.formatInteger(requiredPerDay * 60)} ${unitShort}`
                               : `${productionCalculator.formatValue(requiredPerDay)} ${unitShort}`;
-                            const tooltipContent = formattedPerYear;
+                            const requiredPerYear = productionCalculator.floor(requiredPerDay * 365);
+                            const tooltipContent = isElectricity
+                              ? `${productionCalculator.formatInteger(requiredPerDay * 60 * 365)} ${unitYear}`
+                              : `${productionCalculator.formatInteger(requiredPerYear)} ${unitYear}`;
                             return (
                               <Tooltip content={tooltipContent} placement="top">
                                 <span>{formattedRequired}</span>
