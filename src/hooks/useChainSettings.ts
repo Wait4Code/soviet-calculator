@@ -25,6 +25,8 @@ export interface UseChainSettingsReturn extends ChainSettingsState {
   setChainYear: (year: number) => void;
   loadSettings: (state: ChainSettingsState) => void;
   resetSettings: (defaultYear?: number) => void;
+  /** Reset only the disabled-resources state (used when the goal list changes). */
+  resetDisabledResources: () => void;
 }
 
 export function settingsFromPlan(plan: PlanStateSerialized): ChainSettingsState {
@@ -152,6 +154,13 @@ export function useChainSettings(defaultYear: number): UseChainSettingsReturn {
     setChargeRatioByResource({});
   };
 
+  // Reset only disabled-resources when the goal list changes (original behavior).
+  // Must NOT touch quality, buildings, vehicles or charge ratios — those belong to the plan.
+  const resetDisabledResources = () => {
+    setDisabledResources(new Set());
+    setManuallyDisabledResources(new Set());
+  };
+
   return {
     disabledResources,
     chainYear,
@@ -169,5 +178,6 @@ export function useChainSettings(defaultYear: number): UseChainSettingsReturn {
     setChainYear,
     loadSettings,
     resetSettings,
+    resetDisabledResources,
   };
 }

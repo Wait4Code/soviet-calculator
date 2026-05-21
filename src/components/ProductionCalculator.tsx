@@ -129,13 +129,14 @@ export function ProductionCalculator() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [currentPlanState]);
 
-  // Reset disabled resources when base goals change
+  // Reset disabled resources when the goal resource list changes (original behavior).
+  // Only disabled-resources are cleared — quality/building/vehicle overrides belong to the plan.
   const goalsKey = goals.goals.map((g) => g.resourceId).join(',');
   const prevGoalsKeyRef = useRef(goalsKey);
   useEffect(() => {
     if (prevGoalsKeyRef.current !== goalsKey) {
       prevGoalsKeyRef.current = goalsKey;
-      settings.resetSettings(settings.chainYear);
+      settings.resetDisabledResources();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [goalsKey]);
@@ -213,7 +214,15 @@ export function ProductionCalculator() {
             if (first) goals.addGoal(first.resourceId);
           }}
           onRemoveGoal={goals.removeGoal}
-          onUpdateGoal={goals.updateGoal}
+          onUpdateGoal={(id, patch) => {
+            goals.updateGoal(id, patch);
+            // When the user explicitly picks a building, also store it as a chain-level
+            // override so it takes priority over the global default building.
+            if (patch.buildingName !== undefined) {
+              const goalObj = goals.goals.find((g) => g.id === id);
+              if (goalObj) settings.setBuilding(goalObj.resourceId, patch.buildingName);
+            }
+          }}
           onSetGoalResource={(goalId, resourceId) =>
             goals.setGoalResource(goalId, resourceId, effectiveBuildingByResource)
           }
