@@ -2,7 +2,7 @@ import { useMemo } from 'react';
 import { productionCalculator } from '@/lib/productionCalculator';
 import { sortProductionChain } from '@/lib/chainSort';
 import { getResourceName } from '@/data/productions';
-import { POLLUTION_T_PER_YEAR, getSafetyDistance, type PollutionDistanceMode } from '@/data/pollutionByBuilding';
+import { POLLUTION_T_PER_YEAR } from '@/data/pollutionByBuilding';
 import type { ProductionResult } from '@/data/types';
 import type { ProductionGoal } from '@/data/types';
 import type { CalculationConfig } from '@/lib/productionCalculator';
@@ -34,8 +34,6 @@ export interface WasteTableData {
   };
   pollutionMin: number | undefined;
   pollutionMax: number | undefined;
-  distanceMin: number | undefined;
-  distanceMax: number | undefined;
 }
 
 export interface UseCalculationChainReturn {
@@ -61,8 +59,6 @@ export interface ChainStoreSnapshot {
 const WORKER_WASTE_060: Record<string, number> = { bio: 0.10 / 0.60, burnable: 0.20 / 0.60, other: 0.30 / 0.60 };
 const WORKER_WASTE_043: Record<string, number> = { bio: 0.10 / 0.43, burnable: 0.12 / 0.43, other: 0.10 / 0.43, construction: 0.11 / 0.43 };
 
-// Default pollution distance mode (used for wasteTableData)
-const DEFAULT_POLLUTION_DISTANCE_MODE: PollutionDistanceMode = 'q80_med';
 
 export function useCalculationChain(
   goals: ProductionGoal[],
@@ -543,14 +539,10 @@ export function useCalculationChain(
       });
     });
 
-    const pollutionDistanceMode = DEFAULT_POLLUTION_DISTANCE_MODE;
     const rows = Array.from(byBuilding.values()).filter((r) => r.sewagePerDay > 0 || r.mixedPerDay > 0 || r.hazardousPerDay > 0);
     const polValues = rows.map((r) => r.pollutionTPerYear).filter((v): v is number => v != null);
     const pollutionMin = polValues.length > 0 ? Math.min(...polValues) : undefined;
     const pollutionMax = polValues.length > 0 ? Math.max(...polValues) : undefined;
-    const sdValues = rows.map((r) => r.safetyDistance != null ? getSafetyDistance(r.safetyDistance, pollutionDistanceMode) : null).filter((v): v is number => v != null);
-    const distanceMin = sdValues.length > 0 ? Math.min(...sdValues) : undefined;
-    const distanceMax = sdValues.length > 0 ? Math.max(...sdValues) : undefined;
     const totals = rows.reduce(
       (acc, r) => ({
         sewagePerDay: acc.sewagePerDay + r.sewagePerDay,
@@ -565,7 +557,7 @@ export function useCalculationChain(
       Object.entries(r.mixedComposition).forEach(([k, v]) => { totals.mixedComposition[k] = (totals.mixedComposition[k] ?? 0) + v; });
       Object.entries(r.hazardousComposition).forEach(([k, v]) => { totals.hazardousComposition[k] = (totals.hazardousComposition[k] ?? 0) + v; });
     });
-    return { rows, totals, pollutionMin, pollutionMax, distanceMin, distanceMax };
+    return { rows, totals, pollutionMin, pollutionMax };
   }, [sewageResult, wasteMixedResult, wasteToxicResult]);
 
   const totalWorkers = useMemo(() => {

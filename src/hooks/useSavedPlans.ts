@@ -1,4 +1,4 @@
-import { useState, useRef, useCallback } from 'react';
+import { useState, useRef, useCallback, useEffect } from 'react';
 import {
   getSavedPlans,
   savePlan,
@@ -110,6 +110,13 @@ export function useSavedPlans(_locale: string): UseSavedPlansReturn {
       syncList();
     }, 600);
   }, [syncList]);
+
+  // Clean up autosave timer on unmount
+  useEffect(() => {
+    return () => {
+      if (autosaveTimeoutRef.current) clearTimeout(autosaveTimeoutRef.current);
+    };
+  }, []);
 
   return {
     savedPlansList: mutableListRef.current,

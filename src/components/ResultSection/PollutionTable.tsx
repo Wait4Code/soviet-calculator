@@ -49,6 +49,12 @@ export function PollutionTable({ wasteTableData, results, pollutionDistanceMode 
 
   if (wasteTableData.rows.length === 0) return null;
 
+  const sdValues = wasteTableData.rows
+    .map((r) => r.safetyDistance != null ? getSafetyDistance(r.safetyDistance, pollutionDistanceMode) : null)
+    .filter((v): v is number => v != null);
+  const distanceMin = sdValues.length > 0 ? Math.min(...sdValues) : undefined;
+  const distanceMax = sdValues.length > 0 ? Math.max(...sdValues) : undefined;
+
   const hasTotalDetail =
     Object.keys(wasteTableData.totals.mixedComposition).length > 0 ||
     Object.keys(wasteTableData.totals.hazardousComposition).length > 0;
@@ -341,7 +347,7 @@ export function PollutionTable({ wasteTableData, results, pollutionDistanceMode 
                   : '—'}
               </td>
               <td className="py-2 px-3 text-right font-mono text-sm">
-                {wasteTableData.pollutionMin != null || wasteTableData.distanceMin != null ? (
+                {wasteTableData.pollutionMin != null || distanceMin != null ? (
                   <span className="block text-right">
                     {wasteTableData.pollutionMin != null && wasteTableData.pollutionMax != null && (
                       <span>
@@ -350,11 +356,11 @@ export function PollutionTable({ wasteTableData, results, pollutionDistanceMode 
                         {t('units.t_year_building')}
                       </span>
                     )}
-                    {wasteTableData.distanceMin != null && wasteTableData.distanceMax != null && (
+                    {distanceMin != null && distanceMax != null && (
                       <span className="block mt-0.5">
                         <Tooltip content={t('industry.safetyDistanceTooltip')}>
                           <span className="text-gray-500 text-xs">
-                            {wasteTableData.distanceMin} – {wasteTableData.distanceMax} {t('units.m')}
+                            {distanceMin} – {distanceMax} {t('units.m')}
                           </span>
                         </Tooltip>
                       </span>
