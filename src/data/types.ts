@@ -114,3 +114,14 @@ export interface ProductionResult {
   /** Détail par bâtiment pour une ligne consommation (eau, électricité) : consommation de chaque bâtiment */
   consumptionBreakdown?: Array<{ sourceResourceId: string; buildingName: string; amountPerSecond: number }>;
 }
+
+/**
+ * Un objectif de production défini par l'utilisateur
+ */
+export interface ProductionGoal {
+  id: string;
+  resourceId: string;
+  buildingName: string;
+  inputType: 'buildings' | 'output_per_day' | 'output_per_year';
+  value: number;
+}

@@ -2,7 +2,7 @@ import { useState, useMemo, useEffect, useRef, Fragment } from 'react';
 import { useTranslation } from 'react-i18next';
 import { productionCalculator } from '@/lib/productionCalculator';
 import { sortProductionChain } from '@/lib/chainSort';
-import { ProductionResult } from '@/data/types';
+import { ProductionResult, ProductionGoal } from '@/data/types';
 import type { CalculationConfig, MineVehicleConfig } from '@/lib/productionCalculator';
 import { migrateVehicleConfig } from '@/lib/productionCalculator';
 import { useStore } from '@/stores/useStore';
@@ -17,14 +17,6 @@ import { Tooltip } from '@/components/Tooltip';
 import { vehicles, getVehicle, formatVehicleSkills, ORIGIN_TO_KEY } from '@/data/vehicles';
 import { BuildingPicker } from '@/components/BuildingPicker';
 import { ResourcePicker } from '@/components/ResourcePicker';
-
-export interface ProductionGoal {
-  id: string;
-  resourceId: string;
-  buildingName: string;
-  inputType: 'buildings' | 'output_per_day' | 'output_per_year';
-  value: number;
-}
 
 const BASE = import.meta.env.BASE_URL;
 const VEHICLE_PLACEHOLDER = `${BASE}vehicles/excavator.svg`;
