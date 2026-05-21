@@ -5,7 +5,7 @@ import { GoalItem } from './GoalItem';
 interface GoalListProps {
   goals: ProductionGoal[];
   allProductions: ResourceProduction[];
-  effectiveBuildingByResource: Record<string, string>;
+  effectiveBuildingByResource?: Record<string, string>;
   onAddGoal: () => void;
   onRemoveGoal: (id: string) => void;
   onUpdateGoal: (id: string, patch: Partial<Pick<ProductionGoal, 'resourceId' | 'buildingName' | 'inputType' | 'value'>>) => void;

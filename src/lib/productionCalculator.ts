@@ -655,9 +655,8 @@ export class ProductionCalculator {
     }
 
     // Trouver la recette à utiliser (spécifiée, défaut configuré, ou première)
-    let recipe: ProductionRecipe | undefined;
     const buildingName = config.buildingName ?? getDefaultBuilding(config, config.resourceId, production.recipes);
-    recipe = production.recipes.find((r) => r.name === buildingName);
+    const recipe: ProductionRecipe | undefined = production.recipes.find((r) => r.name === buildingName);
 
     if (!recipe) return results;
 

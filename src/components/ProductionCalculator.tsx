@@ -208,7 +208,6 @@ export function ProductionCalculator() {
         <GoalList
           goals={goals.goals}
           allProductions={allProductions}
-          effectiveBuildingByResource={effectiveBuildingByResource}
           onAddGoal={() => {
             const first = allProductions[0];
             if (first) goals.addGoal(first.resourceId);

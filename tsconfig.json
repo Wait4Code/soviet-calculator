@@ -14,6 +14,9 @@
     "noEmit": true,
     "jsx": "react-jsx",
 
+    /* Type definitions */
+    "types": ["vitest/globals"],
+
     /* Linting */
     "resolveJsonModule": true,
     "strict": true,
