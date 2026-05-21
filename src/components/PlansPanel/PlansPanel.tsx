@@ -1,4 +1,4 @@
-import { useState, useMemo } from 'react';
+import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import type { SavedPlan } from '@/lib/savedPlans';
 import { Tooltip } from '@/components/Tooltip';
@@ -30,7 +30,9 @@ export function PlansPanel({
   const [renameValue, setRenameValue] = useState('');
   const [plansSort, setPlansSort] = useState<PlansSort>({ field: 'date', order: 'desc' });
 
-  const sortedPlansList = useMemo(() => {
+  // Note: ne pas mémoïser avec useMemo ici car savedPlansList est un tableau muté
+  // en place (même référence) — useMemo ne détecterait pas les changements.
+  const sortedPlansList = (() => {
     const list = [...savedPlansList];
     if (plansSort.field === 'name') {
       const cmp = (a: SavedPlan, b: SavedPlan) =>
@@ -39,7 +41,7 @@ export function PlansPanel({
     }
     const cmp = (a: SavedPlan, b: SavedPlan) => a.createdAt - b.createdAt;
     return plansSort.order === 'asc' ? list.sort(cmp) : list.sort((a, b) => -cmp(a, b));
-  }, [savedPlansList, plansSort]);
+  })();
 
   const toggleSort = (field: 'date' | 'name') => {
     setPlansSort((prev) =>
