@@ -246,7 +246,7 @@ export function ProductionCalculator() {
             onSetBuilding={settings.setBuilding}
             onSetVehicleConfig={settings.setVehicleConfig}
             onSetChargeRatio={settings.setChargeRatio}
-            onResetChargeRatio={(id) => settings.setChargeRatio(id, 1.0)}
+            onResetChargeRatio={settings.resetChargeRatio}
           />
         )}
       </div>

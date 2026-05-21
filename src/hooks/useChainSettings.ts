@@ -20,6 +20,8 @@ export interface UseChainSettingsReturn extends ChainSettingsState {
   setBuilding: (id: string, buildingName: string) => void;
   setVehicleConfig: (id: string, cfg: MineVehicleConfig) => void;
   setChargeRatio: (id: string, ratio: number) => void;
+  /** Remove the charge ratio override for a resource (falls back to recipe default). */
+  resetChargeRatio: (id: string) => void;
   setChainYear: (year: number) => void;
   loadSettings: (state: ChainSettingsState) => void;
   resetSettings: (defaultYear?: number) => void;
@@ -121,6 +123,13 @@ export function useChainSettings(defaultYear: number): UseChainSettingsReturn {
     setChargeRatioByResource((prev) => ({ ...prev, [id]: ratio }));
   };
 
+  const resetChargeRatio = (id: string) => {
+    setChargeRatioByResource((prev) => {
+      const { [id]: _removed, ...rest } = prev;
+      return rest;
+    });
+  };
+
   const loadSettings = (state: ChainSettingsState) => {
     setDisabledResources(new Set(state.disabledResources));
     setManuallyDisabledResources(new Set());
@@ -156,6 +165,7 @@ export function useChainSettings(defaultYear: number): UseChainSettingsReturn {
     setBuilding,
     setVehicleConfig,
     setChargeRatio,
+    resetChargeRatio,
     setChainYear,
     loadSettings,
     resetSettings,
