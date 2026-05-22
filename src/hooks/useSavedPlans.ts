@@ -58,7 +58,7 @@ export function useSavedPlans(_locale: string): UseSavedPlansReturn {
 
   const loadPlan = useCallback((id: string): PlanStateSerialized | null => {
     const state = getPlanState(id);
-    if (state) {
+    if (state && currentPlanIdRef.current !== id) {
       currentPlanIdRef.current = id;
       setCurrentPlanIdState(id);
     }
