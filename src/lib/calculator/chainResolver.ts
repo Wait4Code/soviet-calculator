@@ -143,32 +143,30 @@ function calculateProductionChain(
         results.push(result);
         pushCoProductResults(results, result, recipe, config.resourceId);
 
-        if (!config.disabledResources.has(config.resourceId)) {
-          result.inputsPerSecond.forEach((amountPerSecond, inputResourceId) => {
-            const producingRecipes = findRecipesProducing(inputResourceId);
-            const isProducible = producingRecipes.length > 0;
+        result.inputsPerSecond.forEach((amountPerSecond, inputResourceId) => {
+          const producingRecipes = findRecipesProducing(inputResourceId);
+          const isProducible = producingRecipes.length > 0;
 
-            if (!config.disabledResources.has(inputResourceId) && isProducible) {
-              const amountPerDay = amountPerSecond * 24 * 60 * 60;
-              const subConfig: CalculationConfig = {
-                resourceId: inputResourceId,
-                buildingName: getDefaultBuilding(config, inputResourceId, producingRecipes),
-                inputType: 'output_per_day',
-                value: amountPerDay,
-                disabledResources: config.disabledResources,
-                sourceQuality: config.sourceQuality,
-                sourceQualityByResource: config.sourceQualityByResource,
-                defaultVehicleId,
-                defaultBuildingByResource: config.defaultBuildingByResource,
-                year: config.year,
-                vehicleConfigByResource: config.vehicleConfigByResource,
-                chargeRatioByResource: config.chargeRatioByResource,
-              };
-              const subChain = calculateProductionChain(subConfig, maxDepth - 1, new Set(visited));
-              results.push(...subChain);
-            }
-          });
-        }
+          if (!config.disabledResources.has(inputResourceId) && isProducible) {
+            const amountPerDay = amountPerSecond * 24 * 60 * 60;
+            const subConfig: CalculationConfig = {
+              resourceId: inputResourceId,
+              buildingName: getDefaultBuilding(config, inputResourceId, producingRecipes),
+              inputType: 'output_per_day',
+              value: amountPerDay,
+              disabledResources: config.disabledResources,
+              sourceQuality: config.sourceQuality,
+              sourceQualityByResource: config.sourceQualityByResource,
+              defaultVehicleId,
+              defaultBuildingByResource: config.defaultBuildingByResource,
+              year: config.year,
+              vehicleConfigByResource: config.vehicleConfigByResource,
+              chargeRatioByResource: config.chargeRatioByResource,
+            };
+            const subChain = calculateProductionChain(subConfig, maxDepth - 1, new Set(visited));
+            results.push(...subChain);
+          }
+        });
 
         return results;
       }
@@ -351,11 +349,11 @@ function calculateProductionChain(
     year
   );
   if (allowPersonnel && requiresVehicles(recipe)) {
-    (result as ProductionResult).hasVehiclePersonnelEnabled = true;
+    result.hasVehiclePersonnelEnabled = true;
     result.chargeRatio = effectiveChargeRatio;
   }
   if (vehicleProductionPerDay !== undefined && requiresVehicles(recipe)) {
-    (result as ProductionResult).vehicleProductionPerDay = vehicleProductionPerDay;
+    result.vehicleProductionPerDay = vehicleProductionPerDay;
   }
   results.push(result);
   pushCoProductResults(results, result, recipe, config.resourceId);

@@ -17,12 +17,12 @@ export function getConsumptionFactor(year: number, params: { p1: number; p2: num
   return 1 + clamp(raw, 0, params.p3);
 }
 
-export function getSourceQuality(config: CalculationConfig, resourceId: string): number {
+export function getSourceQuality(config: Partial<CalculationConfig>, resourceId: string): number {
   return config.sourceQualityByResource?.[resourceId] ?? config.sourceQuality ?? 50;
 }
 
 export function getDefaultBuilding(
-  config: CalculationConfig,
+  config: Partial<CalculationConfig>,
   resourceId: string,
   recipes: ProductionRecipe[]
 ): string {
@@ -32,13 +32,13 @@ export function getDefaultBuilding(
   return recipes[0].name;
 }
 
-export function getYear(config: CalculationConfig): number {
+export function getYear(config: Partial<CalculationConfig>): number {
   return config.year ?? 1960;
 }
 
 /** Taux de charge effectif : surcharge uniquement à la hausse si configurée */
 export function getEffectiveChargeRatio(
-  config: CalculationConfig,
+  config: Partial<CalculationConfig>,
   resourceId: string,
   calculated: number
 ): number {

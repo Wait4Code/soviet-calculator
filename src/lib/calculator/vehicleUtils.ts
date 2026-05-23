@@ -47,7 +47,7 @@ export function computeVehicleCapacity(vehicleSlots: (string | null)[], skill: s
 
 /** Récupère la config véhicule pour une ressource (override ou défaut) */
 export function getMineVehicleConfig(
-  config: CalculationConfig,
+  config: Partial<CalculationConfig>,
   resourceId: string,
   recipe: ProductionRecipe
 ): MineVehicleConfig {
