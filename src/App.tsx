@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Changelog } from './components/Changelog';
+import { ErrorBoundary } from './components/ErrorBoundary';
 import { ProductionCalculator } from './components/ProductionCalculator';
 import { Settings } from './components/Settings';
 import { Tooltip } from './components/Tooltip';
@@ -88,7 +89,9 @@ function App() {
       {/* Main Content - tous les onglets restent montés pour mémoriser leur état */}
       <main className="flex-1 container mx-auto px-4 py-8">
         <div className={activeTab === 'industry' ? '' : 'hidden'}>
-          <ProductionCalculator />
+          <ErrorBoundary>
+            <ProductionCalculator />
+          </ErrorBoundary>
         </div>
         <div className={activeTab === 'settings' ? '' : 'hidden'}>
           <Settings />
