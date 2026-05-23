@@ -50,7 +50,7 @@ describe('getMineVehicleConfig', () => {
   const recipe = { maxVehicles: 2, requiresVehicles: true } as import('@/data/types').ProductionRecipe;
 
   it('returns default config when no override', () => {
-    const config = { defaultVehicleId: 'e-10011d' } as import('@/lib/productionCalculator').CalculationConfig;
+    const config = { defaultVehicleId: 'e-10011d' } as unknown as import('@/lib/productionCalculator').CalculationConfig;
     const result = getMineVehicleConfig(config, 'coal', recipe);
     expect(result.vehicleSlots).toHaveLength(2);
     expect(result.vehicleSlots.every(s => s === 'e-10011d')).toBe(true);
@@ -61,13 +61,13 @@ describe('getMineVehicleConfig', () => {
     const config = {
       defaultVehicleId: 'e-10011d',
       vehicleConfigByResource: { coal: override },
-    } as import('@/lib/productionCalculator').CalculationConfig;
+    } as unknown as import('@/lib/productionCalculator').CalculationConfig;
     const result = getMineVehicleConfig(config, 'coal', recipe);
     expect(result.vehicleSlots).toEqual(['e-10011d', null]);
   });
 
   it('uses fallback vehicle id e-10011d when defaultVehicleId not set', () => {
-    const config = {} as import('@/lib/productionCalculator').CalculationConfig;
+    const config = {} as unknown as import('@/lib/productionCalculator').CalculationConfig;
     const result = getMineVehicleConfig(config, 'coal', recipe);
     expect(result.vehicleSlots.every(s => s === 'e-10011d')).toBe(true);
   });
