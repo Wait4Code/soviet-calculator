@@ -58,7 +58,7 @@ describe('useCalculationChain', () => {
       })
     );
     expect(result.current.totalWorkers).toBeGreaterThan(0);
-    expect(result.current.totalProfesors).toBeGreaterThanOrEqual(0);
+    expect(result.current.totalProfessors).toBeGreaterThanOrEqual(0);
   });
 
   it('respecte les ressources désactivées', () => {

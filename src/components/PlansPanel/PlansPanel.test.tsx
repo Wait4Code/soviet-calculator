@@ -12,6 +12,7 @@ const MOCK_PLAN: SavedPlan = {
   id: 'plan-1',
   name: 'Mon plan acier',
   createdAt: Date.now(),
+  schemaVersion: 1,
   planState: { g: [], y: 1960 },
 };
 

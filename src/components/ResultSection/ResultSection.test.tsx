@@ -27,7 +27,7 @@ const BASE_PROPS = {
   vehicleConfigByResource: {},
   chargeRatioByResource: {},
   totalWorkers: 0,
-  totalProfesors: 0,
+  totalProfessors: 0,
   personnelBreakdown: [],
   surplusByResource: new Map<string, number>(),
   primaryResourceIds: new Set<string>(),

@@ -17,7 +17,7 @@ function mkResult(
     inputsPerSecond,
     outputsPerSecond,
     totalWorkers: 0,
-    totalProfesors: 0,
+    totalProfessors: 0,
   };
 }
 
