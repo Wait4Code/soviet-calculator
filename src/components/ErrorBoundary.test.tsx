@@ -8,9 +8,10 @@ function Bomb(): never {
   throw new Error('test explosion');
 }
 
-// Suppress React's console.error for expected errors in this test
+// Suppress React's console.error and jsdom's window error events for expected errors in this test
 beforeEach(() => {
   vi.spyOn(console, 'error').mockImplementation(() => {});
+  window.addEventListener('error', (e) => e.preventDefault());
 });
 afterEach(() => {
   vi.restoreAllMocks();
