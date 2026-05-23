@@ -1,8 +1,8 @@
 import { ProductionResult, ProductionRecipe, ResourceProduction } from '@/data/types';
 import { productions, getResourceName } from '@/data/productions';
 import { formatNumber } from '@/lib/format';
-import { clamp, getProductionFactor, getConsumptionFactor, getSourceQuality, getDefaultBuilding, getYear, getEffectiveChargeRatio } from '@/lib/calculator/helpers';
-import { getDefaultMineVehicleConfig, migrateVehicleConfig as _migrateVehicleConfig, computeVehicleCapacity, getMineVehicleConfig } from '@/lib/calculator/vehicleUtils';
+import { clamp, getSourceQuality, getDefaultBuilding, getYear, getEffectiveChargeRatio } from '@/lib/calculator/helpers';
+import { migrateVehicleConfig as _migrateVehicleConfig, computeVehicleCapacity, getMineVehicleConfig } from '@/lib/calculator/vehicleUtils';
 import { calculateBuildingsAndWorkers as _calcBW, calculateRequirementsForBuildings as _calcReq, type BuildingCalcResult } from '@/lib/calculator/buildingCalculator';
 
 /**
