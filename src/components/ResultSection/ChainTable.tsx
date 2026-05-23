@@ -47,8 +47,8 @@ export interface ChainTableProps {
   vehicleConfigByResource: Record<string, MineVehicleConfig>;
   chargeRatioByResource: Record<string, number>;
   totalWorkers: number;
-  totalProfesors: number;
-  personnelBreakdown: Array<{ sourceResourceId: string; buildingName: string; workers: number; profesors: number }>;
+  totalProfessors: number;
+  personnelBreakdown: Array<{ sourceResourceId: string; buildingName: string; workers: number; professors: number }>;
   surplusByResource: Map<string, number>;
   primaryResourceIds: Set<string>;
   chainHasLivestockBuilding: boolean;
@@ -74,7 +74,7 @@ export function ChainTable({
   vehicleConfigByResource,
   chargeRatioByResource,
   totalWorkers,
-  totalProfesors,
+  totalProfessors,
   personnelBreakdown,
   surplusByResource,
   primaryResourceIds,
@@ -174,9 +174,9 @@ export function ChainTable({
               const unitYear = t(unitYearKey);
               const unitShort = isElectricity ? t('units.MWh') : isVolume ? t('units.m3') : t('units.t');
               const workersPerBuilding = result.workersPerBuilding || 0;
-              const profesorsPerBuilding = result.profesorsPerBuilding || 0;
+              const professorsPerBuilding = result.professorsPerBuilding || 0;
               const hasVehiclePersonnelEnabled = result.hasVehiclePersonnelEnabled === true;
-              const hasNoPersonnel = workersPerBuilding === 0 && profesorsPerBuilding === 0;
+              const hasNoPersonnel = workersPerBuilding === 0 && professorsPerBuilding === 0;
               const showCharge = !hasNoPersonnel || hasVehiclePersonnelEnabled;
 
               const hasInvalidConfig = result.invalidConfig === true;
@@ -328,7 +328,7 @@ export function ChainTable({
                           )}
                           {showCharge ? (
                             <span className="flex items-center gap-1 flex-wrap">
-                              <Tooltip content={`${formatNumber(workersPerBuilding)} ${t('tooltips.workersBlue')}${profesorsPerBuilding > 0 ? `, ${formatNumber(profesorsPerBuilding)} ${t('tooltips.workersWhite')}` : ''}`} placement="top">
+                              <Tooltip content={`${formatNumber(workersPerBuilding)} ${t('tooltips.workersBlue')}${professorsPerBuilding > 0 ? `, ${formatNumber(professorsPerBuilding)} ${t('tooltips.workersWhite')}` : ''}`} placement="top">
                                 <span> x {formatNumber(result.buildingCount)} - {formatNumber(chargePercentage)} %</span>
                               </Tooltip>
                               {!isImported && (
@@ -567,8 +567,8 @@ export function ChainTable({
                       </div>
                     </td>
                     <td className="py-3 px-4 text-right font-mono text-gray-400 align-middle">
-                      <Tooltip content={`${formatNumber(totalWorkers)} ${t('tooltips.workersBlue')}, ${formatNumber(totalProfesors)} ${t('tooltips.workersWhite')}`} placement="top">
-                        <span>{formatNumber(totalWorkers + totalProfesors)}</span>
+                      <Tooltip content={`${formatNumber(totalWorkers)} ${t('tooltips.workersBlue')}, ${formatNumber(totalProfessors)} ${t('tooltips.workersWhite')}`} placement="top">
+                        <span>{formatNumber(totalWorkers + totalProfessors)}</span>
                       </Tooltip>
                     </td>
                     <td className="py-3 px-4 text-gray-400 align-middle">
@@ -584,7 +584,7 @@ export function ChainTable({
                           <ul className="list-disc list-inside space-y-0.5">
                             {(personnelBreakdown ?? []).map((entry, i) => (
                               <li key={`personnel-${entry.sourceResourceId}-${entry.buildingName}-${i}`}>
-                                {t(`resources.${entry.sourceResourceId}`)} ({t(`buildings:${entry.buildingName}`)}): {formatNumber(entry.workers)} {t('tooltips.workersBlue')}{entry.profesors > 0 ? `, ${formatNumber(entry.profesors)} ${t('tooltips.workersWhite')}` : ''}
+                                {t(`resources.${entry.sourceResourceId}`)} ({t(`buildings:${entry.buildingName}`)}): {formatNumber(entry.workers)} {t('tooltips.workersBlue')}{entry.professors > 0 ? `, ${formatNumber(entry.professors)} ${t('tooltips.workersWhite')}` : ''}
                               </li>
                             ))}
                           </ul>

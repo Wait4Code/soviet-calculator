@@ -64,7 +64,7 @@ export function RecipeTooltipContent({ recipe }: { recipe: ProductionRecipe }) {
   const { t } = useTranslation();
   const displayName = t(`buildings:${recipe.name}`);
   const workersStr = recipe.workers > 0
-    ? `${formatNumber(recipe.workers)} ${t('tooltips.workersBlue')}${recipe.profesors > 0 ? `, ${formatNumber(recipe.profesors)} ${t('tooltips.workersWhite')}` : ''}`
+    ? `${formatNumber(recipe.workers)} ${t('tooltips.workersBlue')}${recipe.professors > 0 ? `, ${formatNumber(recipe.professors)} ${t('tooltips.workersWhite')}` : ''}`
     : '-';
   const maxProd = recipe.requiresVehicles
     ? t('tooltips.variableVehicules')

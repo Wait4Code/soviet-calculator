@@ -241,7 +241,7 @@ export function ProductionCalculator() {
             vehicleConfigByResource={settings.vehicleConfigByResource}
             chargeRatioByResource={settings.chargeRatioByResource}
             totalWorkers={chain.totalWorkers}
-            totalProfesors={chain.totalProfesors}
+            totalProfessors={chain.totalProfessors}
             personnelBreakdown={chain.personnelBreakdown}
             wasteTableData={chain.wasteTableData}
             pollutionDistanceMode={pollutionDistanceMode}

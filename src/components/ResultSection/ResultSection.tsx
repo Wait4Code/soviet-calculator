@@ -18,8 +18,8 @@ export interface ResultSectionProps {
   vehicleConfigByResource: Record<string, MineVehicleConfig>;
   chargeRatioByResource: Record<string, number>;
   totalWorkers: number;
-  totalProfesors: number;
-  personnelBreakdown: Array<{ sourceResourceId: string; buildingName: string; workers: number; profesors: number }>;
+  totalProfessors: number;
+  personnelBreakdown: Array<{ sourceResourceId: string; buildingName: string; workers: number; professors: number }>;
   surplusByResource: Map<string, number>;
   primaryResourceIds: Set<string>;
   chainHasLivestockBuilding: boolean;
@@ -51,7 +51,7 @@ export function ResultSection(props: ResultSectionProps) {
     vehicleConfigByResource,
     chargeRatioByResource,
     totalWorkers,
-    totalProfesors,
+    totalProfessors,
     personnelBreakdown,
     surplusByResource,
     primaryResourceIds,
@@ -84,7 +84,7 @@ export function ResultSection(props: ResultSectionProps) {
         vehicleConfigByResource={vehicleConfigByResource}
         chargeRatioByResource={chargeRatioByResource}
         totalWorkers={totalWorkers}
-        totalProfesors={totalProfesors}
+        totalProfessors={totalProfessors}
         personnelBreakdown={personnelBreakdown}
         surplusByResource={surplusByResource}
         primaryResourceIds={primaryResourceIds}

@@ -4,7 +4,7 @@
       "name": "distillery",
       "production": 0.06,
       "workers": 100,
-      "profesors": 0,
+      "professors": 0,
       "consumption": {
         "plants": 0.3,
         "water": 0.135,
@@ -35,7 +35,7 @@
       "name": "alumina_plant",
       "production": 0.09,
       "workers": 370,
-      "profesors": 0,
+      "professors": 0,
       "consumption": {
         "bauxite": 0.21,
         "coal": 0.08,
@@ -69,7 +69,7 @@
       "name": "aluminium_plant",
       "production": 0.087,
       "workers": 350,
-      "profesors": 0,
+      "professors": 0,
       "consumption": {
         "alumina": 0.15,
         "chemicals": 0.0072,
@@ -99,7 +99,7 @@
       "name": "waste_aluminiumrecycling",
       "production": 0.5,
       "workers": 25,
-      "profesors": 0,
+      "professors": 0,
       "consumption": {
         "waste_aluminium": 1.0
       },
@@ -122,7 +122,7 @@
       "name": "asphalt_plant",
       "production": 29.0,
       "workers": 5,
-      "profesors": 0,
+      "professors": 0,
       "consumption": {
         "gravel": 25.0,
         "bitumen": 4.0,
@@ -147,7 +147,7 @@
       "name": "bauxite_processing",
       "production": 3.0,
       "workers": 25,
-      "profesors": 0,
+      "professors": 0,
       "consumption": {
         "rawbauxite": 5.0
       },
@@ -175,7 +175,7 @@
       "name": "oil_rafinery_v2",
       "production": 0.15,
       "workers": 500,
-      "profesors": 0,
+      "professors": 0,
       "consumption": {
         "oil": 0.5,
         "eletric": 0.21
@@ -209,7 +209,7 @@
       "name": "sawmill",
       "production": 7.0,
       "workers": 20,
-      "profesors": 0,
+      "professors": 0,
       "consumption": {
         "wood": 9.0,
         "eletric": 0.027
@@ -239,7 +239,7 @@
       "name": "brick_factory_v2",
       "production": 0.68,
       "workers": 75,
-      "profesors": 0,
+      "professors": 0,
       "consumption": {
         "coal": 0.45
       },
@@ -267,7 +267,7 @@
       "name": "CementPlant",
       "production": 2.7,
       "workers": 40,
-      "profesors": 0,
+      "professors": 0,
       "consumption": {
         "coal": 0.7,
         "gravel": 6.0,
@@ -297,7 +297,7 @@
       "name": "cement_plant_v3",
       "production": 2.7,
       "workers": 30,
-      "profesors": 0,
+      "professors": 0,
       "consumption": {
         "coal": 0.75,
         "gravel": 7.0,
@@ -329,7 +329,7 @@
       "name": "chemical_plant",
       "production": 0.0135,
       "workers": 60,
-      "profesors": 0,
+      "professors": 0,
       "consumption": {
         "gravel": 0.012,
         "wood": 0.014,
@@ -364,7 +364,7 @@
       "name": "chemical_plant_big",
       "production": 0.0135,
       "workers": 700,
-      "profesors": 0,
+      "professors": 0,
       "consumption": {
         "gravel": 0.012,
         "wood": 0.014,
@@ -401,7 +401,7 @@
       "name": "clothing_factory",
       "production": 0.015,
       "workers": 80,
-      "profesors": 0,
+      "professors": 0,
       "consumption": {
         "fabric": 0.03
       },
@@ -430,7 +430,7 @@
       "name": "coal_processing",
       "production": 8.0,
       "workers": 30,
-      "profesors": 0,
+      "professors": 0,
       "consumption": {
         "rawcoal": 14,
         "eletric": 0.25
@@ -460,7 +460,7 @@
       "name": "concrete_plant_v2",
       "production": 35.0,
       "workers": 5,
-      "profesors": 0,
+      "professors": 0,
       "consumption": {
         "gravel": 27.0,
         "cement": 6.0,
@@ -491,7 +491,7 @@
       "name": "eletronic_components_factory",
       "production": 0.025,
       "workers": 150,
-      "profesors": 0,
+      "professors": 0,
       "consumption": {
         "plastics": 0.01,
         "steel": 0.01,
@@ -535,7 +535,7 @@
       "name": "eletronic_factory",
       "production": 0.03,
       "workers": 150,
-      "profesors": 0,
+      "professors": 0,
       "consumption": {
         "ecomponents": 0.01,
         "plastics": 0.015,
@@ -576,7 +576,7 @@
       "name": "explosive_factory",
       "production": 0.015,
       "workers": 75,
-      "profesors": 0,
+      "professors": 0,
       "consumption": {
         "chemicals": 0.01,
         "gravel": 0.03,
@@ -610,7 +610,7 @@
       "name": "fabric_factory",
       "production": 0.05,
       "workers": 100,
-      "profesors": 0,
+      "professors": 0,
       "consumption": {
         "plants": 0.2,
         "chemicals": 0.005,
@@ -644,7 +644,7 @@
       "name": "fertilizer",
       "production": 1.0,
       "workers": 25,
-      "profesors": 0,
+      "professors": 0,
       "consumption": {
         "waste_bio": 1.2,
         "chemicals": 0.003
@@ -668,7 +668,7 @@
       "name": "fertilizer_liquid_v2",
       "production": 0.7,
       "workers": 25,
-      "profesors": 0,
+      "professors": 0,
       "consumption": {
         "chemicals": 0.0125,
         "water": 0.6
@@ -699,7 +699,7 @@
       "name": "food_factory",
       "production": 0.12,
       "workers": 170,
-      "profesors": 0,
+      "professors": 0,
       "consumption": {
         "plants": 0.25,
         "water": 0.05
@@ -729,7 +729,7 @@
       "name": "oil_rafinery_v2",
       "production": 0.25,
       "workers": 500,
-      "profesors": 0,
+      "professors": 0,
       "consumption": {
         "oil": 0.5,
         "eletric": 0.21
@@ -763,7 +763,7 @@
       "name": "gravel_processing",
       "production": 5.5,
       "workers": 15,
-      "profesors": 0,
+      "professors": 0,
       "consumption": {
         "rawgravel": 8.0,
         "eletric": 0.4
@@ -790,7 +790,7 @@
       "name": "gravel_processing_small",
       "production": 5.5,
       "workers": 5,
-      "profesors": 0,
+      "professors": 0,
       "consumption": {
         "rawgravel": 8.0,
         "eletric": 0.15
@@ -817,7 +817,7 @@
       "name": "waste_gravelrecycling",
       "production": 4.0,
       "workers": 15,
-      "profesors": 0,
+      "professors": 0,
       "consumption": {
         "waste_gravel": 6.0,
         "eletric": 0.3
@@ -841,7 +841,7 @@
       "name": "iron_processing",
       "production": 7.0,
       "workers": 15,
-      "profesors": 0,
+      "professors": 0,
       "consumption": {
         "rawiron": 15.0,
         "eletric": 0.28
@@ -871,7 +871,7 @@
       "name": "animal_farm",
       "production": 0.2,
       "workers": 50,
-      "profesors": 0,
+      "professors": 0,
       "consumption": {
         "plants": 0.4,
         "water": 0.25
@@ -901,7 +901,7 @@
       "name": "mechanical_components_factory",
       "production": 0.1,
       "workers": 150,
-      "profesors": 0,
+      "professors": 0,
       "consumption": {
         "steel": 0.15
       },
@@ -929,7 +929,7 @@
       "name": "slaughterhouse",
       "production": 1.2,
       "workers": 50,
-      "profesors": 0,
+      "professors": 0,
       "consumption": {
         "livestock": 3.0
       },
@@ -957,7 +957,7 @@
       "name": "nuclear_fuel_plant",
       "production": 0.0019,
       "workers": 50,
-      "profesors": 70,
+      "professors": 70,
       "consumption": {
         "uf6": 0.008,
         "chemicals": 0.015,
@@ -989,7 +989,7 @@
       "name": "oil_mine",
       "production": 7.0,
       "workers": 0,
-      "profesors": 0,
+      "professors": 0,
       "isMine": true,
       "consumption": {
         "eletric": 0.065
@@ -1012,7 +1012,7 @@
       "name": "plastics_factory",
       "production": 0.11,
       "workers": 60,
-      "profesors": 0,
+      "professors": 0,
       "consumption": {
         "chemicals": 0.05,
         "oil": 0.45,
@@ -1042,7 +1042,7 @@
       "name": "waste_plasticrecycling",
       "production": 0.1,
       "workers": 20,
-      "profesors": 0,
+      "professors": 0,
       "consumption": {
         "waste_plastic": 0.5,
         "eletric": 0.07
@@ -1066,7 +1066,7 @@
       "name": "panels_factory_v3",
       "production": 1.1,
       "workers": 65,
-      "profesors": 0,
+      "professors": 0,
       "consumption": {
         "cement": 0.15,
         "gravel": 1.0,
@@ -1096,7 +1096,7 @@
       "name": "bauxite_mine",
       "production": 0.5,
       "workers": 45,
-      "profesors": 0,
+      "professors": 0,
       "isMine": true,
       "consumption": {},
       "requiresVehicles": true,
@@ -1118,7 +1118,7 @@
       "isMine": true,
       "production": 4.2,
       "workers": 220,
-      "profesors": 0,
+      "professors": 0,
       "consumption": {},
       "consumption_fixed": {
         "eletric": 0.154
@@ -1144,7 +1144,7 @@
       "name": "gravel_mine_big",
       "production": 3.5,
       "workers": 100,
-      "profesors": 0,
+      "professors": 0,
       "isMine": true,
       "requiresVehicles": true,
       "maxVehicles": 3,
@@ -1171,7 +1171,7 @@
       "name": "gravel_mine_small",
       "production": 3.5,
       "workers": 40,
-      "profesors": 0,
+      "professors": 0,
       "isMine": true,
       "requiresVehicles": true,
       "maxVehicles": 1,
@@ -1193,7 +1193,7 @@
       "isMine": true,
       "production": 4.0,
       "workers": 250,
-      "profesors": 0,
+      "professors": 0,
       "consumption": {},
       "consumption_fixed": {
         "eletric": 0.187
@@ -1219,7 +1219,7 @@
       "name": "steel_mill_v2",
       "production": 0.086,
       "workers": 500,
-      "profesors": 0,
+      "professors": 0,
       "consumption": {
         "coal": 0.75,
         "iron": 0.4,
@@ -1249,7 +1249,7 @@
       "name": "waste_steelrecycling",
       "production": 0.65,
       "workers": 30,
-      "profesors": 0,
+      "professors": 0,
       "consumption": {
         "waste_steel": 1.2,
         "eletric": 10.55
@@ -1273,7 +1273,7 @@
       "name": "uranium_conversion",
       "production": 0.012,
       "workers": 80,
-      "profesors": 40,
+      "professors": 40,
       "consumption": {
         "yellowcake": 0.025,
         "chemicals": 0.0026,
@@ -1306,7 +1306,7 @@
       "isMine": true,
       "production": 0.75,
       "workers": 100,
-      "profesors": 0,
+      "professors": 0,
       "consumption": {},
       "consumption_fixed": {
         "eletric": 0.075
@@ -1331,7 +1331,7 @@
       "name": "woodcutting_post",
       "production": 6.25,
       "workers": 10,
-      "profesors": 0,
+      "professors": 0,
       "consumption": {},
       "consumption_fixed": {
         "eletric": 0.119
@@ -1344,7 +1344,7 @@
       "name": "uranium_processing",
       "production": 0.0285,
       "workers": 60,
-      "profesors": 15,
+      "professors": 15,
       "consumption": {
         "uranium": 0.6,
         "eletric": 0.6

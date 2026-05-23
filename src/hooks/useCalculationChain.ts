@@ -44,10 +44,10 @@ export interface UseCalculationChainReturn {
   sewageResult: ProductionResult | null;
   wasteMixedResult: ProductionResult | null;
   wasteToxicResult: ProductionResult | null;
-  personnelBreakdown: Array<{ sourceResourceId: string; buildingName: string; workers: number; profesors: number }>;
+  personnelBreakdown: Array<{ sourceResourceId: string; buildingName: string; workers: number; professors: number }>;
   wasteTableData: WasteTableData;
   totalWorkers: number;
-  totalProfesors: number;
+  totalProfessors: number;
 }
 
 export interface ChainStoreSnapshot {
@@ -112,7 +112,7 @@ export function useCalculationChain(
   const resultsWithMeta = useMemo(() => {
     const validGoals = goals.filter((g) => g.resourceId && g.buildingName && g.value > 0);
     const primaryIds = new Set(validGoals.map((g) => g.resourceId));
-    if (validGoals.length === 0) return { results: [] as ProductionResult[], surplusByResource: new Map<string, number>(), hasAnySurplus: false, sewageResult: null, wasteMixedResult: null, wasteToxicResult: null, personnelBreakdown: [] as Array<{ sourceResourceId: string; buildingName: string; workers: number; profesors: number }> };
+    if (validGoals.length === 0) return { results: [] as ProductionResult[], surplusByResource: new Map<string, number>(), hasAnySurplus: false, sewageResult: null, wasteMixedResult: null, wasteToxicResult: null, personnelBreakdown: [] as Array<{ sourceResourceId: string; buildingName: string; workers: number; professors: number }> };
 
     const allChains: ProductionResult[] = [];
     for (const goal of validGoals) {
@@ -413,8 +413,8 @@ export function useCalculationChain(
 
     // Personnel breakdown per building — exclude disabled resources
     const personnelBreakdown = results
-      .filter((r) => !disabledResources.has(r.resourceId) && (r.totalWorkers + r.totalProfesors) > 0)
-      .map((r) => ({ sourceResourceId: r.resourceId, buildingName: r.buildingName, workers: r.totalWorkers, profesors: r.totalProfesors }));
+      .filter((r) => !disabledResources.has(r.resourceId) && (r.totalWorkers + r.totalProfessors) > 0)
+      .map((r) => ({ sourceResourceId: r.resourceId, buildingName: r.buildingName, workers: r.totalWorkers, professors: r.totalProfessors }));
 
     // Sewage line at end of chain (after personnel), never sorted with the others
     const sewageResult: ProductionResult | null = totalSewagePerSecond > 0 ? {
@@ -425,7 +425,7 @@ export function useCalculationChain(
       inputsPerSecond: new Map(),
       outputsPerSecond: new Map([['sewage', totalSewagePerSecond]]),
       totalWorkers: 0,
-      totalProfesors: 0,
+      totalProfessors: 0,
       isCoProduct: true,
       coproductBreakdown: sewageBreakdown,
     } : null;
@@ -438,7 +438,7 @@ export function useCalculationChain(
       inputsPerSecond: new Map(),
       outputsPerSecond: new Map([['waste_mixed', totalWasteMixedPerSecond]]),
       totalWorkers: 0,
-      totalProfesors: 0,
+      totalProfessors: 0,
       isCoProduct: true,
       coproductBreakdown: wasteMixedBreakdown,
     } : null;
@@ -451,7 +451,7 @@ export function useCalculationChain(
       inputsPerSecond: new Map(),
       outputsPerSecond: new Map([['waste_toxic', totalWasteToxicPerSecond]]),
       totalWorkers: 0,
-      totalProfesors: 0,
+      totalProfessors: 0,
       isCoProduct: true,
       coproductBreakdown: wasteToxicBreakdown,
     } : null;
@@ -565,9 +565,9 @@ export function useCalculationChain(
     return Math.ceil(productionCalculator.calculateTotalWorkers(activeResults));
   }, [results, disabledResources]);
 
-  const totalProfesors = useMemo(() => {
+  const totalProfessors = useMemo(() => {
     const activeResults = results.filter(r => !disabledResources.has(r.resourceId));
-    return Math.ceil(productionCalculator.calculateTotalProfesors(activeResults));
+    return Math.ceil(productionCalculator.calculateTotalProfessors(activeResults));
   }, [results, disabledResources]);
 
   return {
@@ -581,6 +581,6 @@ export function useCalculationChain(
     personnelBreakdown,
     wasteTableData,
     totalWorkers,
-    totalProfesors,
+    totalProfessors,
   };
 }

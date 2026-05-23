@@ -565,12 +565,12 @@ export class ProductionCalculator {
       ? workersPerBuilding 
       : (buildingCount > 0 ? Math.ceil(totalWorkers / buildingCount) : recipe.workers));
     const maxWorkersPerBuilding = noPersonnel ? 0 : recipe.workers;
-    const maxProfesorsPerBuilding = noPersonnel ? 0 : recipe.profesors;
+    const maxProfessorsPerBuilding = noPersonnel ? 0 : recipe.professors;
     
     // Appliquer le ratio de charge aux cols-blancs (proportionnel à la charge)
-    const actualProfesorsPerBuilding = noPersonnel ? 0 : Math.ceil(maxProfesorsPerBuilding * actualChargeRatio);
+    const actualProfessorsPerBuilding = noPersonnel ? 0 : Math.ceil(maxProfessorsPerBuilding * actualChargeRatio);
     // Calculer le total en utilisant le ratio exact pour éviter les erreurs d'arrondi
-    const totalProfesorsResult = noPersonnel ? 0 : Math.ceil(maxProfesorsPerBuilding * actualChargeRatio * buildingCount);
+    const totalProfessorsResult = noPersonnel ? 0 : Math.ceil(maxProfessorsPerBuilding * actualChargeRatio * buildingCount);
 
     return {
       resourceId,
@@ -580,11 +580,11 @@ export class ProductionCalculator {
       inputsPerSecond,
       outputsPerSecond,
       totalWorkers: noPersonnel ? 0 : totalWorkers,
-      totalProfesors: totalProfesorsResult,
+      totalProfessors: totalProfessorsResult,
       workersPerBuilding: actualWorkersPerBuilding,
       maxWorkersPerBuilding,
-      profesorsPerBuilding: actualProfesorsPerBuilding,
-      maxProfesorsPerBuilding,
+      professorsPerBuilding: actualProfessorsPerBuilding,
+      maxProfessorsPerBuilding,
       chargeRatio: actualChargeRatio,
     };
   }
@@ -611,7 +611,7 @@ export class ProductionCalculator {
         inputsPerSecond: new Map(),
         outputsPerSecond: new Map([[coResourceId, coOutputPerSecond]]),
         totalWorkers: 0,
-        totalProfesors: 0,
+        totalProfessors: 0,
         isCoProduct: true,
       });
     }
@@ -746,11 +746,11 @@ export class ProductionCalculator {
           inputsPerSecond: new Map(),
           outputsPerSecond: new Map([[config.resourceId, 0]]),
           totalWorkers: 0,
-          totalProfesors: 0,
+          totalProfessors: 0,
           workersPerBuilding: 0,
           maxWorkersPerBuilding: recipe.workers,
-          profesorsPerBuilding: 0,
-          maxProfesorsPerBuilding: recipe.profesors ?? 0,
+          professorsPerBuilding: 0,
+          maxProfessorsPerBuilding: recipe.professors ?? 0,
           chargeRatio: 0,
           invalidConfig: true,
         };
@@ -841,11 +841,11 @@ export class ProductionCalculator {
             inputsPerSecond: new Map(),
             outputsPerSecond: new Map([[inputResourceId, amountPerSecond]]),
             totalWorkers: 0,
-            totalProfesors: 0,
+            totalProfessors: 0,
             workersPerBuilding: 0,
             maxWorkersPerBuilding: 0,
-            profesorsPerBuilding: 0,
-            maxProfesorsPerBuilding: 0,
+            professorsPerBuilding: 0,
+            maxProfessorsPerBuilding: 0,
             disabled: true,
           };
           results.push(nonProducibleResult);
@@ -885,11 +885,11 @@ export class ProductionCalculator {
         inputsPerSecond: new Map(),
         outputsPerSecond: new Map([[config.resourceId, 0]]),
         totalWorkers: 0,
-        totalProfesors: 0,
+        totalProfessors: 0,
         workersPerBuilding: 0,
         maxWorkersPerBuilding: recipe.workers,
-        profesorsPerBuilding: 0,
-        maxProfesorsPerBuilding: recipe.profesors ?? 0,
+        professorsPerBuilding: 0,
+        maxProfessorsPerBuilding: recipe.professors ?? 0,
         chargeRatio: 0,
         invalidConfig: true,
       };
@@ -976,11 +976,11 @@ export class ProductionCalculator {
               inputsPerSecond: new Map(),
               outputsPerSecond: new Map([[inputResourceId, 0]]),
               totalWorkers: 0,
-              totalProfesors: 0,
+              totalProfessors: 0,
               workersPerBuilding: 0,
               maxWorkersPerBuilding: baseRecipe.workers,
-              profesorsPerBuilding: 0,
-              maxProfesorsPerBuilding: baseRecipe.profesors ?? 0,
+              professorsPerBuilding: 0,
+              maxProfessorsPerBuilding: baseRecipe.professors ?? 0,
               chargeRatio: 0,
               invalidConfig: true,
             };
@@ -1041,11 +1041,11 @@ export class ProductionCalculator {
                 inputsPerSecond: new Map(),
                 outputsPerSecond: new Map([[inputResourceId, inputAmount]]),
                 totalWorkers: 0,
-                totalProfesors: 0,
+                totalProfessors: 0,
                 workersPerBuilding: 0,
                 maxWorkersPerBuilding: 0,
-                profesorsPerBuilding: 0,
-                maxProfesorsPerBuilding: 0,
+                professorsPerBuilding: 0,
+                maxProfessorsPerBuilding: 0,
                 disabled: true,
               };
               results.push(nonProducibleResult);
@@ -1088,11 +1088,11 @@ export class ProductionCalculator {
             inputsPerSecond: new Map(),
             outputsPerSecond: new Map([[inputResourceId, amount]]),
             totalWorkers: 0,
-            totalProfesors: 0,
+            totalProfessors: 0,
             workersPerBuilding: 0,
             maxWorkersPerBuilding: disabledRecipe.workers,
-            profesorsPerBuilding: 0,
-            maxProfesorsPerBuilding: disabledRecipe.profesors,
+            professorsPerBuilding: 0,
+            maxProfessorsPerBuilding: disabledRecipe.professors,
             disabled: true,
           };
           results.push(disabledResult);
@@ -1126,11 +1126,11 @@ export class ProductionCalculator {
           inputsPerSecond: new Map(),
           outputsPerSecond: new Map([[inputResourceId, amount]]),
           totalWorkers: 0,
-          totalProfesors: 0,
+          totalProfessors: 0,
           workersPerBuilding: 0,
           maxWorkersPerBuilding: 0,
-          profesorsPerBuilding: 0,
-          maxProfesorsPerBuilding: 0,
+          professorsPerBuilding: 0,
+          maxProfessorsPerBuilding: 0,
           disabled: true,
         };
         results.push(nonProducibleResult);
@@ -1156,7 +1156,7 @@ export class ProductionCalculator {
         const existing = aggregated.get(key)!;
         existing.buildingCount += result.buildingCount;
         existing.totalWorkers = Math.ceil(existing.totalWorkers + result.totalWorkers);
-        existing.totalProfesors = Math.ceil(existing.totalProfesors + result.totalProfesors);
+        existing.totalProfessors = Math.ceil(existing.totalProfessors + result.totalProfessors);
         if (result.vehicleProductionPerDay !== undefined) {
           existing.vehicleProductionPerDay = (existing.vehicleProductionPerDay ?? 0) + result.vehicleProductionPerDay!;
         }
@@ -1333,8 +1333,8 @@ export class ProductionCalculator {
   /**
    * Calcule le nombre total de professeurs nécessaires pour une chaîne de production
    */
-  calculateTotalProfesors(results: ProductionResult[]): number {
-    return results.reduce((total, result) => total + result.totalProfesors, 0);
+  calculateTotalProfessors(results: ProductionResult[]): number {
+    return results.reduce((total, result) => total + result.totalProfessors, 0);
   }
 
   /**

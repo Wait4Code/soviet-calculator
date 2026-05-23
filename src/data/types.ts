@@ -9,7 +9,7 @@ export interface ProductionRecipe {
   /** Nombre de travailleurs */
   workers: number;
   /** Nombre de professeurs */
-  profesors: number;
+  professors: number;
   /** Consommation par seconde (clé = ressource, valeur = quantité) */
   consumption: Record<string, number>;
   /** Consommation fixe par bâtiment et par jour (indépendante de la production), ex. eletric en MWh/j, water en m³/j */
@@ -86,15 +86,15 @@ export interface ProductionResult {
   /** Nombre total de travailleurs nécessaires */
   totalWorkers: number;
   /** Nombre total de professeurs nécessaires */
-  totalProfesors: number;
+  totalProfessors: number;
   /** Nombre de travailleurs par bâtiment */
   workersPerBuilding?: number;
   /** Capacité maximale de travailleurs par bâtiment */
   maxWorkersPerBuilding?: number;
   /** Nombre de professeurs par bâtiment */
-  profesorsPerBuilding?: number;
+  professorsPerBuilding?: number;
   /** Capacité maximale de professeurs par bâtiment */
-  maxProfesorsPerBuilding?: number;
+  maxProfessorsPerBuilding?: number;
   /** Ratio de charge réel (0-1), basé sur l'output ou le nombre d'usines */
   chargeRatio?: number;
   /** Indique si cette ressource est désactivée (importée) */

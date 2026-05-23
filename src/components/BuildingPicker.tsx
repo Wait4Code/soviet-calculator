@@ -120,7 +120,7 @@ export function BuildingPicker({ recipes, selectedRecipe, onSelect, size = 36 }:
                 <p className="font-medium text-white truncate text-sm">{t(`buildings:${r.name}`)}</p>
                 <p className="text-xs text-gray-400">
                   {r.workers > 0
-                    ? `${r.workers} ${t('tooltips.workersBlue')}${r.profesors > 0 ? `, ${r.profesors} ${t('tooltips.workersWhite')}` : ''}`
+                    ? `${r.workers} ${t('tooltips.workersBlue')}${r.professors > 0 ? `, ${r.professors} ${t('tooltips.workersWhite')}` : ''}`
                     : t('tooltips.noPersonnel')}
                 </p>
               </div>
