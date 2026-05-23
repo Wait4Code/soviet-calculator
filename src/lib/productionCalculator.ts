@@ -2,6 +2,7 @@ import { ProductionResult, ProductionRecipe, ResourceProduction } from '@/data/t
 import { productions, getResourceName } from '@/data/productions';
 import { getVehicle, getVehicleSkillLevel } from '@/data/vehicles';
 import { formatNumber } from '@/lib/format';
+import { clamp, getProductionFactor, getConsumptionFactor, getSourceQuality, getDefaultBuilding, getYear, getEffectiveChargeRatio } from '@/lib/calculator/helpers';
 
 /**
  * Type d'input pour le calcul
@@ -44,53 +45,6 @@ export interface CalculationConfig {
   vehicleConfigByResource?: Record<string, MineVehicleConfig>;
   /** Surcharge du taux de charge par ressource (0-1, uniquement à la hausse) */
   chargeRatioByResource?: Record<string, number>;
-}
-
-function clamp(value: number, min: number, max: number): number {
-  return Math.max(min, Math.min(max, value));
-}
-
-/** Facteur de production : clamp(1 - (year - p1) / p2, p3, 1) */
-function getProductionFactor(year: number, params: { p1: number; p2: number; p3: number }): number {
-  const raw = 1 - (year - params.p1) / params.p2;
-  return clamp(raw, params.p3, 1);
-}
-
-/** Facteur de consommation : 1 + clamp((year - p1) / p2, 0, p3) */
-function getConsumptionFactor(year: number, params: { p1: number; p2: number; p3: number }): number {
-  const raw = (year - params.p1) / params.p2;
-  return 1 + clamp(raw, 0, params.p3);
-}
-
-function getSourceQuality(config: CalculationConfig, resourceId: string): number {
-  return config.sourceQualityByResource?.[resourceId] ?? config.sourceQuality ?? 50;
-}
-
-function getDefaultBuilding(
-  config: CalculationConfig,
-  resourceId: string,
-  recipes: ProductionRecipe[]
-): string {
-  if (recipes.length === 0) return '';
-  const def = config.defaultBuildingByResource?.[resourceId];
-  if (def && recipes.some((r) => r.name === def)) return def;
-  return recipes[0].name;
-}
-
-function getYear(config: CalculationConfig): number {
-  return config.year ?? 1960;
-}
-
-/** Taux de charge effectif : surcharge uniquement à la hausse si configurée */
-function getEffectiveChargeRatio(
-  config: CalculationConfig,
-  resourceId: string,
-  calculated: number
-): number {
-  const override = config.chargeRatioByResource?.[resourceId];
-  if (override === undefined) return calculated;
-  const result = Math.max(calculated, Math.min(1, override));
-  return result;
 }
 
 /** Construit la config véhicule par défaut (tous les emplacements avec defaultVehicleId, pas de personnel) */
