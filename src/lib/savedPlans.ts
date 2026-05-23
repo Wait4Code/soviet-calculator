@@ -5,12 +5,34 @@
 import type { PlanStateSerialized } from '@/lib/planUrl';
 
 const STORAGE_KEY = 'soviet-calculator-saved-plans';
+const CURRENT_SCHEMA_VERSION = 1;
 
 export interface SavedPlan {
   id: string;
   name: string;
   createdAt: number;
+  schemaVersion: number;  // 0 = legacy (field absent), 1 = first versioned schema
   planState: PlanStateSerialized;
+}
+
+function migratePlan(raw: unknown): SavedPlan | null {
+  if (!raw || typeof raw !== 'object') return null;
+  const p = raw as Record<string, unknown>;
+  if (
+    typeof p.id !== 'string' ||
+    typeof p.name !== 'string' ||
+    typeof p.createdAt !== 'number' ||
+    !p.planState ||
+    !Array.isArray((p.planState as PlanStateSerialized).g)
+  ) return null;
+
+  return {
+    id: p.id,
+    name: p.name,
+    createdAt: p.createdAt,
+    schemaVersion: typeof p.schemaVersion === 'number' ? p.schemaVersion : CURRENT_SCHEMA_VERSION,
+    planState: p.planState as PlanStateSerialized,
+  };
 }
 
 function readFromStorage(): SavedPlan[] {
@@ -20,15 +42,7 @@ function readFromStorage(): SavedPlan[] {
     if (!raw) return [];
     const parsed = JSON.parse(raw) as unknown;
     if (!Array.isArray(parsed)) return [];
-    return parsed.filter(
-      (p): p is SavedPlan =>
-        p != null &&
-        typeof p.id === 'string' &&
-        typeof p.name === 'string' &&
-        typeof p.createdAt === 'number' &&
-        p.planState != null &&
-        Array.isArray((p.planState as PlanStateSerialized).g)
-    );
+    return parsed.map(migratePlan).filter((p): p is SavedPlan => p !== null);
   } catch {
     return [];
   }
@@ -55,6 +69,7 @@ export function savePlan(name: string, planState: PlanStateSerialized): SavedPla
     id: crypto.randomUUID(),
     name: name.trim() || 'Sans nom',
     createdAt: Date.now(),
+    schemaVersion: CURRENT_SCHEMA_VERSION,
     planState,
   };
   plans.push(plan);
