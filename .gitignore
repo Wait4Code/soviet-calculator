@@ -10,6 +10,7 @@ lerna-debug.log*
 wrsr_files
 node_modules
 dist
+.worktrees
 dist-ssr
 generated
 *.local
