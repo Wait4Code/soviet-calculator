@@ -1142,8 +1142,8 @@ export function ProductionCalculator() {
                     const unitYear = t(unitYearKey);
                     const unitShort = isElectricity ? t('units.MWh') : isVolume ? t('units.m3') : t('units.t');
                     const formattedPerYear = isElectricity
-                      ? `${productionCalculator.formatInteger(amountPerDay * 60 * 365)} ${unitYear}`
-                      : `${productionCalculator.formatInteger(amountPerYear)} ${unitYear}`;
+                      ? `${formatNumber(amountPerDay * 60 * 365)} ${unitYear}`
+                      : `${formatNumber(amountPerYear)} ${unitYear}`;
 
                     const workersPerBuilding = result.workersPerBuilding || 0;
                     const profesorsPerBuilding = result.profesorsPerBuilding || 0;
@@ -1244,8 +1244,8 @@ export function ProductionCalculator() {
                               return <span className="text-gray-500">—</span>;
                             }
                             const formattedRequired = isElectricity
-                              ? `${productionCalculator.formatInteger(requiredPerDay * 60)} ${unitShort}`
-                              : `${productionCalculator.formatValue(requiredPerDay)} ${unitShort}`;
+                              ? `${formatNumber(requiredPerDay * 60)} ${unitShort}`
+                              : `${formatNumber(requiredPerDay)} ${unitShort}`;
                             const tooltipContent = formattedPerYear;
                             return (
                               <Tooltip content={tooltipContent} placement="top">
@@ -1263,11 +1263,11 @@ export function ProductionCalculator() {
                               const surplusToShow = result.isCoProduct ? amountPerDay : surplusPerDay;
                               if (surplusToShow <= 0.01) return <span className="text-gray-500">—</span>;
                               const surplusFormatted = isElectricity
-                                ? `${productionCalculator.formatInteger(surplusToShow * 60)} ${unitShort}`
-                                : `${productionCalculator.formatValue(surplusToShow)} ${unitShort}`;
+                                ? `${formatNumber(surplusToShow * 60)} ${unitShort}`
+                                : `${formatNumber(surplusToShow)} ${unitShort}`;
                               const surplusPerYearFormatted = isElectricity
-                                ? `${productionCalculator.formatInteger(surplusToShow * 60 * 365)} ${unitYear}`
-                                : `${productionCalculator.formatInteger(surplusToShow * 365)} ${unitYear}`;
+                                ? `${formatNumber(surplusToShow * 60 * 365)} ${unitYear}`
+                                : `${formatNumber(surplusToShow * 365)} ${unitYear}`;
                               return (
                                 <Tooltip content={surplusPerYearFormatted} placement="top">
                                   <span className="text-soviet-gold">+ {surplusFormatted}</span>
@@ -1481,7 +1481,7 @@ export function ProductionCalculator() {
                               <ul className="list-disc list-inside space-y-0.5">
                                 {result.coproductBreakdown?.map((entry, i) => (
                                   <li key={`co-${entry.sourceResourceId}-${entry.buildingName}-${i}`}>
-                                    {t(`resources.${entry.sourceResourceId}`)} ({t(`buildings:${entry.buildingName}`)}): {productionCalculator.formatValue(entry.amountPerSecond * 24 * 60 * 60)} {t('units.m3_day')}
+                                    {t(`resources.${entry.sourceResourceId}`)} ({t(`buildings:${entry.buildingName}`)}): {formatNumber(entry.amountPerSecond * 24 * 60 * 60)} {t('units.m3_day')}
                                   </li>
                                 ))}
                                 {result.consumptionBreakdown?.map((entry, i) => {
@@ -1490,7 +1490,7 @@ export function ProductionCalculator() {
                                   const unitKey = isElec ? 'units.MWh_day' : 'units.m3_day';
                                   return (
                                     <li key={`cons-${entry.sourceResourceId}-${entry.buildingName}-${i}`}>
-                                      {t(`resources.${entry.sourceResourceId}`)} ({t(`buildings:${entry.buildingName}`)}): {isElec ? productionCalculator.formatInteger(amountPerDay) : productionCalculator.formatValue(amountPerDay)} {t(unitKey)}
+                                      {t(`resources.${entry.sourceResourceId}`)} ({t(`buildings:${entry.buildingName}`)}): {isElec ? formatNumber(amountPerDay) : formatNumber(amountPerDay)} {t(unitKey)}
                                     </li>
                                   );
                                 })}
@@ -1620,11 +1620,11 @@ export function ProductionCalculator() {
                 </td>
                 {sortedTypes.map((typeKey) => (
                   <td key={typeKey} className="py-1 px-2 text-right font-mono text-gray-300">
-                    {(mixedComp[typeKey] ?? 0) > 0 ? `${productionCalculator.formatValue(mixedComp[typeKey])} ${t('units.t_day')}` : '—'}
+                    {(mixedComp[typeKey] ?? 0) > 0 ? `${formatNumber(mixedComp[typeKey])} ${t('units.t_day')}` : '—'}
                   </td>
                 ))}
                 <td className="py-1 px-2 text-right font-mono font-medium text-gray-300 border-l-2 border-gray-500">
-                  {mixedTotal > 0 ? `${productionCalculator.formatValue(mixedTotal)} ${t('units.t_day')}` : '—'}
+                  {mixedTotal > 0 ? `${formatNumber(mixedTotal)} ${t('units.t_day')}` : '—'}
                 </td>
               </tr>
               <tr className="border-b border-gray-700/50">
@@ -1636,22 +1636,22 @@ export function ProductionCalculator() {
                 </td>
                 {sortedTypes.map((typeKey) => (
                   <td key={typeKey} className="py-1 px-2 text-right font-mono text-gray-300">
-                    {(hazardousComp[typeKey] ?? 0) > 0 ? `${productionCalculator.formatValue(hazardousComp[typeKey])} ${t('units.t_day')}` : '—'}
+                    {(hazardousComp[typeKey] ?? 0) > 0 ? `${formatNumber(hazardousComp[typeKey])} ${t('units.t_day')}` : '—'}
                   </td>
                 ))}
                 <td className="py-1 px-2 text-right font-mono font-medium text-gray-300 border-l-2 border-gray-500">
-                  {hazardousTotal > 0 ? `${productionCalculator.formatValue(hazardousTotal)} ${t('units.t_day')}` : '—'}
+                  {hazardousTotal > 0 ? `${formatNumber(hazardousTotal)} ${t('units.t_day')}` : '—'}
                 </td>
               </tr>
               <tr className="border-t-2 border-gray-500 font-medium text-gray-300">
                 <td className="py-1 pr-3 border-t-2 border-gray-500">{t('industry.wasteTableTotal')}</td>
                 {columnTotals.map((tot, i) => (
                   <td key={sortedTypes[i]} className="py-1 px-2 text-right font-mono border-t-2 border-gray-500">
-                    {tot > 0 ? `${productionCalculator.formatValue(tot)} ${t('units.t_day')}` : '—'}
+                    {tot > 0 ? `${formatNumber(tot)} ${t('units.t_day')}` : '—'}
                   </td>
                 ))}
                 <td className="py-1 px-2 text-right font-mono border-t-2 border-l-2 border-gray-500">
-                  {grandTotal > 0 ? `${productionCalculator.formatValue(grandTotal)} ${t('units.t_day')}` : '—'}
+                  {grandTotal > 0 ? `${formatNumber(grandTotal)} ${t('units.t_day')}` : '—'}
                 </td>
               </tr>
             </tbody>
@@ -1739,18 +1739,18 @@ export function ProductionCalculator() {
                           </div>
                         </td>
                         <td className="py-2 px-3 text-right font-mono text-sm text-gray-300">
-                          {row.sewagePerDay > 0 ? `${productionCalculator.formatValue(row.sewagePerDay)} ${t('units.m3_day')}` : '—'}
+                          {row.sewagePerDay > 0 ? `${formatNumber(row.sewagePerDay)} ${t('units.m3_day')}` : '—'}
                         </td>
                         <td className="py-2 px-3 text-right font-mono text-sm text-gray-300">
-                          {row.mixedPerDay > 0 ? `${productionCalculator.formatValue(row.mixedPerDay)} ${t('units.t_day')}` : '—'}
+                          {row.mixedPerDay > 0 ? `${formatNumber(row.mixedPerDay)} ${t('units.t_day')}` : '—'}
                         </td>
                         <td className="py-2 px-3 text-right font-mono text-sm text-gray-300">
-                          {row.hazardousPerDay > 0 ? `${productionCalculator.formatValue(row.hazardousPerDay)} ${t('units.t_day')}` : '—'}
+                          {row.hazardousPerDay > 0 ? `${formatNumber(row.hazardousPerDay)} ${t('units.t_day')}` : '—'}
                         </td>
                         <td className="py-2 px-3 text-right font-mono text-sm text-gray-300">
                           {row.pollutionTPerYear != null ? (
                             <span className="block text-right">
-                              <span>{productionCalculator.formatValue(row.pollutionTPerYear)} {t('units.t_year_building')}</span>
+                              <span>{formatNumber(row.pollutionTPerYear)} {t('units.t_year_building')}</span>
                               <span className="block mt-0.5">
                                 <Tooltip content={t('industry.safetyDistanceTooltip')}>
                                   <span className="text-gray-500 text-xs">{getSafetyDistanceM(row.pollutionTPerYear)} {t('units.m')}</span>
@@ -1790,18 +1790,18 @@ export function ProductionCalculator() {
                   </td>
                   <td className="py-2 px-3">{t('industry.wasteTableTotal')}</td>
                   <td className="py-2 px-3 text-right font-mono text-sm">
-                    {wasteTableData.totals.sewagePerDay > 0 ? `${productionCalculator.formatValue(wasteTableData.totals.sewagePerDay)} ${t('units.m3_day')}` : '—'}
+                    {wasteTableData.totals.sewagePerDay > 0 ? `${formatNumber(wasteTableData.totals.sewagePerDay)} ${t('units.m3_day')}` : '—'}
                   </td>
                   <td className="py-2 px-3 text-right font-mono text-sm">
-                    {wasteTableData.totals.mixedPerDay > 0 ? `${productionCalculator.formatValue(wasteTableData.totals.mixedPerDay)} ${t('units.t_day')}` : '—'}
+                    {wasteTableData.totals.mixedPerDay > 0 ? `${formatNumber(wasteTableData.totals.mixedPerDay)} ${t('units.t_day')}` : '—'}
                   </td>
                   <td className="py-2 px-3 text-right font-mono text-sm">
-                    {wasteTableData.totals.hazardousPerDay > 0 ? `${productionCalculator.formatValue(wasteTableData.totals.hazardousPerDay)} ${t('units.t_day')}` : '—'}
+                    {wasteTableData.totals.hazardousPerDay > 0 ? `${formatNumber(wasteTableData.totals.hazardousPerDay)} ${t('units.t_day')}` : '—'}
                   </td>
                   <td className="py-2 px-3 text-right font-mono text-sm">
                     {wasteTableData.pollutionMin != null && wasteTableData.pollutionMax != null ? (
                       <span className="block text-right">
-                        <span>{productionCalculator.formatValue(wasteTableData.pollutionMin)} – {productionCalculator.formatValue(wasteTableData.pollutionMax)} {t('units.t_year_building')}</span>
+                        <span>{formatNumber(wasteTableData.pollutionMin)} – {formatNumber(wasteTableData.pollutionMax)} {t('units.t_year_building')}</span>
                         {wasteTableData.distanceMin != null && wasteTableData.distanceMax != null && (
                           <span className="block mt-0.5">
                             <Tooltip content={t('industry.safetyDistanceTooltip')}>
