@@ -14,7 +14,8 @@ describe('formatNumber', () => {
   });
 
   it('applies significant digits (3 sig figs)', () => {
-    expect(formatNumber(1234567, 'fr')).not.toBe('1 234 567'); // rounded to 3 sig figs
+    expect(formatNumber(1234567, 'fr').replace(/\s/g, ' ')).toBe('1 230 000'); // rounded to 3 sig figs
+    expect(formatNumber(1234567, 'fr')).not.toBe('1 234 567');
     expect(formatNumber(1.2345, 'en')).toBe('1.23');
   });
 
