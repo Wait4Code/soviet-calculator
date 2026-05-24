@@ -1,13 +1,23 @@
 /**
- * Formatage des nombres via Intl.NumberFormat.
+ * Locale-aware number formatter.
  * useGrouping: true, maximumSignificantDigits: 3
  */
 
-const numberFormatter = new Intl.NumberFormat('fr-FR', {
-  useGrouping: true,
-  maximumSignificantDigits: 3,
-});
+const formatterCache = new Map<string, Intl.NumberFormat>();
 
-export function formatNumber(value: number): string {
-  return numberFormatter.format(value);
+function getFormatter(locale: string): Intl.NumberFormat {
+  if (!formatterCache.has(locale)) {
+    formatterCache.set(
+      locale,
+      new Intl.NumberFormat(locale, {
+        useGrouping: true,
+        maximumSignificantDigits: 3,
+      })
+    );
+  }
+  return formatterCache.get(locale)!;
+}
+
+export function formatNumber(value: number, locale: string): string {
+  return getFormatter(locale).format(value);
 }
