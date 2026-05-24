@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef, Fragment } from 'react';
 import { useTranslation } from 'react-i18next';
 import { productionCalculator, migrateVehicleConfig } from '@/lib/productionCalculator';
-import { formatNumber } from '@/lib/format';
+import { useFormatNumber } from '@/hooks/useFormatNumber';
 import { getResourceIcon } from '@/data/resourceIcons';
 import { Tooltip } from '@/components/Tooltip';
 import { BuildingPicker } from '@/components/BuildingPicker';
@@ -89,6 +89,7 @@ export function ChainTable({
   onResetChargeRatio,
 }: ChainTableProps) {
   const { t } = useTranslation();
+  const formatNumber = useFormatNumber();
   const [expandedChainRows, setExpandedChainRows] = useState<Set<string>>(new Set());
   const [vehicleSlotPickerOpen, setVehicleSlotPickerOpen] = useState<{ resourceId: string; slotIndex: number } | null>(null);
   const vehicleSlotPickerRef = useRef<HTMLDivElement | null>(null);

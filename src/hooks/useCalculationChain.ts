@@ -34,6 +34,8 @@ export interface WasteTableData {
   };
   pollutionMin: number | undefined;
   pollutionMax: number | undefined;
+  distanceMin?: number | undefined;
+  distanceMax?: number | undefined;
 }
 
 export interface UseCalculationChainReturn {
