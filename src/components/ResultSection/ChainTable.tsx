@@ -8,7 +8,7 @@ import { BuildingPicker } from '@/components/BuildingPicker';
 import { vehicles, getVehicle, formatVehicleSkills, ORIGIN_TO_KEY } from '@/data/vehicles';
 import { getBlocForOrigin } from '@/data/vehicleOrigins';
 import type { ProductionResult } from '@/data/types';
-import type { MineVehicleConfig } from '@/lib/productionCalculator';
+import { useChainTableContext } from './ChainTableContext';
 
 const BASE = import.meta.env.BASE_URL;
 const VEHICLE_PLACEHOLDER = `${BASE}vehicles/excavator.svg`;
@@ -23,55 +23,38 @@ export interface ChainTableProps {
   results: ProductionResult[];
   disabledResources: Set<string>;
   hasAnySurplus: boolean;
-  chainYear: number;
-  effectiveSourceQuality: number;
-  sourceQualityByResource: Record<string, number>;
-  buildingByResource: Record<string, string>;
-  defaultBuildingByResource: Record<string, string>;
-  vehicleConfigByResource: Record<string, MineVehicleConfig>;
-  chargeRatioByResource: Record<string, number>;
-  totalWorkers: number;
-  totalProfessors: number;
-  personnelBreakdown: Array<{ sourceResourceId: string; buildingName: string; workers: number; professors: number }>;
   surplusByResource: Map<string, number>;
   primaryResourceIds: Set<string>;
-  chainHasLivestockBuilding: boolean;
-  defaultVehicleId: string;
-  onChangeYear: (year: number) => void;
-  onToggleResource: (resourceId: string) => void;
-  onSetSourceQuality: (resourceId: string, value: number) => void;
-  onSetBuilding: (resourceId: string, buildingName: string) => void;
-  onSetVehicleConfig: (resourceId: string, cfg: MineVehicleConfig) => void;
-  onSetChargeRatio: (resourceId: string, value: number) => void;
-  onResetChargeRatio: (resourceId: string) => void;
 }
 
 export function ChainTable({
   results,
   disabledResources,
   hasAnySurplus,
-  chainYear,
-  effectiveSourceQuality,
-  sourceQualityByResource,
-  buildingByResource,
-  defaultBuildingByResource,
-  vehicleConfigByResource,
-  chargeRatioByResource,
-  totalWorkers,
-  totalProfessors,
-  personnelBreakdown,
   surplusByResource,
   primaryResourceIds,
-  chainHasLivestockBuilding,
-  defaultVehicleId,
-  onChangeYear,
-  onToggleResource,
-  onSetSourceQuality,
-  onSetBuilding,
-  onSetVehicleConfig,
-  onSetChargeRatio,
-  onResetChargeRatio,
 }: ChainTableProps) {
+  const {
+    chainYear,
+    effectiveSourceQuality,
+    sourceQualityByResource,
+    buildingByResource,
+    defaultBuildingByResource,
+    vehicleConfigByResource,
+    chargeRatioByResource,
+    totalWorkers,
+    totalProfessors,
+    personnelBreakdown,
+    defaultVehicleId,
+    chainHasLivestockBuilding,
+    onChangeYear,
+    onToggleResource,
+    onSetSourceQuality,
+    onSetBuilding,
+    onSetVehicleConfig,
+    onSetChargeRatio,
+    onResetChargeRatio,
+  } = useChainTableContext();
   const { t } = useTranslation();
   const formatNumber = useFormatNumber();
   const [expandedChainRows, setExpandedChainRows] = useState<Set<string>>(new Set());

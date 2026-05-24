@@ -4,6 +4,7 @@ import type { PollutionDistanceMode } from '@/data/pollutionByBuilding';
 import type { WasteTableData } from '@/hooks/useCalculationChain';
 import { ChainTable } from './ChainTable';
 import { PollutionTable } from './PollutionTable';
+import { ChainTableProvider, type ChainTableContextValue } from './ChainTableContext';
 
 export interface ResultSectionProps {
   // ChainTable props
@@ -70,34 +71,39 @@ export function ResultSection(props: ResultSectionProps) {
 
   const showPollutionTable = wasteTableData.rows.length > 0;
 
+  const chainTableCtx: ChainTableContextValue = {
+    chainYear,
+    effectiveSourceQuality,
+    sourceQualityByResource,
+    buildingByResource,
+    defaultBuildingByResource,
+    vehicleConfigByResource,
+    chargeRatioByResource,
+    totalWorkers,
+    totalProfessors,
+    personnelBreakdown,
+    defaultVehicleId,
+    chainHasLivestockBuilding,
+    onChangeYear,
+    onToggleResource,
+    onSetSourceQuality,
+    onSetBuilding,
+    onSetVehicleConfig,
+    onSetChargeRatio,
+    onResetChargeRatio,
+  };
+
   return (
     <>
-      <ChainTable
-        results={results}
-        disabledResources={disabledResources}
-        hasAnySurplus={hasAnySurplus}
-        chainYear={chainYear}
-        effectiveSourceQuality={effectiveSourceQuality}
-        sourceQualityByResource={sourceQualityByResource}
-        buildingByResource={buildingByResource}
-        defaultBuildingByResource={defaultBuildingByResource}
-        vehicleConfigByResource={vehicleConfigByResource}
-        chargeRatioByResource={chargeRatioByResource}
-        totalWorkers={totalWorkers}
-        totalProfessors={totalProfessors}
-        personnelBreakdown={personnelBreakdown}
-        surplusByResource={surplusByResource}
-        primaryResourceIds={primaryResourceIds}
-        chainHasLivestockBuilding={chainHasLivestockBuilding}
-        defaultVehicleId={defaultVehicleId}
-        onChangeYear={onChangeYear}
-        onToggleResource={onToggleResource}
-        onSetSourceQuality={onSetSourceQuality}
-        onSetBuilding={onSetBuilding}
-        onSetVehicleConfig={onSetVehicleConfig}
-        onSetChargeRatio={onSetChargeRatio}
-        onResetChargeRatio={onResetChargeRatio}
-      />
+      <ChainTableProvider value={chainTableCtx}>
+        <ChainTable
+          results={results}
+          disabledResources={disabledResources}
+          hasAnySurplus={hasAnySurplus}
+          surplusByResource={surplusByResource}
+          primaryResourceIds={primaryResourceIds}
+        />
+      </ChainTableProvider>
       {showPollutionTable && (
         <PollutionTable
           wasteTableData={wasteTableData}
