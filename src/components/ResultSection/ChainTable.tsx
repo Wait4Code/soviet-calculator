@@ -6,6 +6,7 @@ import { getResourceIcon } from '@/data/resourceIcons';
 import { Tooltip } from '@/components/Tooltip';
 import { BuildingPicker } from '@/components/BuildingPicker';
 import { vehicles, getVehicle, formatVehicleSkills, ORIGIN_TO_KEY } from '@/data/vehicles';
+import { getBlocForOrigin } from '@/data/vehicleOrigins';
 import type { ProductionResult } from '@/data/types';
 import type { MineVehicleConfig } from '@/lib/productionCalculator';
 
@@ -14,25 +15,8 @@ const VEHICLE_PLACEHOLDER = `${BASE}vehicles/excavator.svg`;
 const SIDE_EAST = `${BASE}sides/east.png`;
 const SIDE_WEST = `${BASE}sides/west.png`;
 
-const BLOC_EAST_ORIGINS = new Set([
-  'Union soviétique', 'Tchécoslovaquie', 'Roumanie', 'Allemagne de l\'Est',
-  'Pologne', 'Hongrie', 'Bulgarie', 'RDA',
-]);
-
 function getVehicleImageSrc(vehicle: { image?: string } | undefined): string {
   return vehicle?.image ? `${BASE}${vehicle.image}` : VEHICLE_PLACEHOLDER;
-}
-
-function getBlocForOrigin(origin: string): 'east' | 'west' {
-  return BLOC_EAST_ORIGINS.has(origin) ? 'east' : 'west';
-}
-
-function getDefaultVehicleConfig(recipe: { maxVehicles?: number }, defaultVehicleId: string): MineVehicleConfig {
-  const maxV = recipe.maxVehicles ?? 0;
-  return {
-    vehicleSlots: Array(maxV).fill(defaultVehicleId),
-    allowPersonnel: false,
-  };
 }
 
 export interface ChainTableProps {
@@ -394,7 +378,7 @@ export function ChainTable({
                           const maxVehicles = recipe.maxVehicles ?? 0;
                           const skill = recipe.vehicleSkill ?? 'excavator';
                           const excavatorVehicles = Array.from(vehicles.values()).filter((v) => (v.skills[skill] ?? 0) > 0);
-                          const rawCfg = vehicleConfigByResource[result.resourceId] ?? getDefaultVehicleConfig(recipe, defaultVehicleId);
+                          const rawCfg = vehicleConfigByResource[result.resourceId] ?? { vehicleSlots: Array(recipe.maxVehicles ?? 0).fill(defaultVehicleId), allowPersonnel: false };
                           const cfg = migrateVehicleConfig(rawCfg, maxVehicles, defaultVehicleId);
                           const slots = cfg.vehicleSlots;
                           const allowPersonnel = cfg.allowPersonnel;

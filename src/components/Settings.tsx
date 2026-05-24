@@ -2,6 +2,7 @@ import { useState, useRef, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useStore } from '@/stores/useStore';
 import { vehicles, getVehicle, formatVehicleSkills, ORIGIN_TO_KEY } from '@/data/vehicles';
+import { getBlocForOrigin } from '@/data/vehicleOrigins';
 import { productionCalculator } from '@/lib/productionCalculator';
 import { getResourceIcon } from '@/data/resourceIcons';
 import { BuildingPicker } from '@/components/BuildingPicker';
@@ -12,23 +13,8 @@ const VEHICLE_PLACEHOLDER = `${BASE}vehicles/excavator.svg`;
 const SIDE_EAST = `${BASE}sides/east.png`;
 const SIDE_WEST = `${BASE}sides/west.png`;
 
-const BLOC_EAST_ORIGINS = new Set([
-  'Union soviétique',
-  'Tchécoslovaquie',
-  'Roumanie',
-  'Allemagne de l\'Est',
-  'Pologne',
-  'Hongrie',
-  'Bulgarie',
-  'RDA',
-]);
-
 function getVehicleImageSrc(vehicle: { image?: string }): string {
   return vehicle?.image ? `${BASE}${vehicle.image}` : VEHICLE_PLACEHOLDER;
-}
-
-function getBlocForOrigin(origin: string): 'east' | 'west' {
-  return BLOC_EAST_ORIGINS.has(origin) ? 'east' : 'west';
 }
 
 function OriginWithBloc({
