@@ -1417,7 +1417,8 @@ export class ProductionCalculator {
    */
   formatProductionValue(value: number, resourceId: string): string {
     const unit = (this.isWater(resourceId) || this.isSewage(resourceId)) ? 'm³' : 't';
-    return `${formatNumber(value)} ${unit}/jour`;
+    // TODO(sprint-3): pass locale through CalculationConfig if these strings become user-facing
+    return `${formatNumber(value, 'fr')} ${unit}/jour`;
   }
 
   /**
@@ -1438,21 +1439,24 @@ export class ProductionCalculator {
    * Formate une valeur d'électricité en MWh
    */
   formatElectricityValue(valuePerDay: number): string {
-    return `${formatNumber(valuePerDay * 60)} MWh/jour`;
+    // TODO(sprint-3): pass locale through CalculationConfig if these strings become user-facing
+    return `${formatNumber(valuePerDay * 60, 'fr')} MWh/jour`;
   }
 
   /**
    * Formate une valeur numérique (Intl, useGrouping, maximumSignificantDigits: 3)
    */
   formatValue(value: number): string {
-    return formatNumber(value);
+    // TODO(sprint-3): pass locale through CalculationConfig if these strings become user-facing
+    return formatNumber(value, 'fr');
   }
 
   /**
    * Formate un nombre entier (bâtiments, pourcentages, etc.)
    */
   formatInteger(value: number): string {
-    return formatNumber(value);
+    // TODO(sprint-3): pass locale through CalculationConfig if these strings become user-facing
+    return formatNumber(value, 'fr');
   }
 
   /**

@@ -1,6 +1,6 @@
 import { useTranslation } from 'react-i18next';
 import type { ProductionRecipe } from '@/data/types';
-import { formatNumber } from '@/lib/format';
+import { useFormatNumber } from '@/hooks/useFormatNumber';
 
 const isElectricity = (resourceId: string) => resourceId === 'eletric';
 
@@ -62,6 +62,7 @@ function getElectricPowerMW(recipe: ProductionRecipe): number | null {
 /** Contenu structuré du tooltip (style aéré comme panneau véhicules) - exporté pour BuildingPicker */
 export function RecipeTooltipContent({ recipe }: { recipe: ProductionRecipe }) {
   const { t } = useTranslation();
+  const formatNumber = useFormatNumber();
   const displayName = t(`buildings:${recipe.name}`);
   const workersStr = recipe.workers > 0
     ? `${formatNumber(recipe.workers)} ${t('tooltips.workersBlue')}${recipe.profesors > 0 ? `, ${formatNumber(recipe.profesors)} ${t('tooltips.workersWhite')}` : ''}`

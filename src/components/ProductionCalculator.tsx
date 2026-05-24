@@ -8,7 +8,7 @@ import { migrateVehicleConfig } from '@/lib/productionCalculator';
 import { useStore } from '@/stores/useStore';
 import { getPlanStateFromUrl, setPlanStateInUrl, type PlanStateSerialized } from '@/lib/planUrl';
 import { getSavedPlans, savePlan, updatePlan, deletePlan, getPlanState, type SavedPlan } from '@/lib/savedPlans';
-import { formatNumber } from '@/lib/format';
+import { useFormatNumber } from '@/hooks/useFormatNumber';
 import { getResourceIcon } from '@/data/resourceIcons';
 import { getBuildingImageUrls } from '@/data/buildingIcons';
 import { getResourceName } from '@/data/productions';
@@ -100,6 +100,7 @@ function generatePlanName(state: PlanStateSerialized, t: (key: string) => string
 
 export function ProductionCalculator() {
   const { t } = useTranslation();
+  const formatNumber = useFormatNumber();
   const sourceQuality = useStore((state) => state.sourceQuality);
   const defaultYear = useStore((state) => state.year);
   const defaultVehicleId = useStore((state) => state.defaultVehicleId);
