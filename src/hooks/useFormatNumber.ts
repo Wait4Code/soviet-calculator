@@ -9,6 +9,6 @@ import { formatNumber as _formatNumber } from '@/lib/format';
  */
 export function useFormatNumber(): (value: number) => string {
   const { i18n } = useTranslation();
-  const locale = i18n.language;
+  const locale = i18n.resolvedLanguage ?? i18n.language;
   return useCallback((value: number) => _formatNumber(value, locale), [locale]);
 }
