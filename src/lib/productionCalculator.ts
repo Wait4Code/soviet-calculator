@@ -1,5 +1,5 @@
 import { ProductionResult, ProductionRecipe, ResourceProduction } from '@/data/types';
-import { productions, getResourceName } from '@/data/productions';
+import { productions } from '@/data/productions';
 import { getVehicle, getVehicleSkillLevel } from '@/data/vehicles';
 import { formatNumber } from '@/lib/format';
 
@@ -574,7 +574,6 @@ export class ProductionCalculator {
 
     return {
       resourceId,
-      resourceName: getResourceName(resourceId),
       buildingName: recipe.name,
       buildingCount,
       inputsPerSecond,
@@ -605,7 +604,6 @@ export class ProductionCalculator {
       const coOutputPerSecond = mainOutputPerSecond * (coRate / recipe.production);
       results.push({
         resourceId: coResourceId,
-        resourceName: getResourceName(coResourceId),
         buildingName: recipe.name,
         buildingCount: result.buildingCount,
         inputsPerSecond: new Map(),
@@ -741,7 +739,6 @@ export class ProductionCalculator {
         // Sans véhicules ni personnel : carrière ne produit rien
         const invalidResult: ProductionResult = {
           resourceId: config.resourceId,
-          resourceName: getResourceName(config.resourceId),
           buildingName: recipe.name,
           buildingCount: 0,
           inputsPerSecond: new Map(),
@@ -836,7 +833,6 @@ export class ProductionCalculator {
           // Ressource non produisible ou désactivée : l'ajouter comme ressource importée
           const nonProducibleResult: ProductionResult = {
             resourceId: inputResourceId,
-            resourceName: getResourceName(inputResourceId),
             buildingName: 'Import',
             buildingCount: 0,
             inputsPerSecond: new Map(),
@@ -880,7 +876,6 @@ export class ProductionCalculator {
     if (invalidConfig) {
       const invalidResult: ProductionResult = {
         resourceId: config.resourceId,
-        resourceName: getResourceName(config.resourceId),
         buildingName: recipe.name,
         buildingCount: 0,
         inputsPerSecond: new Map(),
@@ -971,7 +966,6 @@ export class ProductionCalculator {
           if (baseInvalidConfig) {
             const invalidResult: ProductionResult = {
               resourceId: inputResourceId,
-              resourceName: getResourceName(inputResourceId),
               buildingName: baseRecipe.name,
               buildingCount: 0,
               inputsPerSecond: new Map(),
@@ -1036,7 +1030,6 @@ export class ProductionCalculator {
             if (producingRecipes.length === 0) {
               const nonProducibleResult: ProductionResult = {
                 resourceId: inputResourceId,
-                resourceName: getResourceName(inputResourceId),
                 buildingName: 'Import',
                 buildingCount: 0,
                 inputsPerSecond: new Map(),
@@ -1083,7 +1076,6 @@ export class ProductionCalculator {
           const disabledRecipe = producingRecipes.find((r) => r.name === defaultBuilding) ?? producingRecipes[0];
           const disabledResult: ProductionResult = {
             resourceId: inputResourceId,
-            resourceName: getResourceName(inputResourceId),
             buildingName: defaultBuilding,
             buildingCount: 0,
             inputsPerSecond: new Map(),
@@ -1121,7 +1113,6 @@ export class ProductionCalculator {
         // Ressource non produisible (eau, électricité, etc.) : l'ajouter comme ressource importée
         const nonProducibleResult: ProductionResult = {
           resourceId: inputResourceId,
-          resourceName: getResourceName(inputResourceId),
           buildingName: 'Import',
           buildingCount: 0,
           inputsPerSecond: new Map(),

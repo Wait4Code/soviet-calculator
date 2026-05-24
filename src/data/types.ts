@@ -65,7 +65,7 @@ export interface ProductionResult {
   /** ID de la ressource produite */
   resourceId: string;
   /** Nom de la ressource produite */
-  resourceName: string;
+  resourceName?: string;  // Deprecated: use t('resources.' + resourceId) in UI components
   /** Nom de l'usine utilisée */
   buildingName: string;
   /** Nombre de bâtiments nécessaires */

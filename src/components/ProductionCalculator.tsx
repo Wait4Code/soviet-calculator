@@ -11,7 +11,6 @@ import { getSavedPlans, savePlan, updatePlan, deletePlan, getPlanState, type Sav
 import { useFormatNumber } from '@/hooks/useFormatNumber';
 import { getResourceIcon } from '@/data/resourceIcons';
 import { getBuildingImageUrls } from '@/data/buildingIcons';
-import { getResourceName } from '@/data/productions';
 import { POLLUTION_T_PER_YEAR, getSafetyDistanceM } from '@/data/pollutionByBuilding';
 import { Tooltip } from '@/components/Tooltip';
 import { vehicles, getVehicle, formatVehicleSkills, ORIGIN_TO_KEY } from '@/data/vehicles';
@@ -711,7 +710,6 @@ export function ProductionCalculator() {
     // Ligne sewage en fin de chaîne (après le personnel), jamais triée avec les autres
     const sewageResult: ProductionResult | null = totalSewagePerSecond > 0 ? {
       resourceId: 'sewage',
-      resourceName: getResourceName('sewage'),
       buildingName: 'Coproduct',
       buildingCount: 0,
       inputsPerSecond: new Map(),
@@ -724,7 +722,6 @@ export function ProductionCalculator() {
 
     const wasteMixedResult: ProductionResult | null = totalWasteMixedPerSecond > 0 ? {
       resourceId: 'waste_mixed',
-      resourceName: getResourceName('waste_mixed'),
       buildingName: 'Coproduct',
       buildingCount: 0,
       inputsPerSecond: new Map(),
@@ -737,7 +734,6 @@ export function ProductionCalculator() {
 
     const wasteToxicResult: ProductionResult | null = totalWasteToxicPerSecond > 0 ? {
       resourceId: 'waste_toxic',
-      resourceName: getResourceName('waste_toxic'),
       buildingName: 'Coproduct',
       buildingCount: 0,
       inputsPerSecond: new Map(),
